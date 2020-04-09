@@ -440,4 +440,77 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         $this->orderRepository->save($order);
 
     }
+
+    protected function getApiUrl()
+    {
+        $testing = $this->getConfigData('test_mode');
+        $procesor = $this->getConfigData('procesor');
+
+        switch ($testing) {
+            case 1:
+                $url = 'https://ipgtest.'.$procesor.'/';
+                break;
+            case 0:
+                $url = 'https://ipg.'.$procesor.'/';
+                break;
+        }
+
+        return $url;
+
+    }
+
+    public function capture(\Magento\Payment\Model\InfoInterface $payment, $amount)
+    {
+
+        $baseUrl = $this->getApiUrl();
+        $trasactionId = $payment->getTransactionId();
+        $order_number = $payment->getOrder()->getIncrementId();
+        $order = $payment->getOrder();
+
+        $digestAmount = $amount*100;
+        $digestString = $this->getConfigData("key", $order->getStoreId()) . $order_number . $digestAmount . $this->getConfigData("currency", $order->getStoreId());
+
+        $digest = sha1($digestString);
+        //SHA1(key + order_number + amount + currency)
+
+
+        $url = $baseUrl . 'transactions/'.$order_number.'/capture.xml';
+
+        $xmlData = '<?xml version="1.0" encoding="UTF-8"?>
+		<transaction>
+            <amount>' . $digestAmount . '</amount>
+            <currency>' . $this->getConfigData("currency", $order->getStoreId()) . '</currency>
+            <digest>' . $digest . '</digest>
+            <authenticity-token>' . $this->getConfigData("auth_token") . '</authenticity-token>
+            <order-number>' . $order_number . '</order-number>
+            </transaction>';
+
+        $ch = curl_init();
+        $headers = array();
+        $headers[] = 'Accept: application/xml';
+        $headers[] = 'Content-Type: application/xml';
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_URL, $url);
+        @curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        @curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        @curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+        @curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
+        @curl_setopt($ch, CURLOPT_SSLVERSION, defined('CURL_SSLVERSION_TLSv1') ? CURL_SSLVERSION_TLSv1 : 1);
+        @curl_setopt($ch, CURLOPT_VERBOSE, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlData);
+
+        $result = curl_exec($ch);
+        if ($this->isValidXML($result)) {
+            $resultXml = new \SimpleXmlElement($result);
+        }
+
+        $resultXml = (array) $resultXml;
+
+
+
+
+
+
+        return $this;
+    }
 }
