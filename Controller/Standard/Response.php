@@ -28,8 +28,15 @@ class Response extends \Leftor\PikPay\Controller\PikPay
                 }
 
             } elseif ($digest == $response["digest"]) {
-                $comment = "Narudzba je placena! PikPay V2 approval code: ".$response["approval_code"];
-               if ($this->updateOrder($response["order_number"],'success',$comment)){
+
+                $order = $this->getOrderById($response["order_number"]);
+                $methodInstance = $order->getPayment()->getMethodInstance();
+                $methodInstance->handleResponse($response, $order);
+                $redirectUrl = $this->getCheckoutHelper()->getUrl('checkout/onepage/success');
+                $this->getResponse()->setRedirect($redirectUrl);
+
+
+                /*if ($this->updateOrder($response["order_number"],'success',$comment)){
                    $this->makeInvoice($response["order_number"],$response);
                    echo "Narudzba je uspjesno procesirana!";
                    $redirectUrl = $this->getCheckoutHelper()->getUrl('checkout/onepage/success');
@@ -37,7 +44,7 @@ class Response extends \Leftor\PikPay\Controller\PikPay
                }
                 else {
                     echo "Doslo je do greske, narudzba nije azurirana! Molimo Vas da kontaktirate administratora... Broj narudzbe je: ".$response["order_number"];
-                }
+                }*/
 
             }
              else {

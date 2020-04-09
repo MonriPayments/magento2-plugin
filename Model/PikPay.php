@@ -5,21 +5,32 @@
 namespace Leftor\PikPay\Model;
 
 use Magento\Quote\Model\Quote\Payment;
+use Magento\Sales\Model\Order;
+use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Sales\Model\Order\Payment\Transaction;
 
 class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 {
 	const PAYMENT_METHOD_PIKPAY_CODE = 'pikpay';
 
+	const PAYMENT_ACTION_AUTHORIZE = 'authorize';
+	const PAYMENT_ACTION_PURCHASE = 'purchase';
+
     protected $_code = self::PAYMENT_METHOD_PIKPAY_CODE;
     protected $_isGateway = false;
     protected $_isOffline = true;
-    protected $_canCapture = false;
-    protected $_canAuthorize = false;
-    protected $_canRefund = false;
+    protected $_canCapture = true;
+    protected $_canAuthorize = true;
+    protected $_canRefund = true;
+    protected $_canVoid = true;
+    protected $_isInitializeNeeded = true;
+    protected $_canCapturePartial = true;
 
     protected $_remoteAddress;
     protected $_supportedCurrencyCodes = array('BAM','HRK','EUR','USD');
-	
+
+    private $orderRepository;
+
     public function __construct(
         \Magento\Framework\Model\Context $context,
         \Magento\Framework\Registry $registry,
@@ -28,10 +39,12 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         \Magento\Payment\Helper\Data $paymentData,
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Payment\Model\Method\Logger $logger,
-        \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress
+        \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress,
+        OrderRepositoryInterface $orderRepository
     )
     {
         $this->_remoteAddress = $remoteAddress;
+        $this->orderRepository = $orderRepository;
         //$this->_customLogger = $customLogger;
         parent::__construct(
             $context,
@@ -51,7 +64,7 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         }
         return true;
     }
-    
+
     public function digest($key, $orderNumber, $amount, $currency)
     {
         return sha1($key.$orderNumber.$amount.$currency);
@@ -106,12 +119,22 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         $params["amount"]               = $amount;
         $params["currency"]             = $this->getConfigData("currency");
         $params["language"]             = $language;
-        $params["transaction_type"]     = $this->getConfigData("transaction");
+        $params["transaction_type"]     = $this->getTrasactionType($order);
         $params["authenticity_token"]   = $this->getConfigData("auth_token");
         $params["digest"]               = $digest;
         $params["ip"]                   = $this->getIp();
 
         return $params;
+    }
+
+    protected function getTrasactionType($order)
+    {
+        $action = $this->getConfigData("payment_action", $order->getStoreId());
+        if($action == \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE){
+            return self::PAYMENT_ACTION_AUTHORIZE;
+        }elseif($action == \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE_CAPTURE){
+            return self::PAYMENT_ACTION_PURCHASE;
+        }
     }
 
     /**
@@ -379,5 +402,42 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         ];
 
         return $codes;
+    }
+
+    public function initialize($paymentAction, $stateObject){
+
+        $payment = $this->getInfoInstance();
+        /** @var \Magento\Sales\Model\Order $order */
+        $order = $payment->getOrder();
+        $order->setCanSendNewEmailFlag(false);
+        $stateObject->setState(Order::STATE_PENDING_PAYMENT);
+        $stateObject->setStatus(Order::STATE_PENDING_PAYMENT);
+        $stateObject->setIsNotified(false);
+    }
+
+
+    public function handleResponse($response, $order){
+
+        $action = $this->getConfigData("payment_action", $order->getStoreId());
+        $payment = $order->getPayment();
+
+        $payment->setTransactionId($response["order_number"]);
+        $payment->setTransactionAdditionalInfo(
+            Transaction::RAW_DETAILS,
+            $response
+        );
+
+        if($action == \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE){
+
+            $payment->setIsTransactionClosed(false);
+            $payment->registerAuthorizationNotification($order->getBaseGrandTotal());
+
+        }elseif($action == \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE_CAPTURE){
+            $order->setState(Order::STATE_PROCESSING);
+            $payment->registerCaptureNotification($order->getBaseGrandTotal(), true);
+        }
+
+        $this->orderRepository->save($order);
+
     }
 }

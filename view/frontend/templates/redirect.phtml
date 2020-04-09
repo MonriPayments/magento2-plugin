@@ -24,7 +24,7 @@
             <?php foreach ($params as $key => $value):
                 if($value == '') continue;
             ?>
-            <input type="hidden" name="<?php echo $key ?>" value="<?php echo $value ?>" />
+            <input type="hidden" name="<?php echo $key; ?>" value="<?php echo $value ?>" />
             <?php endforeach; ?>
 
             <?php if($paymentType == 2): ?>
