@@ -14,6 +14,7 @@ use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use GuzzleHttp\ClientFactory;
 use Leftor\PikPay\Model\RawDetailsFormatter;
+use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 
 class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 {
@@ -42,6 +43,11 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
      */
     private $rawDetailsFormatter;
 
+    /**
+     * @var OrderSender
+     */
+    private $orderSender;
+
     protected $_remoteAddress;
     protected $_supportedCurrencyCodes = array('BAM', 'HRK', 'EUR', 'USD');
 
@@ -58,13 +64,15 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress,
         OrderRepositoryInterface $orderRepository,
         ClientFactory $clientFactory,
-        RawDetailsFormatter $rawDetailsFormatter
+        RawDetailsFormatter $rawDetailsFormatter,
+        OrderSender $orderSender
     )
     {
         $this->_remoteAddress = $remoteAddress;
         $this->orderRepository = $orderRepository;
         $this->clientFactory = $clientFactory;
         $this->rawDetailsFormatter = $rawDetailsFormatter;
+        $this->orderSender = $orderSender;
         //$this->_customLogger = $customLogger;
         parent::__construct(
             $context,
@@ -455,6 +463,10 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         }
 
         $this->orderRepository->save($order);
+
+        if (!$order->getEmailSent()) {
+            $this->orderSender->send($order);
+        }
 
     }
 
