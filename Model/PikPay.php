@@ -2,6 +2,7 @@
 /**
  * Copyright © 2016 Magento. All rights reserved.
  */
+
 namespace Leftor\PikPay\Model;
 
 use Magento\Framework\Exception\LocalizedException;
@@ -16,10 +17,10 @@ use Leftor\PikPay\Model\RawDetailsFormatter;
 
 class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 {
-	const PAYMENT_METHOD_PIKPAY_CODE = 'pikpay';
+    const PAYMENT_METHOD_PIKPAY_CODE = 'pikpay';
 
-	const PAYMENT_ACTION_AUTHORIZE = 'authorize';
-	const PAYMENT_ACTION_PURCHASE = 'purchase';
+    const PAYMENT_ACTION_AUTHORIZE = 'authorize';
+    const PAYMENT_ACTION_PURCHASE = 'purchase';
 
     protected $_code = self::PAYMENT_METHOD_PIKPAY_CODE;
     protected $_isGateway = false;
@@ -42,7 +43,7 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
     private $rawDetailsFormatter;
 
     protected $_remoteAddress;
-    protected $_supportedCurrencyCodes = array('BAM','HRK','EUR','USD');
+    protected $_supportedCurrencyCodes = array('BAM', 'HRK', 'EUR', 'USD');
 
     private $orderRepository;
 
@@ -86,33 +87,32 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 
     public function digest($key, $orderNumber, $amount, $currency)
     {
-        return sha1($key.$orderNumber.$amount.$currency);
+        return sha1($key . $orderNumber . $amount . $currency);
     }
 
     public function digestV2($key, $orderNumber, $amount, $currency)
     {
-        return hash('sha512',$key.$orderNumber.$amount.$currency);
+        return hash('sha512', $key . $orderNumber . $amount . $currency);
     }
 
     protected function fullAddress($address)
     {
-        if($address != null && count($address)>1){
-            return $address[0]." ".$address[1];
-        }
-        else
+        if ($address != null && count($address) > 1) {
+            return $address[0] . " " . $address[1];
+        } else
             return $address[0];
     }
 
-    public function checkoutRequest($quote,$order)
+    public function checkoutRequest($quote, $order)
     {
 
         $params = [];
-        $amount = round(($order->getGrandTotal()),2)*100;
+        $amount = round(($order->getGrandTotal()), 2) * 100;
         $orderNumber = $order->getRealOrderId();
 
         $address = $order->getBillingAddress()->getStreet();
 
-        if($this->getPaymentType() == 1){
+        if ($this->getPaymentType() == 1) {
             $digest = $this->digestV2(
                 $this->getConfigData("key"),
                 $orderNumber,
@@ -120,28 +120,28 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
                 $this->getConfigData("currency"));
         }
 
-        if($this->getConfigData("language") == 'ba'){
+        if ($this->getConfigData("language") == 'ba') {
             $language = 'hr';
         } else {
             $language = $this->getConfigData("language");
         }
 
-        $params["ch_full_name"]         = $order->getBillingAddress()->getName();
-        $params["ch_address"]           = $this->fullAddress($address);
-        $params["ch_city"]              = $order->getBillingAddress()->getCity();
-        $params["ch_zip"]               = $order->getBillingAddress()->getPostcode();
-        $params["ch_country"]           = $order->getBillingAddress()->getCountryId();
-        $params["ch_phone"]             = $order->getBillingAddress()->getTelephone();
-        $params["ch_email"]             = $order->getCustomerEmail();
-        $params["order_info"]           = "Order: ".$order->getRealOrderId();
-        $params["order_number"]         = $orderNumber;
-        $params["amount"]               = $amount;
-        $params["currency"]             = $this->getConfigData("currency");
-        $params["language"]             = $language;
-        $params["transaction_type"]     = $this->getTrasactionType($order);
-        $params["authenticity_token"]   = $this->getConfigData("auth_token");
-        $params["digest"]               = $digest;
-        $params["ip"]                   = $this->getIp();
+        $params["ch_full_name"] = $order->getBillingAddress()->getName();
+        $params["ch_address"] = $this->fullAddress($address);
+        $params["ch_city"] = $order->getBillingAddress()->getCity();
+        $params["ch_zip"] = $order->getBillingAddress()->getPostcode();
+        $params["ch_country"] = $order->getBillingAddress()->getCountryId();
+        $params["ch_phone"] = $order->getBillingAddress()->getTelephone();
+        $params["ch_email"] = $order->getCustomerEmail();
+        $params["order_info"] = "Order: " . $order->getRealOrderId();
+        $params["order_number"] = $orderNumber;
+        $params["amount"] = $amount;
+        $params["currency"] = $this->getConfigData("currency");
+        $params["language"] = $language;
+        $params["transaction_type"] = $this->getTrasactionType($order);
+        $params["authenticity_token"] = $this->getConfigData("auth_token");
+        $params["digest"] = $digest;
+        $params["ip"] = $this->getIp();
 
         return $params;
     }
@@ -149,9 +149,9 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
     protected function getTrasactionType($order)
     {
         $action = $this->getConfigData("payment_action", $order->getStoreId());
-        if($action == \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE){
+        if ($action == \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE) {
             return self::PAYMENT_ACTION_AUTHORIZE;
-        }elseif($action == \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE_CAPTURE){
+        } elseif ($action == \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE_CAPTURE) {
             return self::PAYMENT_ACTION_PURCHASE;
         }
     }
@@ -166,7 +166,7 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 		<transaction>';
         foreach ($params as $attribute => $value) {
             $attribute = str_replace('_', '-', $attribute);
-            if(trim($value)!='') $xmlData .= '<'.$attribute.'>'.trim($value).'</'.$attribute.'>';
+            if (trim($value) != '') $xmlData .= '<' . $attribute . '>' . trim($value) . '</' . $attribute . '>';
         }
         $xmlData .= '</transaction>';
 
@@ -175,10 +175,10 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 
         switch ($testing) {
             case 1:
-                $url = 'https://ipgtest.'.$procesor.'/api';
+                $url = 'https://ipgtest.' . $procesor . '/api';
                 break;
             case 0:
-                $url = 'https://ipg.'.$procesor.'/api';
+                $url = 'https://ipg.' . $procesor . '/api';
                 break;
         }
         $ch = curl_init();
@@ -197,9 +197,8 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 
         $result = curl_exec($ch);
 
-        if(curl_errno($ch))
-        {
-            $this->_logger->info('cURL Error: '.curl_error($ch));
+        if (curl_errno($ch)) {
+            $this->_logger->info('cURL Error: ' . curl_error($ch));
             die(curl_error($ch));
         }
         curl_close($ch);
@@ -209,18 +208,19 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
             $resultXml = new \SimpleXmlElement($result);
         }
 
-        $resultXml = (array) $resultXml;
+        $resultXml = (array)$resultXml;
 
         foreach ($resultXml as $resKey => $resValue) {
             $resultRequest[str_replace('-', '_', $resKey)] = $resValue;
         }
-        $this->_logger->info(print_r($resultRequest,true));
+        $this->_logger->info(print_r($resultRequest, true));
 
         return $resultRequest;
 
     }
 
-    public function isValidXML($xml) {
+    public function isValidXML($xml)
+    {
 
         $prev = libxml_use_internal_errors(true);
         $ret = true;
@@ -280,8 +280,7 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
      */
     public function canPayInInstallments()
     {
-        if($this->getConfigData('installments') == 1)
-        {
+        if ($this->getConfigData('installments') == 1) {
             return true;
         }
         return false;
@@ -317,27 +316,24 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
     public function getOrderPercentage()
     {
         $configValue = $this->getConfigData('percentage');
-        if($configValue)
-        {
+        if ($configValue) {
             $realValue = ((float)$configValue / 100) + 1;
             return $realValue;
-        }
-        else return 1;
+        } else return 1;
     }
 
     public function getOrderPercentageForInstallments()
     {
         $configValue = $this->getConfigData('installments_percentage');
-        if($configValue)
-        {
+        if ($configValue) {
             $realValue = ((float)$configValue / 100) + 1;
             return $realValue;
-        }
-        else return 1;
+        } else return 1;
     }
 
     /** List of response codes */
-    public function responseCodes() {
+    public function responseCodes()
+    {
 
         $codes = [
             0000 => "Transaction Approved",
@@ -423,7 +419,8 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         return $codes;
     }
 
-    public function initialize($paymentAction, $stateObject){
+    public function initialize($paymentAction, $stateObject)
+    {
 
         $payment = $this->getInfoInstance();
         /** @var \Magento\Sales\Model\Order $order */
@@ -435,7 +432,8 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
     }
 
 
-    public function handleResponse($response, $order){
+    public function handleResponse($response, $order)
+    {
 
         $action = $this->getConfigData("payment_action", $order->getStoreId());
         $payment = $order->getPayment();
@@ -446,12 +444,12 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
             $response
         );
 
-        if($action == \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE){
+        if ($action == \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE) {
 
             $payment->setIsTransactionClosed(false);
             $payment->registerAuthorizationNotification($order->getBaseGrandTotal());
 
-        }elseif($action == \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE_CAPTURE){
+        } elseif ($action == \Magento\Payment\Model\Method\AbstractMethod::ACTION_AUTHORIZE_CAPTURE) {
             $order->setState(Order::STATE_PROCESSING);
             $payment->registerCaptureNotification($order->getBaseGrandTotal(), true);
         }
@@ -467,10 +465,10 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 
         switch ($testing) {
             case 1:
-                $url = 'https://ipgtest.'.$procesor.'/';
+                $url = 'https://ipgtest.' . $procesor . '/';
                 break;
             case 0:
-                $url = 'https://ipg.'.$procesor.'/';
+                $url = 'https://ipg.' . $procesor . '/';
                 break;
         }
 
@@ -483,13 +481,12 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         $order = $payment->getOrder();
         $baseUrl = $this->getApiUrl();
         $requestUrl = 'transactions/' . $order->getIncrementId() . '/capture.xml';
-        $merchantReference = uniqid($order->getIncrementId().'-capture-');
+        $merchantReference = uniqid($order->getIncrementId() . '-capture-');
 
-        $digestAmount = $amount*100;
+        $digestAmount = $amount * 100;
         $digestString = $this->getConfigData("key", $order->getStoreId()) . $order->getIncrementId() . $digestAmount . $this->getConfigData("currency", $order->getStoreId());
 
         $digest = sha1($digestString);
-        //SHA1(key + order_number + amount + currency)
 
         $xmlData = (string)$this->_generateXmlBody(
             $digestAmount,
@@ -508,10 +505,10 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         );
 
         $response = $client->request('POST', $requestUrl, [
-            'body'=>$xmlData,
+            'body' => $xmlData,
             'headers' => [
                 'Accept' => 'application/xml',
-                'Content-Type'=>'application/xml'
+                'Content-Type' => 'application/xml'
             ]
         ]);
 
@@ -520,13 +517,9 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
             return $this;
         }
 
-        $xmlstring = $response->getBody()->getContents();
+        $result = (array)$this->_convertXmlToArray($response->getBody()->getContents());
 
-        $xml = simplexml_load_string($xmlstring, "SimpleXMLElement", LIBXML_NOCDATA);
-        $json = json_encode($xml);
-        $result = json_decode($json,TRUE);
-
-        if($result['response-message'] != 'approved'){
+        if ($result['response-message'] != 'approved') {
             throw new LocalizedException(__('Trasaction is not Approved!'));
             return $this;
         }
@@ -542,11 +535,11 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
     {
 
         $order = $payment->getOrder();
-        $digestAmount = $amount*100;
-        $merchantReference = uniqid($order->getIncrementId().'-refund-');
+        $digestAmount = $amount * 100;
+        $merchantReference = uniqid($order->getIncrementId() . '-refund-');
 
         $baseUrl = $this->getApiUrl();
-        $requestUrl = 'transactions/'.$order->getIncrementId().'/refund.xml';
+        $requestUrl = 'transactions/' . $order->getIncrementId() . '/refund.xml';
 
         $digestString = $this->getConfigData("key", $order->getStoreId()) . $order->getIncrementId() . $digestAmount . $this->getConfigData("currency", $order->getStoreId());
 
@@ -569,10 +562,10 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         );
 
         $response = $client->request('POST', $requestUrl, [
-            'body'=>$xmlData,
+            'body' => $xmlData,
             'headers' => [
                 'Accept' => 'application/xml',
-                'Content-Type'=>'application/xml'
+                'Content-Type' => 'application/xml'
             ]
         ]);
 
@@ -582,13 +575,9 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
             return $this;
         }
 
-        $xmlstring = $response->getBody()->getContents();
+        $result = (array)$this->_convertXmlToArray($response->getBody()->getContents());
 
-        $xml = simplexml_load_string($xmlstring, "SimpleXMLElement", LIBXML_NOCDATA);
-        $json = json_encode($xml);
-        $result = json_decode($json,TRUE);
-
-        if($result['response-message'] != 'approved'){
+        if ($result['response-message'] != 'approved') {
             throw new LocalizedException(__('Trasaction is not Approved!'));
             return $this;
         }
@@ -606,11 +595,11 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
     public function cancel(\Magento\Payment\Model\InfoInterface $payment)
     {
         $order = $payment->getOrder();
-        $digestAmount = ($order->getBaseGrandTotal() - $order->getBaseTotalPaid())*100;
-        $merchantReference = uniqid($order->getIncrementId().'-void-');
+        $digestAmount = ($order->getBaseGrandTotal() - $order->getBaseTotalPaid()) * 100;
+        $merchantReference = uniqid($order->getIncrementId() . '-void-');
 
         $baseUrl = $this->getApiUrl();
-        $requestUrl = 'transactions/'.$order->getIncrementId().'/void.xml';
+        $requestUrl = 'transactions/' . $order->getIncrementId() . '/void.xml';
 
         $digestString = $this->getConfigData("key", $order->getStoreId()) . $order->getIncrementId() . $digestAmount . $this->getConfigData("currency", $order->getStoreId());
 
@@ -633,10 +622,10 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         );
 
         $response = $client->request('POST', $requestUrl, [
-            'body'=>$xmlData,
+            'body' => $xmlData,
             'headers' => [
                 'Accept' => 'application/xml',
-                'Content-Type'=>'application/xml'
+                'Content-Type' => 'application/xml'
             ]
         ]);
 
@@ -646,13 +635,9 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
             return $this;
         }
 
-        $xmlstring = $response->getBody()->getContents();
+        $result = (array)$this->_convertXmlToArray($response->getBody()->getContents());
 
-        $xml = simplexml_load_string($xmlstring, "SimpleXMLElement", LIBXML_NOCDATA);
-        $json = json_encode($xml);
-        $result = json_decode($json,TRUE);
-
-        if($result['response-message'] != 'approved'){
+        if (!isset($result['response-message']) || $result['response-message'] != 'approved') {
             throw new LocalizedException(__('Trasaction is not Approved!'));
             return $this;
         }
@@ -664,7 +649,7 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         return $this;
     }
 
-    protected function _generateXmlBody($amount, $currency, $digest, $authenticityToken, $orderNumber)
+    protected function _generateXmlBody($amount, $currency, $digest, $authenticityToken, $orderNumber): string
     {
         $xml = new \SimpleXMLElement('<transaction/>');
         $xml->addChild('amount', $amount);
@@ -674,5 +659,14 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         $xml->addChild('order-number', $orderNumber);
 
         return $xml->asXML();
+    }
+
+    protected function _convertXmlToArray($xmlString): array
+    {
+        $xml = simplexml_load_string($xmlString, "SimpleXMLElement", LIBXML_NOCDATA);
+        $json = json_encode($xml);
+        $result = json_decode($json, TRUE);
+
+        return $result;
     }
 }
