@@ -16,11 +16,5 @@ class Pendingpayment extends Status
     /**
      * @var string[]
      */
-    protected $_stateStatuses = [
-        Order::STATE_PENDING_PAYMENT,
-        Order::STATE_NEW,
-        Order::STATE_PROCESSING,
-        Order::STATE_COMPLETE,
-        Order::STATE_CANCELED
-    ];
+    protected $_stateStatuses = \Magento\Sales\Model\Order::STATE_PENDING_PAYMENT;
 }
