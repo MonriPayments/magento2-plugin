@@ -4,10 +4,15 @@
  */
 namespace Leftor\PikPay\Model;
 
+use Magento\Framework\Exception\LocalizedException;
+use Magento\Payment\Model\InfoInterface;
+use Magento\Payment\Model\Method\AbstractMethod;
 use Magento\Quote\Model\Quote\Payment;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order\Payment\Transaction;
+use GuzzleHttp\ClientFactory;
+use Leftor\PikPay\Model\RawDetailsFormatter;
 
 class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 {
@@ -26,6 +31,16 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
     protected $_isInitializeNeeded = true;
     protected $_canCapturePartial = true;
 
+    /**
+     * @var ClientFactory
+     */
+    protected $clientFactory;
+
+    /**
+     * @var \Leftor\PikPay\Model\RawDetailsFormatter
+     */
+    private $rawDetailsFormatter;
+
     protected $_remoteAddress;
     protected $_supportedCurrencyCodes = array('BAM','HRK','EUR','USD');
 
@@ -40,11 +55,15 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         \Magento\Framework\App\Config\ScopeConfigInterface $scopeConfig,
         \Magento\Payment\Model\Method\Logger $logger,
         \Magento\Framework\HTTP\PhpEnvironment\RemoteAddress $remoteAddress,
-        OrderRepositoryInterface $orderRepository
+        OrderRepositoryInterface $orderRepository,
+        ClientFactory $clientFactory,
+        RawDetailsFormatter $rawDetailsFormatter
     )
     {
         $this->_remoteAddress = $remoteAddress;
         $this->orderRepository = $orderRepository;
+        $this->clientFactory = $clientFactory;
+        $this->rawDetailsFormatter = $rawDetailsFormatter;
         //$this->_customLogger = $customLogger;
         parent::__construct(
             $context,
@@ -461,11 +480,11 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 
     public function capture(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
-
-        $baseUrl = $this->getApiUrl();
-        $trasactionId = $payment->getTransactionId();
         $order_number = $payment->getOrder()->getIncrementId();
+        $baseUrl = $this->getApiUrl();
+        $requestUrl = 'transactions/'.$order_number.'/capture.xml';
         $order = $payment->getOrder();
+        $merchantReference = uniqid($order->getIncrementId().'-capture-');
 
         $digestAmount = $amount*100;
         $digestString = $this->getConfigData("key", $order->getStoreId()) . $order_number . $digestAmount . $this->getConfigData("currency", $order->getStoreId());
@@ -474,7 +493,6 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         //SHA1(key + order_number + amount + currency)
 
 
-        $url = $baseUrl . 'transactions/'.$order_number.'/capture.xml';
 
         $xmlData = '<?xml version="1.0" encoding="UTF-8"?>
 		<transaction>
@@ -485,31 +503,176 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
             <order-number>' . $order_number . '</order-number>
             </transaction>';
 
-        $ch = curl_init();
-        $headers = array();
-        $headers[] = 'Accept: application/xml';
-        $headers[] = 'Content-Type: application/xml';
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($ch, CURLOPT_URL, $url);
-        @curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        @curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        @curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        @curl_setopt($ch, CURLOPT_SSL_CIPHER_LIST, 'TLSv1');
-        @curl_setopt($ch, CURLOPT_SSLVERSION, defined('CURL_SSLVERSION_TLSv1') ? CURL_SSLVERSION_TLSv1 : 1);
-        @curl_setopt($ch, CURLOPT_VERBOSE, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, $xmlData);
+        $client = $this->clientFactory->create(
+            [
+                'config' => [
+                    'base_uri' => $baseUrl,
+                    'timeout' => 5.0
+                ]
+            ]
+        );
 
-        $result = curl_exec($ch);
-        if ($this->isValidXML($result)) {
-            $resultXml = new \SimpleXmlElement($result);
+        $response = $client->request('POST', $requestUrl, [
+            'body'=>$xmlData,
+            'headers' => [
+                'Accept' => 'application/xml',
+                'Content-Type'=>'application/xml'
+            ]
+        ]);
+
+        if (!in_array($response->getStatusCode(), [200, 201])) {
+            throw new LocalizedException(__('Error with Capture Action.'));
+            return $this;
         }
 
-        $resultXml = (array) $resultXml;
+        $xmlstring = $response->getBody()->getContents();
+
+        $xml = simplexml_load_string($xmlstring, "SimpleXMLElement", LIBXML_NOCDATA);
+        $json = json_encode($xml);
+        $result = json_decode($json,TRUE);
+
+        if($result['response-message'] != 'approved'){
+            throw new LocalizedException(__('Trasaction is not Approved!'));
+            return $this;
+        }
+
+        $trasactionData = $this->rawDetailsFormatter->format($result);
+        $payment->setTransactionId($merchantReference);
+        $payment->setTransactionAdditionalInfo(Transaction::RAW_DETAILS, $trasactionData);
+        return $this;
+    }
+
+
+    public function refund(\Magento\Payment\Model\InfoInterface $payment, $amount)
+    {
+
+        $order = $payment->getOrder();
+        $digestAmount = $amount*100;
+        $merchantReference = uniqid($order->getIncrementId().'-refund-');
+
+        $baseUrl = $this->getApiUrl();
+        $requestUrl = 'transactions/'.$order->getIncrementId().'/refund.xml';
+
+        $digestString = $this->getConfigData("key", $order->getStoreId()) . $order->getIncrementId() . $digestAmount . $this->getConfigData("currency", $order->getStoreId());
+
+        $digest = sha1($digestString);
+
+        $xmlData = '<?xml version="1.0" encoding="UTF-8"?>
+		<transaction>
+            <amount>' . $digestAmount . '</amount>
+            <currency>' . $this->getConfigData("currency", $order->getStoreId()) . '</currency>
+            <digest>' . $digest . '</digest>
+            <authenticity-token>' . $this->getConfigData("auth_token") . '</authenticity-token>
+            <order-number>' . $order->getIncrementId() . '</order-number>
+            </transaction>';
 
 
 
+        $client = $this->clientFactory->create(
+            [
+                'config' => [
+                    'base_uri' => $baseUrl,
+                    'timeout' => 5.0
+                ]
+            ]
+        );
+
+        $response = $client->request('POST', $requestUrl, [
+            'body'=>$xmlData,
+            'headers' => [
+                'Accept' => 'application/xml',
+                'Content-Type'=>'application/xml'
+            ]
+        ]);
 
 
+        if (!in_array($response->getStatusCode(), [200, 201])) {
+            throw new LocalizedException(__('Error with Capture Action.'));
+            return $this;
+        }
+
+        $xmlstring = $response->getBody()->getContents();
+
+        $xml = simplexml_load_string($xmlstring, "SimpleXMLElement", LIBXML_NOCDATA);
+        $json = json_encode($xml);
+        $result = json_decode($json,TRUE);
+
+        if($result['response-message'] != 'approved'){
+            throw new LocalizedException(__('Trasaction is not Approved!'));
+            return $this;
+        }
+
+        $payment->setTransactionId($merchantReference);
+        $trasactionData = $this->rawDetailsFormatter->format($result);
+        $payment->setTransactionAdditionalInfo(Transaction::RAW_DETAILS, $trasactionData);
+
+        $payment->setShouldCloseParentTransaction(!$payment->getCreditmemo()->getInvoice()->canRefund());
+
+        return $this;
+    }
+
+
+    public function cancel(\Magento\Payment\Model\InfoInterface $payment)
+    {
+        $order = $payment->getOrder();
+        $digestAmount = ($order->getBaseGrandTotal() - $order->getBaseTotalPaid())*100;
+        $merchantReference = uniqid($order->getIncrementId().'-void-');
+
+        $baseUrl = $this->getApiUrl();
+        $requestUrl = 'transactions/'.$order->getIncrementId().'/void.xml';
+
+        $digestString = $this->getConfigData("key", $order->getStoreId()) . $order->getIncrementId() . $digestAmount . $this->getConfigData("currency", $order->getStoreId());
+
+        $digest = sha1($digestString);
+
+        $xmlData = '<?xml version="1.0" encoding="UTF-8"?>
+		<transaction>
+            <amount>' . $digestAmount . '</amount>
+            <currency>' . $this->getConfigData("currency", $order->getStoreId()) . '</currency>
+            <digest>' . $digest . '</digest>
+            <authenticity-token>' . $this->getConfigData("auth_token") . '</authenticity-token>
+            <order-number>' . $order->getIncrementId() . '</order-number>
+            </transaction>';
+
+
+
+        $client = $this->clientFactory->create(
+            [
+                'config' => [
+                    'base_uri' => $baseUrl,
+                    'timeout' => 5.0
+                ]
+            ]
+        );
+
+        $response = $client->request('POST', $requestUrl, [
+            'body'=>$xmlData,
+            'headers' => [
+                'Accept' => 'application/xml',
+                'Content-Type'=>'application/xml'
+            ]
+        ]);
+
+
+        if (!in_array($response->getStatusCode(), [200, 201])) {
+            throw new LocalizedException(__('Error with Capture Action.'));
+            return $this;
+        }
+
+        $xmlstring = $response->getBody()->getContents();
+
+        $xml = simplexml_load_string($xmlstring, "SimpleXMLElement", LIBXML_NOCDATA);
+        $json = json_encode($xml);
+        $result = json_decode($json,TRUE);
+
+        if($result['response-message'] != 'approved'){
+            throw new LocalizedException(__('Trasaction is not Approved!'));
+            return $this;
+        }
+
+        $payment->setTransactionId($merchantReference);
+        $trasactionData = $this->rawDetailsFormatter->format($result);
+        $payment->setTransactionAdditionalInfo(Transaction::RAW_DETAILS, $trasactionData);
 
         return $this;
     }
