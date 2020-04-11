@@ -195,7 +195,7 @@ abstract class PikPay extends \Magento\Framework\App\Action\Action
     }
 
     public function getResponseDigest($orderNumber) {
-        return sha1($this->getPayemntMethod()->getKey().$orderNumber);
+        return sha1($this->getPaymentMethod()->getKey().$orderNumber);
     }
 
     public function getResponseDigestV2($query) {
