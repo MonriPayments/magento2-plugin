@@ -29,7 +29,7 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
     protected $_canRefund = true;
     protected $_canVoid = true;
     protected $_isInitializeNeeded = true;
-    protected $_canCapturePartial = true;
+    protected $_canCapturePartial = false;
 
     /**
      * @var ClientFactory
@@ -480,28 +480,23 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 
     public function capture(\Magento\Payment\Model\InfoInterface $payment, $amount)
     {
-        $order_number = $payment->getOrder()->getIncrementId();
-        $baseUrl = $this->getApiUrl();
-        $requestUrl = 'transactions/'.$order_number.'/capture.xml';
         $order = $payment->getOrder();
+        $baseUrl = $this->getApiUrl();
+        $requestUrl = 'transactions/' . $order->getIncrementId() . '/capture.xml';
         $merchantReference = uniqid($order->getIncrementId().'-capture-');
 
         $digestAmount = $amount*100;
-        $digestString = $this->getConfigData("key", $order->getStoreId()) . $order_number . $digestAmount . $this->getConfigData("currency", $order->getStoreId());
+        $digestString = $this->getConfigData("key", $order->getStoreId()) . $order->getIncrementId() . $digestAmount . $this->getConfigData("currency", $order->getStoreId());
 
         $digest = sha1($digestString);
         //SHA1(key + order_number + amount + currency)
 
-
-
-        $xmlData = '<?xml version="1.0" encoding="UTF-8"?>
-		<transaction>
-            <amount>' . $digestAmount . '</amount>
-            <currency>' . $this->getConfigData("currency", $order->getStoreId()) . '</currency>
-            <digest>' . $digest . '</digest>
-            <authenticity-token>' . $this->getConfigData("auth_token") . '</authenticity-token>
-            <order-number>' . $order_number . '</order-number>
-            </transaction>';
+        $xmlData = (string)$this->_generateXmlBody(
+            $digestAmount,
+            $this->getConfigData("currency", $order->getStoreId()),
+            $digest, $this->getConfigData("auth_token"),
+            $order->getIncrementId()
+        );
 
         $client = $this->clientFactory->create(
             [
@@ -557,16 +552,12 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 
         $digest = sha1($digestString);
 
-        $xmlData = '<?xml version="1.0" encoding="UTF-8"?>
-		<transaction>
-            <amount>' . $digestAmount . '</amount>
-            <currency>' . $this->getConfigData("currency", $order->getStoreId()) . '</currency>
-            <digest>' . $digest . '</digest>
-            <authenticity-token>' . $this->getConfigData("auth_token") . '</authenticity-token>
-            <order-number>' . $order->getIncrementId() . '</order-number>
-            </transaction>';
-
-
+        $xmlData = (string)$this->_generateXmlBody(
+            $digestAmount,
+            $this->getConfigData("currency", $order->getStoreId()),
+            $digest, $this->getConfigData("auth_token"),
+            $order->getIncrementId()
+        );
 
         $client = $this->clientFactory->create(
             [
@@ -625,16 +616,12 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 
         $digest = sha1($digestString);
 
-        $xmlData = '<?xml version="1.0" encoding="UTF-8"?>
-		<transaction>
-            <amount>' . $digestAmount . '</amount>
-            <currency>' . $this->getConfigData("currency", $order->getStoreId()) . '</currency>
-            <digest>' . $digest . '</digest>
-            <authenticity-token>' . $this->getConfigData("auth_token") . '</authenticity-token>
-            <order-number>' . $order->getIncrementId() . '</order-number>
-            </transaction>';
-
-
+        $xmlData = (string)$this->_generateXmlBody(
+            $digestAmount,
+            $this->getConfigData("currency", $order->getStoreId()),
+            $digest, $this->getConfigData("auth_token"),
+            $order->getIncrementId()
+        );
 
         $client = $this->clientFactory->create(
             [
@@ -675,5 +662,17 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         $payment->setTransactionAdditionalInfo(Transaction::RAW_DETAILS, $trasactionData);
 
         return $this;
+    }
+
+    protected function _generateXmlBody($amount, $currency, $digest, $authenticityToken, $orderNumber)
+    {
+        $xml = new \SimpleXMLElement('<transaction/>');
+        $xml->addChild('amount', $amount);
+        $xml->addChild('currency', $currency);
+        $xml->addChild('digest', $digest);
+        $xml->addChild('authenticity-token', $authenticityToken);
+        $xml->addChild('order-number', $orderNumber);
+
+        return $xml->asXML();
     }
 }
