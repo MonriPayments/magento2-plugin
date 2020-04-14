@@ -31,7 +31,7 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
     protected $_canRefund = true;
     protected $_canVoid = true;
     protected $_isInitializeNeeded = true;
-    protected $_canCapturePartial = false;
+    protected $_canCapturePartial = true;
 
     /**
      * @var ClientFactory
@@ -541,6 +541,7 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
         $trasactionData = $this->rawDetailsFormatter->format($result);
         $payment->setTransactionId($merchantReference);
         $payment->setTransactionAdditionalInfo(Transaction::RAW_DETAILS, $trasactionData);
+        $payment->setShouldCloseParentTransaction(true);
         return $this;
     }
 
