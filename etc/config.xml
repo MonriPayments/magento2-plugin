@@ -10,7 +10,7 @@
         <payment>
             <pikpay>
                 <active>1</active>
-                <title>PikPay</title>
+                <title>Monri</title>
                 <order_status>pending_payment</order_status>
                 <instructions>Instruction.</instructions>
                 <payment_action>authorize</payment_action>
