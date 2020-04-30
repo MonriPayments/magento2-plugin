@@ -533,7 +533,7 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 
         $result = (array)$this->_convertXmlToArray($response->getBody()->getContents());
 
-        if (!isset($result['response-message']) || $result['response-message'] != 'approved') {
+        if (!isset($result['status']) || $result['status'] != 'approved') {
             throw new LocalizedException(__('Trasaction is not Approved!'));
             return $this;
         }
@@ -592,7 +592,7 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 
         $result = (array)$this->_convertXmlToArray($response->getBody()->getContents());
 
-        if (!isset($result['response-message']) || $result['response-message'] != 'approved') {
+        if (!isset($result['status']) || $result['status'] != 'approved') {
             throw new LocalizedException(__('Trasaction is not Approved!'));
             return $this;
         }
@@ -652,7 +652,7 @@ class PikPay extends \Magento\Payment\Model\Method\AbstractMethod
 
         $result = (array)$this->_convertXmlToArray($response->getBody()->getContents());
 
-        if (!isset($result['response-message']) || $result['response-message'] != 'approved') {
+        if (!isset($result['status']) || $result['status'] != 'approved') {
             throw new LocalizedException(__('Trasaction is not Approved!'));
             return $this;
         }
