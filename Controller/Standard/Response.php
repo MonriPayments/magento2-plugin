@@ -9,7 +9,8 @@ class Response extends \Leftor\PikPay\Controller\PikPay
     {
         $response = $this->getRequest()->getParams();
 
-        $actualLink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        //$actualLink = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http") . "://".$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+        $actualLink = $this->_url->getCurrentUrl();
 
         $urlString = strstr($actualLink, '&digest', true);
         $digest = $this->getResponseDigestV2($urlString); 
