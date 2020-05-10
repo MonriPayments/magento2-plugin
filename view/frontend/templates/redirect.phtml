@@ -30,28 +30,28 @@
             <?php if($paymentType == 2): ?>
                 <div class="checkout-header">
                     <div class="checkout-title">
-                        Unesite podatke kreditne kartice
+                        <?php echo __("Enter your credit card information."); ?>
                     </div>
                 </div>
             <?php if(isset($invalidCcNumber)): ?>
                 <p class="error">
-                    Pogrešan broj kartice!
+                    <?php echo __("Invalid credit card number"); ?>
                 </p>
             <?php endif; ?>
             <?php if(isset($invalidCcDate)): ?>
                 <p class="error">
-                    Pogrešan datum isteka kartice!
+                    <?php echo __("Invalid expiry date"); ?>
                 </p>
             <?php endif; ?>
             <?php if(isset($invalidCcCvc)): ?>
                 <p class="error">
-                    Pogrešan cvv broj!
+                    <?php echo __("Incorrect CVC number"); ?>
                 </p>
             <?php endif; ?>
                 <div class="errors">
                     <div class="error-card" id="card-error" style="display: none;">
                         <p class="error">
-                            Pogrešan broj kartice!
+                            <?php echo __("Invalid credit card number"); ?>
                         </p>
                     </div>
                     <div class="error-pan" id="pan-error" style="width: 50%;float: left;"></div>
@@ -83,7 +83,7 @@
                 </div>
                 <p>
                     <select class="checkout-input checkout-exp-mm" id="month" name='month' required>
-                        <option selected disabled value="">Mjesec</option>
+                        <option selected disabled value=""><?php echo __("Month"); ?></option>
                         <?php for ($i=1; $i <= 12; $i++) {
                             if(strlen($i) == 1) {
                                 $i = '0'.$i;
@@ -98,7 +98,7 @@
                         } ?>
                     </select>
                     <select class="checkout-input checkout-exp-yy" id="year" name='year' required>
-                        <option selected disabled value="">Godina</option>
+                        <option selected disabled value=""><?php echo __("Year"); ?></option>
                         <?php for ($i=date('Y'); $i <= (date('Y')+10); $i++) {
                             $tag = '';
                             if(isset($block->getPostParams()['year'])) {
@@ -115,29 +115,20 @@
                     <div class="pikpay_installments" style="display:none;">
                         <p>
                         <select name="number_of_installments" class="checkout-input checkout-name">
-                            <option value="">Bez rata</option>
-                            <?php foreach ($block->getInstallmentsNumber() as $number) {
-                                $tag = '';
-                                if(isset($block->getPostParams()['number_of_installments'])) {
-                                    if((int)$number == (int)$block->getPostParams()['number_of_installments']) {
-                                        $tag = 'selected';
-                                    }
-                                }
-                                if(substr($number,-1) == '2' || substr($number,-1) == '3' || substr($number,-1) == '4'){
-                                    $text = 'rate';
-                                    if (strpos($number, '12') !== false || strpos($number, '13') !== false || strpos($number, '14') !== false) {
-                                        $text = 'rata';
-                                    }
-                                } else $text = 'rata';
-                                echo '<option '.$tag.' value="'.$number.'">'.$number.' '.$text.'</option>';
-                            } ?>
+                            <option value=""><?php echo __('No installments'); ?></option>
+                            <?php foreach ($block->getInstallmentsNumber() as $number): ?>
+                            <?php $numberOfInstallments = isset($block->getPostParams()['number_of_installments']) ? (int)$block->getPostParams()['number_of_installments'] : null; ?>
+                            <option <?php echo (int)$number === $numberOfInstallments ? 'selected' : ''; ?> value="<?php echo $number; ?>">
+                                <?php echo $block->getRateTranslation($number); ?>
+                            </option>
+                            <?php endforeach; ?>
                         </select>
                         </p>
                     </div>
                 <?php endif ?>
 
                 <script type="text/javascript">
-                    require(['jquery','mage/mage'],function($) {
+                    require(['jquery','mage/mage', 'mage/translate'],function($) {
                         var dataForm = $('#redirectpay');
                         dataForm.mage('validation', {
                             errorPlacement: function (error, element) {
@@ -170,12 +161,12 @@
                                 }
                             },
                             'messages': {
-                                'pan': "Obavezno polje!",
-                                'month': "Obavezno polje!",
-                                'year': "Obavezno polje!",
+                                'pan': $.mage.__("Required field!"),
+                                'month': $.mage.__("Required field!"),
+                                'year': $.mage.__("Required field!"),
                                 'cvv': {
-                                    "required": "Obavezno polje!",
-                                    "minlength": "Morate unijeti 3 broja"
+                                    "required": $.mage.__("Required field!"),
+                                    "minlength": $.mage.__("You must enter 3 digits")
                                 }
                             }
                         });

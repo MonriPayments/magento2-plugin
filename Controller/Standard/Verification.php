@@ -14,7 +14,7 @@ class Verification extends \Leftor\PikPay\Controller\PikPay
         foreach ($response as $xmlvar => $value)
         {
             $xmlvar = str_replace('_', '-', $xmlvar);
-            if(trim($value)!='') 
+            if(trim($value)!='')
                 $xmlData .= '<'.$xmlvar.'>'.trim($value).'</'.$xmlvar.'>';
         }
         $xmlData .= '</secure-message>';
@@ -67,14 +67,14 @@ class Verification extends \Leftor\PikPay\Controller\PikPay
             $resultRequest[str_replace('-', '_', $resKey)] = $resValue;
         }
 
-        if($resultRequest['status']=='' || !isset($resultRequest['status'])) 
+        if($resultRequest['status']=='' || !isset($resultRequest['status']))
         {
             $this->_logger->info('Status ERROR: '.$resultRequest);
-            $this->_checkoutHelper->cancelCurrentOrder('Narudžba je otkazana... Response code: '.$resultRequest['response_code']);
+            $this->_checkoutHelper->cancelCurrentOrder(__('Order is cancelled... Response code: %1', $resultRequest['response_code']));
             $redirectUrl = $this->getCheckoutHelper()->getUrl('checkout/onepage/failure');
             $this->getResponse()->setRedirect($redirectUrl);
         }
-        $comment = "Narudzba je placena! PikPay approval code: ".$resultRequest["approval_code"];
+        $comment = __('Order is paid! PikPay approval code: %1', $resultRequest["approval_code"]);
         $this->updateOrder($this->getOrder()->getRealOrderId(),'success',$comment);
 
         $redirectUrl = $this->getCheckoutHelper()->getUrl('checkout/onepage/success');

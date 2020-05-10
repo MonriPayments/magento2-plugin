@@ -34,7 +34,7 @@ class Redirect extends \Leftor\PikPay\Controller\PikPay
                     elseif(!$validDate)
                     {
                         $params['valid_date'] = 0;
-                    } 
+                    }
                     elseif (!$validCvc)
                     {
                         $params['valid_cvc'] = 0;
@@ -96,11 +96,11 @@ class Redirect extends \Leftor\PikPay\Controller\PikPay
                 }
                 elseif(array_key_exists('status', $responseValues) && $responseValues['status'] !== '')
                 {
-                    $comment = "Narudzba je placena! PikPay approval code: " . $responseValues["approval_code"];
+                    $comment = __("Order is paid! PikPay approval code: %1", $responseValues["approval_code"]);
                     $this->updateOrder($order->getRealOrderId(), 'success', $comment);
                     $redirectUrl = $this->getCheckoutHelper()->getUrl('checkout/onepage/success');
                     $this->getResponse()->setRedirect($redirectUrl);
-                     
+
                 }
                 else
                 {
@@ -110,29 +110,29 @@ class Redirect extends \Leftor\PikPay\Controller\PikPay
                         $error = "none";
                     }
 
-                    $this->updateOrder($order->getRealOrderId(),'canceled','Narudžba je otkazana! '.'Error: '.$error);
+                    $this->updateOrder($order->getRealOrderId(),'canceled',__('Order is cancelled! Error: %1', $error));
                     $redirectUrl = $this->getCheckoutHelper()->getUrl('checkout/onepage/failure');
-                    $this->messageManager->addErrorMessage(__('Narudžba otkazana. Plaćanje nije uspjelo, molimo pokušajte ponovo.'));
+                    $this->messageManager->addErrorMessage(__('Order is cancelled. Payment unsuccessful, please try again.'));
                     $this->getResponse()->setRedirect($redirectUrl);
                 }
             }
             else
             {
                 $this->_coreRegistry->register('param',$params);
-                $comment = "Unos podataka kreditne kartice... obrada u toku!";
+                $comment = __('Entering credit card information... Processing!');
                 $order->addStatusHistoryComment($comment)->save();
 
                 return $this->resultPageFactory->create();
             }
         }
-        else 
+        else
         {
             $quote = $this->getQuote();
             $order = $this->getOrder();
             $params = $this->getPaymentMethod()->checkoutRequest($quote,$order);
             $this->_coreRegistry->register('param',$params);
 
-            $comment = "Narudzba preusmjerena na PikPay... obrada u toku!";
+            $comment = __('Order redirected to PikPay... Processing!');
             $order->addStatusHistoryComment($comment)->save();
 
             return $this->resultPageFactory->create();

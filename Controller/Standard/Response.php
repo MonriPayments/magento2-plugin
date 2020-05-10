@@ -13,19 +13,19 @@ class Response extends \Leftor\PikPay\Controller\PikPay
         $actualLink = $this->_url->getCurrentUrl();
 
         $urlString = strstr($actualLink, '&digest', true);
-        $digest = $this->getResponseDigestV2($urlString); 
+        $digest = $this->getResponseDigestV2($urlString);
 
         if($response["response_code"] == "0000") {
             if ($this->getResponseDigest($response["order_number"]) == $response["digest"]) {
-                $comment = "Narudzba je placena! PikPay approval code: ".$response["approval_code"];
+                $comment = __('Order is paid! PikPay approval code: %1', $response["approval_code"]);
                if ($this->updateOrder($response["order_number"],'success',$comment)){
                    $this->makeInvoice($response["order_number"],$response);
-                   echo "Narudzba je uspjesno procesirana!";
+                   echo __('Order is successfully processed.');
                    $redirectUrl = $this->getCheckoutHelper()->getUrl('checkout/onepage/success');
                    $this->getResponse()->setRedirect($redirectUrl);
                }
                 else {
-                    echo "Doslo je do greske, narudzba nije azurirana! Molimo Vas da kontaktirate administratora... Broj narudzbe je: ".$response["order_number"];
+                    echo __('Error occurred, order not updated! Please contact your administrator... Order number: %1', $response["order_number"]);
                 }
 
             } elseif ($digest == $response["digest"]) {
@@ -49,14 +49,14 @@ class Response extends \Leftor\PikPay\Controller\PikPay
 
             }
              else {
-                echo "INVALID DIGEST!";
+                echo __("INVALID DIGEST!");
             }
         }
         else {
             $response_code = $this->getResponseCode($response["response_code"]);
-            $comment = "Narudzba nije placena, PikPay response: ".$response_code;
+            $comment = __('Order not paid, PikPay response: %1', $response_code);
             $this->updateOrder($response["order_number"],'fail',$comment);
-            echo "Placanje nije uspjelo! Poruka: ".$response_code;
+            echo __('Payment unsuccessful! Message: %1', $response_code);
         }
     }
 }
