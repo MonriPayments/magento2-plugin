@@ -1,6 +1,8 @@
-"%1 rate","%1 rate"
-"%1 rates","%1 rates"
 "We can't initialize checkout.","We can't initialize checkout."
+"Invoice successfully created!","Invoice successfully created!"
+"PikPay 3D Secure Verification","PikPay 3D Secure Verification"
+"Invoking 3-D secure form, please wait ...","Invoking 3-D secure form, please wait ..."
+"Please click","Please click"
 "Order is cancelled!","Order is cancelled!"
 "Error occurred, order was not updated! Please contact your administrator...","Error occurred, order was not updated! Please contact your administrator..."
 "Order is paid! PikPay approval code: %1","Order is paid! PikPay approval code: %1"
@@ -110,11 +112,16 @@ Timeout,Timeout
 "Invalid credit card number","Invalid credit card number"
 "Invalid expiry date","Invalid expiry date"
 "Incorrect CVC number","Incorrect CVC number"
+"Card number","Card number"
+Cvv,Cvv
 Month,Month
 Year,Year
 "No installments","No installments"
+"%1 installment(s)","%1 installment(s)"
+Pay,Pay
+"If you're not redirected automatically, click ""Pay"" button","If you're not redirected automatically, click ""Pay"" button"
 "Place Order","Place Order"
-"Obavezno polje!","Required field!"
+"Required field!","Required field!"
 "You must enter 3 digits","You must enter 3 digits"
 PikPay,PikPay
 Enabled,Enabled

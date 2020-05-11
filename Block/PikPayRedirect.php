@@ -2,7 +2,6 @@
 
 namespace Leftor\PikPay\Block;
 
-use Magento\Framework\Locale\Resolver;
 use Magento\Framework\View\Element\Template;
 
 
@@ -16,11 +15,6 @@ class PikPayRedirect extends Template
 
     protected $_model;
 
-    /**
-     * @var \Magento\Framework\Locale\Resolver
-     */
-    private $localeResolver;
-
     public function __construct(
         Template\Context $context,
         \Magento\Customer\Model\Session $customerSession,
@@ -28,7 +22,6 @@ class PikPayRedirect extends Template
         \Magento\Sales\Model\OrderFactory $orderFactory,
         \Leftor\PikPay\Model\PikPay $model,
         \Magento\Framework\Registry $coreRegistry,
-        \Magento\Framework\Locale\Resolver $localeResolver,
         array $data = []
     )
     {
@@ -37,7 +30,6 @@ class PikPayRedirect extends Template
         $this->_orderFactory  = $orderFactory;
         $this->_model = $model;
         $this->_coreRegistry = $coreRegistry;
-        $this->localeResolver = $localeResolver;
         parent::__construct($context, $data);
     }
 
@@ -136,18 +128,5 @@ class PikPayRedirect extends Template
 
     public function getMediaUrl() {
         return $this->_urlBuilder->getBaseUrl(['_type' => \Magento\Framework\UrlInterface::URL_TYPE_MEDIA]);
-    }
-
-
-    public function getRateTranslation($rates)
-    {
-        $isEnglish = $this->localeResolver->getLocale() === Resolver::DEFAULT_LOCALE;
-
-        if ($isEnglish) {
-            return $rates > 1 ? __('%1 rate', $rates) : __('%1 rates', $rates);
-        }
-
-        // 1 rata, 2 rate, 5 rata...
-        return $rates == 1 || $rates >= 5 ? __('%1 rate', $rates) : __('%1 rates', $rates);
     }
 }

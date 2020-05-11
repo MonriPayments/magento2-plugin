@@ -1,6 +1,8 @@
-"%1 rate","%1 rata"
-"%1 rates","%1 rate"
-"We can't initialize checkout.","Ne možemo inicjalizirati naplatu."
+"We can't initialize checkout.","Ne možemo inicijalizirati naplatu."
+"Invoice successfully created!","Invoice uspješno kreiran!"
+"PikPay 3D Secure Verification","PikPay 3D Secure Verification"
+"Invoking 3-D secure form, please wait ...","Invoking 3-D secure form, please wait ..."
+"Please click","Molimo kliknite"
 "Order is cancelled!","Narudžba je otkazana!"
 "Error occurred, order was not updated! Please contact your administrator...","Doslo je do greske, narudzba nije azurirana! Molimo Vas da kontaktirate administratora..."
 "Order is paid! PikPay approval code: %1","Narudžba je plaćena! PikPay broj odobrenja: %1"
@@ -13,7 +15,7 @@
 "INVALID DIGEST!","INVALID DIGEST!"
 "Order not paid, PikPay response: %1","Narudžba nije plaćenja, PikPay odgovor: %1"
 "Payment unsuccessful! Message: %1","Payment unsuccessful! Message: %1"
-"Order is cancelled... Response code: %1","Narudžba je otkazana... Rezultat:  %1"
+"Order is cancelled... Response code: %1","Narudžba je otkazana... Rezultat: %1"
 Bosnian,Bosanski
 Croatian,Hrvatski
 English,Engleski
@@ -110,9 +112,14 @@ Timeout,Timeout
 "Invalid credit card number","Invalid credit card number"
 "Invalid expiry date","Invalid expiry date"
 "Incorrect CVC number","Incorrect CVC number"
+"Card number","Broj kartice"
+Cvv,Cvv
 Month,Mjesec
 Year,Godina
 "No installments","Bez rata"
+"%1 installment(s)","%1 installment(s)"
+Pay,Pay
+"If you're not redirected automatically, click ""Pay"" button","Ako se nije desila automatska redirekcija, kliknite na dugme ""Plati"""
 "Place Order","Naruči"
 "Required field!","Obavezno polje!"
 "You must enter 3 digits","Morate unijeti 3 znamenke"
