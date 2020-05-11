@@ -74,7 +74,7 @@ class Verification extends \Leftor\PikPay\Controller\PikPay
             $redirectUrl = $this->getCheckoutHelper()->getUrl('checkout/onepage/failure');
             $this->getResponse()->setRedirect($redirectUrl);
         }
-        $comment = __('Order is paid! PikPay approval code: %1', $resultRequest["approval_code"]);
+        $comment = __('Order is paid! Monri approval code: %1', $resultRequest["approval_code"]);
         $this->updateOrder($this->getOrder()->getRealOrderId(),'success',$comment);
 
         $redirectUrl = $this->getCheckoutHelper()->getUrl('checkout/onepage/success');

@@ -16,10 +16,10 @@ class Currency implements \Magento\Framework\Option\ArrayInterface
     public function toOptionArray()
     {
         return [
-            ['value' => "BAM", 'label' => __('BAM')],
-            ['value' => "HRK", 'label' => __('HRK')],
-            ['value' => "EUR", 'label' => __('EUR')],
-            ['value' => "USD", 'label' => __('USD')]
+            ['value' => "BAM", 'label' => __('Bosnia-Herzegovina Convertible Mark')],
+            ['value' => "HRK", 'label' => __('Croatian Kuna')],
+            ['value' => "EUR", 'label' => __('Euro')],
+            ['value' => "USD", 'label' => __('US Dollar')]
         ];
     }
 }

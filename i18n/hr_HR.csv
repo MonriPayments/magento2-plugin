@@ -1,29 +1,29 @@
 "We can't initialize checkout.","Ne možemo inicijalizirati naplatu."
-"Invoice successfully created!","Invoice uspješno kreiran!"
-"PikPay 3D Secure Verification","PikPay 3D Secure Verification"
+"Invoice successfully created!","Račun uspješno kreiran!"
+"Monri 3D Secure Verification","Monri 3D Secure Verification"
 "Invoking 3-D secure form, please wait ...","Invoking 3-D secure form, please wait ..."
 "Please click","Molimo kliknite"
 "Order is cancelled!","Narudžba je otkazana!"
 "Error occurred, order was not updated! Please contact your administrator...","Doslo je do greske, narudzba nije azurirana! Molimo Vas da kontaktirate administratora..."
-"Order is paid! PikPay approval code: %1","Narudžba je plaćena! PikPay broj odobrenja: %1"
+"Order is paid! Monri approval code: %1","Narudžba je plaćena! Monri broj odobrenja: %1"
 "Order is cancelled! Error: %1","Narudžba je otkazana! Greška: %1"
 "Order is cancelled. Payment unsuccessful, please try again.","Narudžba je otkazana... Bezuspješno plaćanje, molimo pokušajte ponovo."
 "Entering credit card information... Processing!","Unos podataka kreditne kartice... obrada u toku!"
-"Order redirected to PikPay... Processing!","Narudzba preusmjerena na PikPay... obrada u toku!"
-"Order is successfully processed.","Narudzba je uspjesno procesirana!"
+"Order redirected to Monri... Processing!","Narudžba preusmjerena na Monri... obrada u toku!"
+"Order is successfully processed.","Narudžba je uspjesno procesirana!"
 "Error occurred, order not updated! Please contact your administrator... Order number: %1","Doslo je do greske, narudzba nije azurirana! Molimo Vas da kontaktirate administratora... Broj narudžbe: %1"
 "INVALID DIGEST!","INVALID DIGEST!"
-"Order not paid, PikPay response: %1","Narudžba nije plaćenja, PikPay odgovor: %1"
+"Order not paid, Monri response: %1","Narudžba nije plaćenja, Monri odgovor: %1"
 "Payment unsuccessful! Message: %1","Payment unsuccessful! Message: %1"
 "Order is cancelled... Response code: %1","Narudžba je otkazana... Rezultat: %1"
 Bosnian,Bosanski
 Croatian,Hrvatski
 English,Engleski
 Espanol,Španjolski
-BAM,BAM
-HRK,HRK
-EUR,EUR
-USD,USD
+"Bosnia-Herzegovina Convertible Mark","Bosnia-Herzegovina Convertible Mark"
+"Croatian Kuna","Croatian Kuna"
+Euro,Euro
+"US Dollar","US Dollar"
 "Authorize Only","Autorizacija"
 Capture,Naplata
 Form,Form
@@ -117,13 +117,12 @@ Cvv,Cvv
 Month,Mjesec
 Year,Godina
 "No installments","Bez rata"
-"%1 installment(s)","%1 installment(s)"
+"%1 installment(s)","%1 rata(e)"
 Pay,Pay
 "If you're not redirected automatically, click ""Pay"" button","Ako se nije desila automatska redirekcija, kliknite na dugme ""Plati"""
 "Place Order","Naruči"
 "Required field!","Obavezno polje!"
 "You must enter 3 digits","Morate unijeti 3 znamenke"
-PikPay,PikPay
 Enabled,Omogućeno
 Title,Naslov
 Procesor,Procesor

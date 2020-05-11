@@ -1,29 +1,29 @@
 "We can't initialize checkout.","We can't initialize checkout."
 "Invoice successfully created!","Invoice successfully created!"
-"PikPay 3D Secure Verification","PikPay 3D Secure Verification"
+"Monri 3D Secure Verification","Monri 3D Secure Verification"
 "Invoking 3-D secure form, please wait ...","Invoking 3-D secure form, please wait ..."
 "Please click","Please click"
 "Order is cancelled!","Order is cancelled!"
 "Error occurred, order was not updated! Please contact your administrator...","Error occurred, order was not updated! Please contact your administrator..."
-"Order is paid! PikPay approval code: %1","Order is paid! PikPay approval code: %1"
+"Order is paid! Monri approval code: %1","Order is paid! Monri approval code: %1"
 "Order is cancelled! Error: %1","Order is cancelled! Error: %1"
 "Order is cancelled. Payment unsuccessful, please try again.","Order is cancelled. Payment unsuccessful, please try again."
 "Entering credit card information... Processing!","Entering credit card information... Processing!"
-"Order redirected to PikPay... Processing!","Order redirected to PikPay... Processing!"
+"Order redirected to Monri... Processing!","Order redirected to Monri... Processing!"
 "Order is successfully processed.","Order is successfully processed."
 "Error occurred, order not updated! Please contact your administrator... Order number: %1","Error occurred, order not updated! Please contact your administrator... Order number: %1"
 "INVALID DIGEST!","INVALID DIGEST!"
-"Order not paid, PikPay response: %1","Order not paid, PikPay response: %1"
+"Order not paid, Monri response: %1","Order not paid, Monri response: %1"
 "Payment unsuccessful! Message: %1","Payment unsuccessful! Message: %1"
 "Order is cancelled... Response code: %1","Order is cancelled... Response code: %1"
 Bosnian,Bosnian
 Croatian,Croatian
 English,English
 Espanol,Espanol
-BAM,BAM
-HRK,HRK
-EUR,EUR
-USD,USD
+"Bosnia-Herzegovina Convertible Mark","Bosnia-Herzegovina Convertible Mark"
+"Croatian Kuna","Croatian Kuna"
+Euro,Euro
+"US Dollar","US Dollar"
 "Authorize Only","Authorize Only"
 Capture,Capture
 Form,Form
@@ -123,7 +123,6 @@ Pay,Pay
 "Place Order","Place Order"
 "Required field!","Required field!"
 "You must enter 3 digits","You must enter 3 digits"
-PikPay,PikPay
 Enabled,Enabled
 Title,Title
 Procesor,Procesor

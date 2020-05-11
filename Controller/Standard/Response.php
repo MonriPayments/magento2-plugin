@@ -17,7 +17,7 @@ class Response extends \Leftor\PikPay\Controller\PikPay
 
         if($response["response_code"] == "0000") {
             if ($this->getResponseDigest($response["order_number"]) == $response["digest"]) {
-                $comment = __('Order is paid! PikPay approval code: %1', $response["approval_code"]);
+                $comment = __('Order is paid! Monri approval code: %1', $response["approval_code"]);
                if ($this->updateOrder($response["order_number"],'success',$comment)){
                    $this->makeInvoice($response["order_number"],$response);
                    echo __('Order is successfully processed.');
@@ -54,7 +54,7 @@ class Response extends \Leftor\PikPay\Controller\PikPay
         }
         else {
             $response_code = $this->getResponseCode($response["response_code"]);
-            $comment = __('Order not paid, PikPay response: %1', $response_code);
+            $comment = __('Order not paid, Monri response: %1', $response_code);
             $this->updateOrder($response["order_number"],'fail',$comment);
             echo __('Payment unsuccessful! Message: %1', $response_code);
         }

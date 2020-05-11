@@ -267,7 +267,7 @@ abstract class PikPay extends \Magento\Framework\App\Action\Action
         $secureVerification = '<!DOCTYPE html>
 					<html>
 					  <head>
-					    <title>' . __('PikPay 3D Secure Verification') . '</title>
+					    <title>' . __('Monri 3D Secure Verification') . '</title>
 					    <script language="Javascript">
 					      function OnLoadEvent() { document.form.submit(); }
 					    </script>

@@ -96,7 +96,7 @@ class Redirect extends \Leftor\PikPay\Controller\PikPay
                 }
                 elseif(array_key_exists('status', $responseValues) && $responseValues['status'] !== '')
                 {
-                    $comment = __("Order is paid! PikPay approval code: %1", $responseValues["approval_code"]);
+                    $comment = __("Order is paid! Monri approval code: %1", $responseValues["approval_code"]);
                     $this->updateOrder($order->getRealOrderId(), 'success', $comment);
                     $redirectUrl = $this->getCheckoutHelper()->getUrl('checkout/onepage/success');
                     $this->getResponse()->setRedirect($redirectUrl);
@@ -132,7 +132,7 @@ class Redirect extends \Leftor\PikPay\Controller\PikPay
             $params = $this->getPaymentMethod()->checkoutRequest($quote,$order);
             $this->_coreRegistry->register('param',$params);
 
-            $comment = __('Order redirected to PikPay... Processing!');
+            $comment = __('Order redirected to Monri... Processing!');
             $order->addStatusHistoryComment($comment)->save();
 
             return $this->resultPageFactory->create();
