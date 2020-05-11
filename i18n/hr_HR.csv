@@ -13,7 +13,7 @@
 "Order is successfully processed.","Narudžba je uspjesno procesirana!"
 "Error occurred, order not updated! Please contact your administrator... Order number: %1","Doslo je do greske, narudzba nije azurirana! Molimo Vas da kontaktirate administratora... Broj narudžbe: %1"
 "INVALID DIGEST!","INVALID DIGEST!"
-"Order not paid, Monri response: %1","Narudžba nije plaćenja, Monri odgovor: %1"
+"Order not paid, Monri response: %1","Narudžba nije plaćena, Monri odgovor: %1"
 "Payment unsuccessful! Message: %1","Payment unsuccessful! Message: %1"
 "Order is cancelled... Response code: %1","Narudžba je otkazana... Rezultat: %1"
 Bosnian,Bosanski
