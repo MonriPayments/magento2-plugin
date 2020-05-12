@@ -27,7 +27,7 @@
             <?php foreach ($params as $key => $value):
                 if($value == '') continue;
             ?>
-            <input type="hidden" name="<?php echo $key; ?>" value="<?php echo $value ?>" />
+            <input type="hidden" name="<?php echo $block->escapeHtmlAttr($key) ?>" value="<?php echo $block->escapeHtmlAttr($value) ?>" />
             <?php endforeach; ?>
 
             <?php if($paymentType == 2): ?>
@@ -219,7 +219,7 @@
             <?php endif ?>
                 <div class="pikpay_submit">
                     <p>
-                    <input type="button" value="<?php echo $block->escapeHtmlAttr(__('Pay')) ?>" class="checkout-btn"/>
+                    <input type="submit" value="<?php echo $block->escapeHtmlAttr(__('Pay')) ?>" class="checkout-btn"/>
                     </p>
                 </div>
         </form>
