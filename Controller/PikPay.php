@@ -258,7 +258,7 @@ abstract class PikPay extends \Magento\Framework\App\Action\Action
 
             $paymentTransaction->save();
 
-            $order->addStatusHistoryComment('Invoice uspješno kreiran!')->save();
+            $order->addStatusHistoryComment(__('Invoice successfully created!'))->save();
         }
     }
 
@@ -267,19 +267,19 @@ abstract class PikPay extends \Magento\Framework\App\Action\Action
         $secureVerification = '<!DOCTYPE html>
 					<html>
 					  <head>
-					    <title>PikPay 3D Secure Verification</title>
+					    <title>' . __('Monri 3D Secure Verification') . '</title>
 					    <script language="Javascript">
 					      function OnLoadEvent() { document.form.submit(); }
 					    </script>
 					  </head>
-					  <body OnLoad="OnLoadEvent();">
-					    Invoking 3-D secure form, please wait ...
-					    <form name="form" action="' . $acs_url . '" method="post">
+					  <body OnLoad="OnLoadEvent();">' .
+                        __('Invoking 3-D secure form, please wait ...') .
+					    '<form name="form" action="' . $acs_url . '" method="post">
 					      <input type="hidden" name="PaReq" value="' . $pareq . '">
 					      <input type="hidden" name="TermUrl" value="' . $url . '">
 					      <input type="hidden" name="MD" value="' . $authToken . '">
 					      <noscript>
-					        <p>Please click</p><input id="to-asc-button" type="submit">
+					        <p>' . __('Please click' ) . '</p><input id="to-asc-button" type="submit">
 					      </noscript>
 					    </form>
 					    </body>

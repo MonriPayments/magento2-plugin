@@ -14,7 +14,7 @@ class PikPayRedirect extends Template
     protected $_coreRegistry;
 
     protected $_model;
-    
+
     public function __construct(
         Template\Context $context,
         \Magento\Customer\Model\Session $customerSession,
@@ -104,7 +104,7 @@ class PikPayRedirect extends Template
         $installmentsMinimum = $this->getModel()->getInstallmentsMinimum();
         $haveInstallments = $this->getModel()->canPayInInstallments();
         $orderTotal = $this->getOrder()->getGrandTotal();
-        
+
         if($haveInstallments && $orderTotal >= $installmentsMinimum)
         {
             return true;

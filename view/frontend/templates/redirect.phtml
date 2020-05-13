@@ -1,3 +1,6 @@
+<?php
+/** @var $block \Leftor\PikPay\Block\PikPayRedirect */
+?>
 <div class="row">
     <div class="col-xs-12">
         <?php   //var_dump($block->getParam()); die;
@@ -24,34 +27,34 @@
             <?php foreach ($params as $key => $value):
                 if($value == '') continue;
             ?>
-            <input type="hidden" name="<?php echo $key; ?>" value="<?php echo $value ?>" />
+            <input type="hidden" name="<?php echo $block->escapeHtmlAttr($key) ?>" value="<?php echo $block->escapeHtmlAttr($value) ?>" />
             <?php endforeach; ?>
 
             <?php if($paymentType == 2): ?>
                 <div class="checkout-header">
                     <div class="checkout-title">
-                        Unesite podatke kreditne kartice
+                        <?php echo $block->escapeHtml(__('Enter your credit card information.')); ?>
                     </div>
                 </div>
             <?php if(isset($invalidCcNumber)): ?>
                 <p class="error">
-                    Pogrešan broj kartice!
+                    <?php echo $block->escapeHtml(__('Invalid credit card number')); ?>
                 </p>
             <?php endif; ?>
             <?php if(isset($invalidCcDate)): ?>
                 <p class="error">
-                    Pogrešan datum isteka kartice!
+                    <?php echo $block->escapeHtml(__('Invalid expiry date')); ?>
                 </p>
             <?php endif; ?>
             <?php if(isset($invalidCcCvc)): ?>
                 <p class="error">
-                    Pogrešan cvv broj!
+                    <?php echo $block->escapeHtml(__('Incorrect CVC number')); ?>
                 </p>
             <?php endif; ?>
                 <div class="errors">
                     <div class="error-card" id="card-error" style="display: none;">
                         <p class="error">
-                            Pogrešan broj kartice!
+                            <?php echo $block->escapeHtml(__('Invalid credit card number')); ?>
                         </p>
                     </div>
                     <div class="error-pan" id="pan-error" style="width: 50%;float: left;"></div>
@@ -64,7 +67,7 @@
                            name='pan'
                            maxlength="19"
                            autocomplete="off"
-                           placeholder="Broj kartice"
+                           placeholder="<?php echo $block->escapeHtmlAttr(__('Card number')) ?>"
                            value="<?php if(isset($block->getPostParams()['pan'])) { echo $block->getPostParams()['pan']; } else echo ''; ?>"
                            >
                     <input id="cvv"
@@ -73,7 +76,7 @@
                            name='cvv'
                            maxlength="3"
                            autocomplete="off"
-                           placeholder="Cvv"
+                           placeholder="<?php echo $block->escapeHtmlAttr(__('Cvv')) ?>"
                            value="<?php if(isset($block->getPostParams()['cvv'])) { echo $block->getPostParams()['cvv']; } else echo ''; ?>"
                            >
                 </p>
@@ -83,7 +86,7 @@
                 </div>
                 <p>
                     <select class="checkout-input checkout-exp-mm" id="month" name='month' required>
-                        <option selected disabled value="">Mjesec</option>
+                        <option selected disabled value=""><?php echo $block->escapeHtml(__('Month')); ?></option>
                         <?php for ($i=1; $i <= 12; $i++) {
                             if(strlen($i) == 1) {
                                 $i = '0'.$i;
@@ -98,7 +101,7 @@
                         } ?>
                     </select>
                     <select class="checkout-input checkout-exp-yy" id="year" name='year' required>
-                        <option selected disabled value="">Godina</option>
+                        <option selected disabled value=""><?php echo $block->escapeHtml(__('Year')); ?></option>
                         <?php for ($i=date('Y'); $i <= (date('Y')+10); $i++) {
                             $tag = '';
                             if(isset($block->getPostParams()['year'])) {
@@ -115,7 +118,7 @@
                     <div class="pikpay_installments" style="display:none;">
                         <p>
                         <select name="number_of_installments" class="checkout-input checkout-name">
-                            <option value="">Bez rata</option>
+                            <option value=""><?php echo $block->escapeHtml(__('No installments')); ?></option>
                             <?php foreach ($block->getInstallmentsNumber() as $number) {
                                 $tag = '';
                                 if(isset($block->getPostParams()['number_of_installments'])) {
@@ -123,13 +126,7 @@
                                         $tag = 'selected';
                                     }
                                 }
-                                if(substr($number,-1) == '2' || substr($number,-1) == '3' || substr($number,-1) == '4'){
-                                    $text = 'rate';
-                                    if (strpos($number, '12') !== false || strpos($number, '13') !== false || strpos($number, '14') !== false) {
-                                        $text = 'rata';
-                                    }
-                                } else $text = 'rata';
-                                echo '<option '.$tag.' value="'.$number.'">'.$number.' '.$text.'</option>';
+                                echo '<option '.$tag.' value="'.$number.'">'.$block->escapeHtml(__('%1 installment(s)', $number)).'</option>';
                             } ?>
                         </select>
                         </p>
@@ -137,7 +134,7 @@
                 <?php endif ?>
 
                 <script type="text/javascript">
-                    require(['jquery','mage/mage'],function($) {
+                    require(['jquery','mage/mage', 'mage/translate'],function($) {
                         var dataForm = $('#redirectpay');
                         dataForm.mage('validation', {
                             errorPlacement: function (error, element) {
@@ -170,12 +167,12 @@
                                 }
                             },
                             'messages': {
-                                'pan': "Obavezno polje!",
-                                'month': "Obavezno polje!",
-                                'year': "Obavezno polje!",
+                                'pan': $.mage.__('Required field!'),
+                                'month': $.mage.__('Required field!'),
+                                'year': $.mage.__('Required field!'),
                                 'cvv': {
-                                    "required": "Obavezno polje!",
-                                    "minlength": "Morate unijeti 3 broja"
+                                    "required": $.mage.__('Required field!'),
+                                    "minlength": $.mage.__('You must enter 3 digits')
                                 }
                             }
                         });
@@ -222,7 +219,7 @@
             <?php endif ?>
                 <div class="pikpay_submit">
                     <p>
-                    <input type="button" value='Plati' class="checkout-btn"/>
+                    <input type="submit" value="<?php echo $block->escapeHtmlAttr(__('Pay')) ?>" class="checkout-btn"/>
                     </p>
                 </div>
         </form>
@@ -270,7 +267,7 @@
         </div>
         <?php if($paymentType == 1): ?>
         <div class="col-xs-6">
-            <p>Ako se nije desila automatska redirekcija, kliknite na dugme "Plati"</p>
+            <p><?php echo $block->escapeHtml(__('If you\'re not redirected automatically, click "Pay" button')) ?></p>
         </div>
         <script>
             document.getElementById("redirectpay").submit();

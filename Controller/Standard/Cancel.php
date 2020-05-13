@@ -9,13 +9,15 @@ class Cancel extends \Leftor\PikPay\Controller\PikPay
     {
         $response = $this->getRequest()->getParams();
 
-        if ($this->updateOrder($response["order_number"],'canceled','Narudžba je otkazana!')){
-            echo "Narudzba je otkazana!";
+        $message = __('Order is cancelled!');
+
+        if ($this->updateOrder($response["order_number"],'canceled',$message)){
+            echo $message;
             $redirectUrl = $this->getCheckoutHelper()->getUrl('checkout/onepage/failure');
             $this->getResponse()->setRedirect($redirectUrl);
         }
         else {
-            echo "Doslo je do greske, narudzba nije azurirana! Molimo Vas da kontaktirate administratora...";
+            echo __('Error occurred, order was not updated! Please contact your administrator...');
         }
     }
 }
