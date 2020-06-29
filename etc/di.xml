@@ -135,18 +135,21 @@
     <type name="Monri\Payments\Controller\Redirect\Form\Data">
         <arguments>
             <argument name="commandManager" xsi:type="object">MonriPaymentsCommandManager</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
         </arguments>
     </type>
 
     <type name="Monri\Payments\Controller\Redirect\Success">
         <arguments>
             <argument name="commandManager" xsi:type="object">MonriPaymentsCommandManager</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
         </arguments>
     </type>
 
     <type name="Monri\Payments\Controller\Redirect\Cancel">
         <arguments>
             <argument name="commandManager" xsi:type="object">MonriPaymentsCommandManager</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
         </arguments>
     </type>
         <!-- END Redirect gateway -->
@@ -158,6 +161,29 @@
         </arguments>
     </type>
     <!-- END Controllers -->
+
+    <!-- Logger -->
+    <virtualType name="MonriPaymentsLogger" type="Magento\Payment\Model\Method\Logger">
+        <arguments>
+            <argument name="logger" xsi:type="object">MonriPaymentsVirtualLogger</argument>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsVirtualLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="debug" xsi:type="object">MonriPaymentsVirtualDebugHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsVirtualDebugHandler" type="Magento\Framework\Logger\Handler\Base">
+        <arguments>
+            <argument name="fileName" xsi:type="string">/var/log/monri_payments.log</argument>
+        </arguments>
+    </virtualType>
+    <!-- END Logger -->
 
     <!-- Errors Map -->
     <virtualType name="MonriPaymentsErrorsMapReader" type="Magento\Payment\Gateway\ErrorMapper\VirtualConfigReader">

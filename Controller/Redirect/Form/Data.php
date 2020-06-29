@@ -17,6 +17,7 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Gateway\Command\CommandManagerInterface;
 use Magento\Payment\Model\InfoInterface;
+use Magento\Payment\Model\Method\Logger;
 use Magento\Sales\Model\OrderRepository;
 use Monri\Payments\Gateway\Config;
 
@@ -36,22 +37,29 @@ class Data extends Action
      * @var CommandManagerInterface
      */
     private $commandManager;
+
     /**
      * @var Config
      */
     private $config;
+    /**
+     * @var Logger
+     */
+    private $logger;
 
     public function __construct(
         Context $context,
         Session $checkoutSession,
         OrderRepository $orderRepository,
         Config $config,
-        CommandManagerInterface $commandManager
+        CommandManagerInterface $commandManager,
+        Logger $logger
     ) {
         $this->commandManager = $commandManager;
         $this->checkoutSession = $checkoutSession;
         $this->orderRepository = $orderRepository;
         $this->config = $config;
+        $this->logger = $logger;
 
         parent::__construct($context);
     }
@@ -63,6 +71,10 @@ class Data extends Action
      */
     public function execute()
     {
+        $log = [
+            'location' => __METHOD__
+        ];
+
         /** @var Json $resultJson */
         $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
 
@@ -103,6 +115,8 @@ class Data extends Action
 
             $resultJson->setHttpResponseCode(500);
             return $resultJson;
+        } finally {
+            $this->logger->debug($log);
         }
 
         return $resultJson;

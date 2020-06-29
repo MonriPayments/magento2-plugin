@@ -2,12 +2,14 @@
 
 namespace Monri\Payments\Gateway\Http;
 
+use InvalidArgumentException;
 use Magento\Framework\HTTP\Client\Curl;
 use Magento\Framework\HTTP\Client\CurlFactory;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\ConverterException;
 use Magento\Payment\Gateway\Http\TransferInterface;
+use Magento\Framework\Serialize\Serializer\Json;
 
 class Client implements ClientInterface
 {
@@ -16,10 +18,17 @@ class Client implements ClientInterface
      */
     private $curlClientFactory;
 
+    /**
+     * @var Json
+     */
+    private $jsonSerializer;
+
     public function __construct(
-        CurlFactory $curlClientFactory
+        CurlFactory $curlClientFactory,
+        Json $jsonSerializer
     ) {
         $this->curlClientFactory = $curlClientFactory;
+        $this->jsonSerializer = $jsonSerializer;
     }
 
     /**
@@ -51,10 +60,10 @@ class Client implements ClientInterface
         $headers = $client->getHeaders();
 
         if ($this->shouldBeJSONResponse($headers)) {
-            $decoded = json_decode($client->getBody());
-
-            if ($decoded === null) {
-                throw new ConverterException(__('Could not parse JSON response.'));
+            try {
+                $decoded = $this->jsonSerializer->unserialize($client->getBody());
+            } catch (InvalidArgumentException $e) {
+                throw new ConverterException(__('Could not parse JSON response.'), $e);
             }
 
             return $decoded;

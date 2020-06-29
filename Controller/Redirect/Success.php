@@ -12,6 +12,7 @@ use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Command\CommandManagerInterface;
 use Magento\Payment\Model\InfoInterface;
+use Magento\Payment\Model\Method\Logger;
 use Magento\Sales\Model\OrderRepository;
 use Monri\Payments\Controller\AbstractGatewayResponse;
 use Monri\Payments\Model\GetOrderIdByIncrement;
@@ -23,17 +24,23 @@ class Success extends AbstractGatewayResponse
      * @var Session
      */
     private $checkoutSession;
+    /**
+     * @var Logger
+     */
+    private $logger;
 
     public function __construct(
         Context $context,
         OrderRepository $orderRepository,
         CommandManagerInterface $commandManager,
         GetOrderIdByIncrement $getOrderIdByIncrement,
-        Session $checkoutSession
+        Session $checkoutSession,
+        Logger $logger
     ) {
         parent::__construct($context, $orderRepository, $commandManager, $getOrderIdByIncrement);
 
         $this->checkoutSession = $checkoutSession;
+        $this->logger = $logger;
     }
 
     /**
@@ -43,6 +50,10 @@ class Success extends AbstractGatewayResponse
      */
     public function execute()
     {
+        $log = [
+            'location' => __METHOD__
+        ];
+
         /** @var Redirect $resultRedirect */
         $resultRedirect = $this->resultFactory->create(ResultFactory::TYPE_REDIRECT);
 
@@ -71,6 +82,8 @@ class Success extends AbstractGatewayResponse
             $this->messageManager->addNoticeMessage(__('Problem finding your order.'));
         } catch (Exception $e) {
             $this->messageManager->addNoticeMessage(__('Unexpected problem with processing your order.'));
+        } finally {
+            $this->logger->debug($log);
         }
 
         $resultRedirect->setPath('checkout/cart');
