@@ -46,9 +46,12 @@ class DigestValidator extends AbstractValidator
     {
         $verificationData = SecurityReader::readVerificationData($validationSubject);
 
-        if (empty($verificationData) || !isset($verificationData['digest']) || !isset($verificationData['digest_data'])) {
-            // No verification needed. @TODO: Refactor me
+        if (isset($verificationData['disabled']) && $verificationData['disabled'] === true) {
             return $this->createResult(true);
+        }
+
+        if (empty($verificationData) || !isset($verificationData['digest']) || !isset($verificationData['digest_data'])) {
+            return $this->createResult(false, [__('Gateway response invalid.')]);
         }
 
         $paymentDO = SubjectReader::readPayment($validationSubject);

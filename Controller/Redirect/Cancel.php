@@ -62,7 +62,7 @@ class Cancel extends AbstractGatewayResponse
 
             $gatewayResponse['status'] = 'declined';
 
-            $result = $this->processGatewayResponse($gatewayResponse, $payment, []);
+            $result = $this->processGatewayResponse($gatewayResponse, $payment, ['disabled' => true]);
 
             if (isset($result['message'])) {
                 $this->messageManager->addNoticeMessage(__('Error processing your payment: %1', $result['message']));

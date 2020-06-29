@@ -71,16 +71,22 @@ class ProcessingDataBuilder implements BuilderInterface
 
         $languageCode = $this->config->getGatewayLanguage($order->getStoreId());
 
-        // @TODO: Discuss with Weiler how to determine a MOTO order.
-        // @TODO: Discuss number of installments as well.
+        $installments = $this->config->getInstallments($order->getStoreId());
+
         $isMoto = false;
 
-        return [
+        $payload =  [
             self::LANGUAGE_FIELD => $languageCode,
             self::TRANSACTION_TYPE_FIELD => $this->config->getTransactionType($order->getStoreId()),
             self::AUTHENTICITY_TOKEN_FIELD => $authToken,
             self::DIGEST_FIELD => $digest,
             self::MOTO_FIELD => $isMoto,
         ];
+
+        if ($installments !== Config::INSTALLMENTS_DISABLED) {
+            $payload[self::NUMBER_OF_INSTALLMENTS_FIELD] = $installments;
+        }
+
+        return $payload;
     }
 }

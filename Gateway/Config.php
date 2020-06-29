@@ -9,9 +9,19 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     const GATEWAY_PRODUCTION_URL = 'https://ipg.monri.com/%s';
     const GATEWAY_SANDBOX_URL = 'https://ipgtest.monri.com/%s';
 
+    const SANDBOX = 'sandbox';
+
     const CLIENT_KEY = 'client_key';
 
     const CLIENT_AUTHENTICITY_TOKEN = 'client_authenticity_token';
+
+    const TRANSACTION_TYPE = 'transaction_type';
+
+    const INSTALLMENTS = 'installments';
+
+    const INSTALLMENTS_DISABLED = 'disabled';
+
+    const LANGUAGE = 'language';
 
     const TRANSACTION_TYPE_CAPTURE = 'capture';
 
@@ -20,7 +30,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     const FORM_ENDPOINT = 'v2/form';
 
     public function getGatewayBaseURL($storeId = null) {
-        return self::GATEWAY_SANDBOX_URL;
+        return $this->getIsSandboxMode($storeId) ? self::GATEWAY_SANDBOX_URL : self::GATEWAY_PRODUCTION_URL;
     }
 
     public function getClientKey($storeId = null) {
@@ -41,7 +51,7 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     public function getTransactionType($storeId = null) {
-        return self::TRANSACTION_TYPE_AUTHORIZE;
+        return $this->getValue(self::TRANSACTION_TYPE, $storeId);
     }
 
     public function getFormRedirectURL($storeId = null) {
@@ -49,11 +59,14 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     public function getGatewayLanguage($storeId = null) {
-        //@TODO: Language config
-        return 'en';
+        return $this->getValue(self::LANGUAGE, $storeId);
     }
 
     public function getIsSandboxMode($storeId = null) {
-        return true;
+        return $this->getValue(self::SANDBOX, $storeId);
+    }
+
+    public function getInstallments($storeId = null) {
+        return $this->getValue(self::INSTALLMENTS, $storeId);
     }
 }
