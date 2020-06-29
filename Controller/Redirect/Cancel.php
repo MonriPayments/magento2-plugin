@@ -46,7 +46,7 @@ class Cancel extends AbstractGatewayResponse
     /**
      * Cancels an order.
      *
-     * @return void
+     * @return Redirect|void
      */
     public function execute()
     {
@@ -90,6 +90,6 @@ class Cancel extends AbstractGatewayResponse
             $this->logger->debug($log);
         }
 
-        $resultRedirect->setPath('checkout/cart');
+        return $resultRedirect->setPath('checkout/cart');
     }
 }

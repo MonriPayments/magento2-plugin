@@ -46,7 +46,7 @@ class Success extends AbstractGatewayResponse
     /**
      * Updates the status of an order.
      *
-     * @return void
+     * @return Redirect
      */
     public function execute()
     {
@@ -72,8 +72,8 @@ class Success extends AbstractGatewayResponse
 
             $result = $this->processGatewayResponse($gatewayResponse, $payment, $digestData);
 
-            if (isset($result['message'])) {
-                $this->messageManager->addNoticeMessage(__('Payment processed: %1', $result['message']));
+            if (isset($result['response_code_message'])) {
+                $this->messageManager->addNoticeMessage(__('Payment processed: %1', $result['response_code_message']));
             } else {
                 $this->messageManager->addNoticeMessage(__('Payment processed.'));
             }
@@ -86,7 +86,7 @@ class Success extends AbstractGatewayResponse
             $this->logger->debug($log);
         }
 
-        $resultRedirect->setPath('checkout/cart');
+        return $resultRedirect->setPath('checkout/onepage/success');
     }
 
     /**

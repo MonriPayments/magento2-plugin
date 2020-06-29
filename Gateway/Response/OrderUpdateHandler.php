@@ -6,6 +6,7 @@ namespace Monri\Payments\Gateway\Response;
 
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\InputException;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
@@ -112,7 +113,14 @@ class OrderUpdateHandler implements HandlerInterface
             }
         } else {
             if (isset($response['response_code'])) {
-                // Record the response code for later use.
+                try {
+                    $payment->setAdditionalInformation(
+                        'gateway_response_code',
+                        $response['response_code']
+                    );
+                } catch (LocalizedException $e) {
+                    // TODO: Log
+                }
             }
 
             $this->orderManagement->cancel($order->getEntityId());

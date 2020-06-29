@@ -74,18 +74,18 @@ class GatewayResponseCommand implements CommandInterface
         $successfulPayment = $this->isPaymentApproved($response);
 
         $paymentDO = SubjectReader::readPayment($commandSubject);
-        $responseCode = $paymentDO->getPayment()->getAdditionalInformation('response_code');
+        $responseCode = $paymentDO->getPayment()->getAdditionalInformation('gateway_response_code');
 
-        $errorMessage = null;
+        $responseCodeMessage = null;
         if ($responseCode) {
-            $errorMessage = $this->errorMessageMapper->getMessage($responseCode);
+            $responseCodeMessage = $this->errorMessageMapper->getMessage($responseCode);
         }
 
         return $this->arrayResultFactory->create(['array' => [
             'message' => $successfulPayment ? __('Payment successful.') : __('Payment unsuccessful.'),
             'successful' => $successfulPayment,
             'response_code' => $responseCode,
-            'error_message' => $errorMessage,
+            'response_code_message' => $responseCodeMessage,
         ]]);
     }
 
