@@ -1,0 +1,6 @@
+/vendor/
+/dist/*
+!/dist/.gitkeep
+
+/.idea/*
+!/.idea/.gitkeep

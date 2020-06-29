@@ -1,0 +1,24 @@
+{
+    "name": "monri/payments",
+    "description": "The official Monri Payments Magento 2 module",
+    "version": "1.0.0",
+    "require": {
+        "magento/framework": "^101.0||^102.0",
+        "magento/module-payment": "^100.2.0",
+        "magento/module-sales": "^101.0||^102.0",
+        "magento/module-config": "^101.0",
+        "magento/module-backend": "^100.2||^101.0",
+        "magento/module-checkout": "^100.2",
+        "magento/module-store": "^100.2||^101.0",
+        "magento/module-quote": "^101.0"
+    },
+    "type": "magento2-module",
+    "autoload": {
+        "files": [
+            "registration.php"
+        ],
+        "psr-4": {
+            "Monri\\Payments\\": ""
+        }
+    }
+}

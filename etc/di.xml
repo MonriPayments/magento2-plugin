@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Monri Payments base -->
+    <virtualType name="MonriPaymentsFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">Monri\Payments\Gateway\Config::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info</argument>
+            <argument name="commandPool" xsi:type="object">MonriPaymentsCommandPool</argument>
+            <argument name="valueHandlerPool" xsi:type="object">MonriPaymentsValueHandlerPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">MonriPaymentsConfigHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsConfigHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">Monri\Payments\Gateway\Config</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Monri\Payments\Gateway\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="string">monri_payments</argument>
+        </arguments>
+    </type>
+    <!-- END Monri Payments base -->
+
+    <!-- Commands -->
+        <!-- Command pool -->
+    <virtualType name="MonriPaymentsCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="create_request" xsi:type="string">MonriPaymentsCreateRequestCommand</item>
+                <item name="initialize" xsi:type="string">Monri\Payments\Gateway\Command\InitializeCommand</item>
+                <item name="gateway_response" xsi:type="string">MonriPaymentsGatewayResponseCommand</item>
+                <item name="capture" xsi:type="string">MonriPaymentsCaptureCommand</item>
+                <item name="refund" xsi:type="string">MonriPaymentsRefundCommand</item>
+                <item name="cancel" xsi:type="string">MonriPaymentsVoidCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+        <!-- Commands manager -->
+    <virtualType name="MonriPaymentsCommandManager" type="Magento\Payment\Gateway\Command\CommandManager">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">MonriPaymentsCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+        <!-- Command definitions -->
+    <virtualType name="MonriPaymentsCreateRequestCommand" type="Monri\Payments\Gateway\Command\Redirect\CreateRequestCommand">
+        <arguments>
+            <argument name="builder" xsi:type="object">MonriPaymentsRedirectRequest</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsCaptureCommand" type="MonriPaymentsBaseTransactionCommand">
+        <arguments>
+            <argument name="transferFactory" xsi:type="object">MonriPaymentsCaptureFactory</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MonriPaymentsCaptureFactory" type="Monri\Payments\Gateway\Http\OrderUpdateTransferFactory">
+        <arguments>
+            <argument name="resource" xsi:type="string">capture</argument>
+        </arguments>
+    </virtualType>
+
+
+    <virtualType name="MonriPaymentsRefundCommand" type="MonriPaymentsBaseTransactionCommand">
+        <arguments>
+            <argument name="transferFactory" xsi:type="object">MonriPaymentsRefundFactory</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MonriPaymentsRefundFactory" type="Monri\Payments\Gateway\Http\OrderUpdateTransferFactory">
+        <arguments>
+            <argument name="resource" xsi:type="string">refund</argument>
+        </arguments>
+    </virtualType>
+
+
+    <virtualType name="MonriPaymentsVoidCommand" type="MonriPaymentsBaseTransactionCommand">
+        <arguments>
+            <argument name="transferFactory" xsi:type="object">MonriPaymentsVoidFactory</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MonriPaymentsVoidFactory" type="Monri\Payments\Gateway\Http\OrderUpdateTransferFactory">
+        <arguments>
+            <argument name="resource" xsi:type="string">void</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsGatewayResponseCommand" type="Monri\Payments\Gateway\Command\GatewayResponseCommand">
+        <arguments>
+            <argument name="orderUpdateHandler" xsi:type="object">Monri\Payments\Gateway\Response\OrderUpdateHandler</argument>
+            <argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\DigestValidator</argument>
+        </arguments>
+    </virtualType>
+
+            <!-- Base Transaction Management Command -->
+    <virtualType name="MonriPaymentsBaseTransactionCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\OrderUpdateBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">Monri\Payments\Gateway\Http\OrderUpdateTransferFactory</argument>
+            <argument name="client" xsi:type="object">Monri\Payments\Gateway\Http\Client</argument>
+            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\OrderUpdateHandler</argument>
+            <argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsMapper</argument>
+        </arguments>
+    </virtualType>
+        <!-- END Command definitions -->
+    <!-- END Commands -->
+
+
+    <!-- Requests -->
+    <virtualType name="MonriPaymentsRedirectRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="customer" xsi:type="string">Monri\Payments\Gateway\Request\Redirect\CustomerInfoBuilder</item>
+                <item name="order" xsi:type="string">Monri\Payments\Gateway\Request\Redirect\OrderDetailsBuilder</item>
+                <item name="processing" xsi:type="string">Monri\Payments\Gateway\Request\Redirect\ProcessingDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <!-- END Requests -->
+
+    <!-- Controllers -->
+        <!-- Redirect gateway -->
+    <type name="Monri\Payments\Controller\Redirect\Form\Data">
+        <arguments>
+            <argument name="commandManager" xsi:type="object">MonriPaymentsCommandManager</argument>
+        </arguments>
+    </type>
+
+    <type name="Monri\Payments\Controller\Redirect\Success">
+        <arguments>
+            <argument name="commandManager" xsi:type="object">MonriPaymentsCommandManager</argument>
+        </arguments>
+    </type>
+
+    <type name="Monri\Payments\Controller\Redirect\Cancel">
+        <arguments>
+            <argument name="commandManager" xsi:type="object">MonriPaymentsCommandManager</argument>
+        </arguments>
+    </type>
+        <!-- END Redirect gateway -->
+
+        <!-- Gateway callback -->
+    <type name="Monri\Payments\Controller\Callback">
+        <arguments>
+            <argument name="commandManager" xsi:type="object">MonriPaymentsCommandManager</argument>
+        </arguments>
+    </type>
+    <!-- END Controllers -->
+
+    <!-- Errors Map -->
+    <virtualType name="MonriPaymentsErrorsMapReader" type="Magento\Payment\Gateway\ErrorMapper\VirtualConfigReader">
+        <arguments>
+            <argument name="fileName" xsi:type="string">monri_payments_errors_map.xml</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsErrorsMapData" type="Magento\Payment\Gateway\ErrorMapper\VirtualConfigReader">
+        <arguments>
+            <argument name="reader" xsi:type="object">MonriPaymentsErrorsMapReader</argument>
+            <argument name="cacheId" xsi:type="string">monri_payments_error_mapper_data</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsErrorsMapper" type="Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapper">
+        <arguments>
+            <argument name="messageMapping" xsi:type="object">MonriPaymentsErrorsMapData</argument>
+        </arguments>
+    </virtualType>
+    <!-- /Errors Map -->
+</config>
