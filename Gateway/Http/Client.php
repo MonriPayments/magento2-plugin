@@ -2,33 +2,39 @@
 
 namespace Monri\Payments\Gateway\Http;
 
-use InvalidArgumentException;
-use Magento\Framework\HTTP\Client\Curl;
-use Magento\Framework\HTTP\Client\CurlFactory;
+use Exception;
+use Magento\Framework\HTTP\ClientInterface;
+use Magento\Framework\HTTP\ClientInterfaceFactory;
+use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Payment\Gateway\Http\ClientException;
-use Magento\Payment\Gateway\Http\ClientInterface;
-use Magento\Payment\Gateway\Http\ConverterException;
 use Magento\Payment\Gateway\Http\TransferInterface;
-use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Payment\Gateway\Http\ClientInterface as PaymentClientInterface;
 
-class Client implements ClientInterface
+class Client implements PaymentClientInterface
 {
     /**
-     * @var CurlFactory
+     * @var ClientInterfaceFactory
      */
-    private $curlClientFactory;
+    private $httpClientFactory;
 
     /**
-     * @var Json
+     * @var SerializerInterface
      */
-    private $jsonSerializer;
+    private $serializer;
+
+    /**
+     * @var string
+     */
+    private $requestType;
 
     public function __construct(
-        CurlFactory $curlClientFactory,
-        Json $jsonSerializer
+        ClientInterfaceFactory $httpClientFactory,
+        SerializerInterface $serializer,
+        $requestType = 'application/xml'
     ) {
-        $this->curlClientFactory = $curlClientFactory;
-        $this->jsonSerializer = $jsonSerializer;
+        $this->httpClientFactory = $httpClientFactory;
+        $this->serializer = $serializer;
+        $this->requestType = $requestType;
     }
 
     /**
@@ -36,57 +42,92 @@ class Client implements ClientInterface
      */
     public function placeRequest(TransferInterface $transferObject)
     {
-        $uri = $transferObject->getUri();
-        $method = strtoupper($transferObject->getMethod());
-        $payload = $transferObject->getBody();
+        $requestUri = $transferObject->getUri();
+        $requestMethod = strtoupper($transferObject->getMethod());
+        $requestPayload = $this->prepareRequestPayload($transferObject->getBody());
 
-        /** @var Curl $client */
-        $client = $this->curlClientFactory->create();
+        /** @var ClientInterface $client */
+        $client = $this->httpClientFactory->create();
 
-        if ($method === 'POST') {
-            $client->post($uri, $payload);
+        $client->setHeaders([
+            'Content-Type' => $this->requestType
+        ]);
+
+        if ($requestMethod === 'POST') {
+            $client->post($requestUri, $requestPayload);
         } else {
-            $client->get($uri);
+            $client->get($requestUri);
         }
 
-        $status = $client->getStatus();
+        $responseStatus = $client->getStatus();
 
-        if ($status >= 400 && $status <= 499) {
-            throw new ClientException(__('Client error: %1', $status));
-        } else if ($status >= 500 && $status <= 599) {
-            throw new ClientException(__('Server error: %1', $status));
-        }
+        $response = $this->parseResponseBody($client->getBody());
 
-        $headers = $client->getHeaders();
+        $this->assertServerResponse($response, $responseStatus);
 
-        if ($this->shouldBeJSONResponse($headers)) {
-            try {
-                $decoded = $this->jsonSerializer->unserialize($client->getBody());
-            } catch (InvalidArgumentException $e) {
-                throw new ConverterException(__('Could not parse JSON response.'), $e);
-            }
-
-            return $decoded;
-        }
-
-        return [$client->getBody()];
+        return $response;
     }
 
     /**
-     * Is the response expected to be a JSON?
+     * Prepares request payload
      *
-     * @param array $headers
-     * @return bool
+     * @param array $payload
+     * @return bool|string
      */
-    protected function shouldBeJSONResponse(array $headers)
+    protected function prepareRequestPayload(array $payload)
     {
-        foreach ($headers as $header => $value) {
-            if (strtolower($header) === 'content-type' && strtolower($value) == 'application/json') {
-                return true;
+        try {
+            $serialized = $this->serializer->serialize($payload);
+            if ($serialized === false) {
+                return '';
             }
-        }
 
-        return false;
+            return $serialized;
+        } catch (Exception $e) {
+            return '';
+        }
     }
 
+    /**
+     * Parses response and returns array
+     *
+     * @param $response
+     * @return array
+     */
+    protected function parseResponseBody($response)
+    {
+        try {
+            $data = $this->serializer->unserialize($response);
+            if ($data === null) {
+                return [];
+            }
+
+            return $data;
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+
+    /**
+     * @param array $responseBody
+     * @param int $statusCode
+     * @throws ClientException
+     */
+    protected function assertServerResponse(array $responseBody, $statusCode)
+    {
+        if ($statusCode >= 400 && $statusCode <= 499) {
+            if (isset($responseBody['error'])) {
+                $errors = $responseBody['error'];
+                if (!is_array($errors)) {
+                    $errors = [$errors];
+                }
+
+                throw new ClientException(__('Client error (%1): %2', $statusCode, implode(', ', $errors)));
+            } else {
+                throw new ClientException(__('Client error (%1)', $statusCode));
+            }
+        } else if ($statusCode >= 500 && $statusCode <= 599) {
+            throw new ClientException(__('Server error (%1)', $statusCode));
+        }
+    }
 }

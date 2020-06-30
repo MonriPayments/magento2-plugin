@@ -69,7 +69,7 @@ class OrderUpdateBuilder implements BuilderInterface
         $currencyCode = $order->getOrderCurrencyCode();
         $authenticityToken = $this->config->getClientAuthenticityToken($order->getStoreId());
 
-        $digest = $this->digest->build($clientKey, $orderNumber, $currencyCode, $gatewayAmount);
+        $digest = $this->digest->build($clientKey, $orderNumber, $currencyCode, $gatewayAmount, Digest::DIGEST_ALGO_1);
 
         return [
             self::TRANSACTION_GROUP_FIELD => [
@@ -78,8 +78,8 @@ class OrderUpdateBuilder implements BuilderInterface
                 self::DIGEST_FIELD => $digest,
                 self::AUTHENTICITY_TOKEN_FIELD => $authenticityToken,
                 self::ORDER_NUMBER_FIELD => $orderNumber,
-                '__store' => $order->getStoreId(),
-            ]
+            ],
+            '__store' => $order->getStoreId(),
         ];
     }
 }

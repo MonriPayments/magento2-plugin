@@ -109,7 +109,7 @@
         <arguments>
             <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\OrderUpdateBuilder</argument>
             <argument name="transferFactory" xsi:type="object">Monri\Payments\Gateway\Http\OrderUpdateTransferFactory</argument>
-            <argument name="client" xsi:type="object">Monri\Payments\Gateway\Http\Client</argument>
+            <argument name="client" xsi:type="object">MonriPaymentsXmlClient</argument>
             <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\OrderUpdateHandler</argument>
             <argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsMapper</argument>
         </arguments>
@@ -185,6 +185,15 @@
     </virtualType>
     <!-- END Logger -->
 
+    <!-- HTTP Clients -->
+    <virtualType name="MonriPaymentsXmlClient" type="Monri\Payments\Gateway\Http\Client">
+        <arguments>
+            <argument name="requestType" xsi:type="string">application/xml</argument>
+            <argument name="serializer" xsi:type="object">Monri\Payments\Gateway\Http\Serializer\Xml</argument>
+        </arguments>
+    </virtualType>
+    <!-- END HTTP Clients -->
+
     <!-- Errors Map -->
     <virtualType name="MonriPaymentsErrorsMapReader" type="Magento\Payment\Gateway\ErrorMapper\VirtualConfigReader">
         <arguments>
@@ -192,7 +201,7 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="MonriPaymentsErrorsMapData" type="Magento\Payment\Gateway\ErrorMapper\VirtualConfigReader">
+    <virtualType name="MonriPaymentsErrorsMapData" type="Magento\Payment\Gateway\ErrorMapper\MappingData">
         <arguments>
             <argument name="reader" xsi:type="object">MonriPaymentsErrorsMapReader</argument>
             <argument name="cacheId" xsi:type="string">monri_payments_error_mapper_data</argument>
