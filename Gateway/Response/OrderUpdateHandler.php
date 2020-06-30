@@ -92,8 +92,9 @@ class OrderUpdateHandler implements HandlerInterface
         $order = $payment->getOrder();
 
         $status = $response['status'];
+        $transactionType = isset($response['transaction_type']) ? $response['transaction_type'] : null;
 
-        if ($status === 'approved') {
+        if ($status === 'approved' && !in_array($transactionType, ['refund', 'void'])) {
             $payment->setTransactionId($this->getTransactionId($response));
             $payment->setTransactionAdditionalInfo(
                 Transaction::RAW_DETAILS,

@@ -63,6 +63,16 @@ class Xml implements SerializerInterface
             'data' => $string
         ]);
 
-        return $simpleXmlElement->asArray();
+        return $this->normalizeArray($simpleXmlElement->asArray());
+    }
+
+    protected function normalizeArray(array $array) {
+        $normalizedArray = [];
+
+        foreach ($array as $key => $value) {
+            $normalizedArray[str_replace('-', '_', $key)] = $value;
+        }
+
+        return $normalizedArray;
     }
 }
