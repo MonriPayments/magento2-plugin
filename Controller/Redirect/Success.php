@@ -74,19 +74,19 @@ class Success extends AbstractGatewayResponse
             $result = $this->processGatewayResponse($gatewayResponse, $payment, $digestData);
 
             if (isset($result['response_code_message'])) {
-                $this->messageManager->addNoticeMessage(__('Payment processed: %1', $result['response_code_message']));
+                $this->messageManager->addNoticeMessage(__('The payment has been accepted: %1', $result['response_code_message']));
             } else {
-                $this->messageManager->addNoticeMessage(__('Payment processed.'));
+                $this->messageManager->addNoticeMessage(__('The payment has been accepted.'));
             }
 
         } catch (InputException | NoSuchEntityException $e) {
             $log['errors'][] = 'Exception caught: ' . $e->getMessage();
             $log['success'] = false;
-            $this->messageManager->addNoticeMessage(__('Problem finding your order.'));
+            $this->messageManager->addNoticeMessage(__('Order not found.'));
         } catch (Exception $e) {
             $log['errors'][] = 'Unexpected exception caught: ' . $e->getMessage();
             $log['success'] = false;
-            $this->messageManager->addNoticeMessage(__('Unexpected problem with processing your order.'));
+            $this->messageManager->addNoticeMessage(__('Error processing payment, please try again later.'));
         } finally {
             $this->logger->debug($log);
         }

@@ -106,7 +106,7 @@ class Data extends Action
             $resultJson->setData([
                 'payload' => [],
                 'url' => '',
-                'error' => __('There has been an issue with processing the data for your payment.')
+                'error' => __('Error processing payment, please try again later.')
             ]);
 
             $log['errors'][] = 'Exception caught: ' . $e->getMessage();
@@ -118,7 +118,7 @@ class Data extends Action
             $resultJson->setData([
                 'payload' => [],
                 'url' => '',
-                'error' => __('Unexpected error processing your payment.')
+                'error' => __('Error processing payment, please try again later.')
             ]);
 
             $log['errors'][] = 'Unexpected exception caught: ' . $e->getMessage();

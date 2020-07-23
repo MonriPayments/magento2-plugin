@@ -82,7 +82,7 @@ class GatewayResponseCommand implements CommandInterface
         }
 
         return $this->arrayResultFactory->create(['array' => [
-            'message' => $successfulPayment ? __('Payment successful.') : __('Payment unsuccessful.'),
+            'message' => $successfulPayment ? __('The payment has been accepted.') : __('The payment has been denied.'),
             'successful' => $successfulPayment,
             'response_code' => $responseCode,
             'response_code_message' => $responseCodeMessage,

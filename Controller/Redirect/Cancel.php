@@ -79,19 +79,19 @@ class Cancel extends AbstractGatewayResponse
 
             if (isset($result['message'])) {
                 $log['errors'][] = 'Error processing payment: ' . $result['message'];
-                $this->messageManager->addNoticeMessage(__('Error processing your payment: %1', $result['message']));
+                $this->messageManager->addNoticeMessage(__('The payment has been denied: %1', $result['message']));
             } else {
                 $log['errors'][] = 'Error processing payment.';
-                $this->messageManager->addNoticeMessage(__('Error processing your payment.'));
+                $this->messageManager->addNoticeMessage(__('The payment has been denied.'));
             }
         } catch (InputException | NoSuchEntityException | NotFoundException $e) {
             $log['errors'][] = 'Caught exception: ' . $e->getMessage();
             $log['success'] = false;
-            $this->messageManager->addNoticeMessage(__('Problem finding your order.'));
+            $this->messageManager->addNoticeMessage(__('Order not found.'));
         } catch (Exception $e) {
             $log['errors'][] = 'Caught unexpected exception: ' . $e->getMessage();
             $log['success'] = false;
-            $this->messageManager->addNoticeMessage(__('Unexpected problem with processing your order.'));
+            $this->messageManager->addNoticeMessage(__('Error processing payment, please try again later.'));
         } finally {
             $this->checkoutSession->restoreQuote();
             $this->logger->debug($log);

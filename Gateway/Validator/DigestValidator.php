@@ -49,7 +49,7 @@ class DigestValidator extends AbstractValidator
         }
 
         if (!isset($verificationData['digest']) || !isset($verificationData['digest_data'])) {
-            return $this->createResult(false, [__('Gateway response invalid.')]);
+            return $this->createResult(false, [__('Request has an invalid signature.')]);
         }
 
         $paymentDO = SubjectReader::readPayment($validationSubject);
@@ -67,6 +67,6 @@ class DigestValidator extends AbstractValidator
             return $this->createResult(true);
         }
 
-        return $this->createResult(false, [__('Gateway response invalid.')]);
+        return $this->createResult(false, [__('Request has an invalid signature.')]);
     }
 }

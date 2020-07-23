@@ -41,7 +41,7 @@ class CurrencyValidator extends \Magento\Payment\Gateway\Validator\AbstractValid
         $availableCurrencies = $this->config->getAvailableCurrencyCodes($storeId);
 
         if (!in_array($currency, $availableCurrencies)) {
-            return $this->createResult(false, [__('Currency not supported by gateway.')]);
+            return $this->createResult(false, [__('The currency selected is not supported by Monri Payments.')]);
         }
 
         return $this->createResult(true);
