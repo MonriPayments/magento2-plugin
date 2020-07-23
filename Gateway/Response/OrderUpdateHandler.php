@@ -10,6 +10,7 @@ use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
+use Magento\Payment\Model\Method\Logger;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
@@ -46,10 +47,16 @@ class OrderUpdateHandler implements HandlerInterface
      * @var TransactionFactory
      */
     private $transactionFactory;
+
     /**
      * @var TransactionResource
      */
     private $transactionResource;
+
+    /**
+     * @var Logger
+     */
+    private $logger;
 
     public function __construct(
         OrderRepository $orderRepository,
@@ -57,6 +64,7 @@ class OrderUpdateHandler implements HandlerInterface
         OrderSender $orderSender,
         TransactionFactory $transactionFactory,
         TransactionResource $transactionResource,
+        Logger $logger,
         Config $config
     ) {
         $this->orderRepository = $orderRepository;
@@ -65,6 +73,7 @@ class OrderUpdateHandler implements HandlerInterface
         $this->config = $config;
         $this->transactionFactory = $transactionFactory;
         $this->transactionResource = $transactionResource;
+        $this->logger = $logger;
     }
 
     /**
@@ -79,7 +88,16 @@ class OrderUpdateHandler implements HandlerInterface
      */
     public function handle(array $handlingSubject, array $response)
     {
+        $log = [
+            'location' => __METHOD__,
+            'errors' => [],
+            'action' => null,
+            'email_sent' => false,
+        ];
+
         if (!isset($response['status'])) {
+            $log['errors'][] = 'Status not set in response, invalid response.';
+            $this->logger->debug($log);
             return;
         }
 
@@ -95,6 +113,7 @@ class OrderUpdateHandler implements HandlerInterface
         $transactionType = isset($response['transaction_type']) ? $response['transaction_type'] : null;
 
         if ($status === 'approved' && !in_array($transactionType, ['refund', 'void'])) {
+            $log['status'] = 'approved';
             $payment->setTransactionId($this->getTransactionId($response));
             $payment->setTransactionAdditionalInfo(
                 Transaction::RAW_DETAILS,
@@ -103,16 +122,21 @@ class OrderUpdateHandler implements HandlerInterface
 
             if (!$order->canInvoice() || $this->checkIfTransactionProcessed($payment)) {
                 // Already processed this transaction.
+                $log['errors'][] = 'Transaction already processed or order cannot be invoiced.';
+                $this->logger->debug($log);
                 return;
             }
 
             // Consider storing transaction type with payment.
             if ($this->config->getTransactionType($order->getStoreId()) === Config::TRANSACTION_TYPE_AUTHORIZE) {
+                $log['action'] = 'authorize';
                 $this->setAuthorizedPayment($payment);
             } else {
+                $log['action'] = 'capture';
                 $this->setCapturedPayment($payment);
             }
         } else {
+            $log['status'] = 'denied';
             if (isset($response['response_code'])) {
                 try {
                     $payment->setAdditionalInformation(
@@ -120,19 +144,21 @@ class OrderUpdateHandler implements HandlerInterface
                         $response['response_code']
                     );
                 } catch (LocalizedException $e) {
-                    // TODO: Log
+                    $log['errors'][] = 'Could not set gateway response code: ' . $e->getMessage();
                 }
             }
 
             $this->orderManagement->cancel($order->getEntityId());
         }
 
-
         $this->orderRepository->save($order);
 
         if (!$order->getEmailSent()) {
+            $log['email_sent'] = true;
             $this->orderSender->send($order);
         }
+
+        $this->logger->debug($log);
     }
 
     /**

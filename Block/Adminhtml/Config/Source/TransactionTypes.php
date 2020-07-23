@@ -18,7 +18,7 @@ class TransactionTypes implements OptionSourceInterface
     {
         return [
             ['value' => 'purchase', 'label' => __('Purchase')],
-            ['value' => 'authorize', 'label' => __('Authorize')],
+            ['value' => 'authorize', 'label' => __('Authorize Only')],
         ];
     }
 }

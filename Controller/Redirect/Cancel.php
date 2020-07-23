@@ -80,8 +80,7 @@ class Cancel extends AbstractGatewayResponse
             } else {
                 $this->messageManager->addNoticeMessage(__('Error processing your payment.'));
             }
-
-        } catch (InputException | NoSuchEntityException $e) {
+        } catch (InputException | NoSuchEntityException | NotFoundException $e) {
             $this->messageManager->addNoticeMessage(__('Problem finding your order.'));
         } catch (Exception $e) {
             $this->messageManager->addNoticeMessage(__('Unexpected problem with processing your order.'));

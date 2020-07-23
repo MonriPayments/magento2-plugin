@@ -64,12 +64,17 @@ class OrderUpdateBuilder implements BuilderInterface
         $amount = SubjectReader::readAmount($buildSubject);
 
         $gatewayAmount = $this->formatter->formatPrice($amount);
-        $clientKey = $this->config->getClientKey($order->getStoreId());
         $orderNumber = $order->getIncrementId();
         $currencyCode = $order->getOrderCurrencyCode();
         $authenticityToken = $this->config->getClientAuthenticityToken($order->getStoreId());
 
-        $digest = $this->digest->build($clientKey, $orderNumber, $currencyCode, $gatewayAmount, Digest::DIGEST_ALGO_1);
+        $digest = $this->digest->build(
+            $orderNumber,
+            $currencyCode,
+            $gatewayAmount,
+            $order->getStoreId(),
+            Digest::DIGEST_ALGO_1
+        );
 
         return [
             self::TRANSACTION_GROUP_FIELD => [

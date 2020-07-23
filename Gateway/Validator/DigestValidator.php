@@ -63,11 +63,9 @@ class DigestValidator extends AbstractValidator
         $verificationDigest = $verificationData['digest'];
         $verificationDigestData = $verificationData['digest_data'];
 
-        $clientKey = $this->config->getClientKey($order->getStore());
+        $result = $this->digest->verify($verificationDigest, $verificationDigestData, $order->getStoreId());
 
-        $result = $this->digest->verify($clientKey, $verificationDigest, $verificationDigestData);
-
-        if ($result) {
+        if ($result === true) {
             return $this->createResult(true);
         }
 

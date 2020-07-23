@@ -20,13 +20,13 @@ class Installments implements OptionSourceInterface
     public function toOptionArray()
     {
         $installments = [
-            ['value' => 'disabled', 'label' => __('No Installments')]
+            ['value' => 'disabled', 'label' => __('No installments')]
         ];
 
         for ($i = self::MIN_INSTALLMENTS; $i <= self::MAX_INSTALLMENTS; $i++) {
             $installments[] = [
                 'value' => "{$i}",
-                'label' => __('%1 Installment(s)', $i),
+                'label' => __('%1 installment(s)', $i),
             ];
         }
 

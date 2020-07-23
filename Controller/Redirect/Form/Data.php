@@ -42,6 +42,7 @@ class Data extends Action
      * @var Config
      */
     private $config;
+
     /**
      * @var Logger
      */
@@ -82,7 +83,7 @@ class Data extends Action
             $orderId = $this->checkoutSession->getData('last_order_id');
 
             if (!$orderId) {
-                throw new InputException(__('Order ID not found.'));
+                throw new InputException(__('Missing fields.'));
             }
 
             $order = $this->orderRepository->get($orderId);
@@ -97,7 +98,7 @@ class Data extends Action
                 'url' => $this->config->getFormRedirectURL($order->getStoreId()),
                 'error' => null
             ]);
-        } catch (InputException | NoSuchEntityException | NoSuchEntityException | CommandException $e) {
+        } catch (InputException | NoSuchEntityException | CommandException $e) {
             $resultJson->setData([
                 'payload' => [],
                 'url' => '',

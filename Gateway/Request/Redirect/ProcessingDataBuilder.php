@@ -66,8 +66,12 @@ class ProcessingDataBuilder implements BuilderInterface
 
         $authToken = $this->config->getClientAuthenticityToken($order->getStoreId());
 
-        $clientKey = $this->config->getClientKey($order->getStoreId());
-        $digest = $this->digest->build($clientKey, $orderNumber, $currencyCode, $amount);
+        $digest = $this->digest->build(
+            $orderNumber,
+            $currencyCode,
+            $amount,
+            $order->getStoreId()
+        );
 
         $languageCode = $this->config->getGatewayLanguage($order->getStoreId());
 

@@ -2,6 +2,8 @@
 
 namespace Monri\Payments\Model\Crypto;
 
+use Monri\Payments\Gateway\Config;
+
 class Digest
 {
     const DIGEST_ALGO_256 = 'sha512';
@@ -9,18 +11,30 @@ class Digest
     const DIGEST_ALGO_1 = 'sha1';
 
     /**
+     * @var Config
+     */
+    private $config;
+
+    public function __construct(
+        Config $config
+    ) {
+        $this->config = $config;
+    }
+
+    /**
      * Calculates the digest required for signing the request.
      *
      * Amount is given in the same exact format as sent to the gateway.
      *
-     * @param $clientKey
      * @param string $orderNumber
      * @param string $currencyCode
      * @param int $amount
+     * @param null|int $storeId
      * @param string $digestAlgo
      * @return string
      */
-    public function build($clientKey, $orderNumber, $currencyCode, $amount, $digestAlgo = self::DIGEST_ALGO_256) {
+    public function build($orderNumber, $currencyCode, $amount, $storeId = null, $digestAlgo = self::DIGEST_ALGO_256) {
+        $clientKey = $this->config->getClientKey($storeId);
         $data = "{$clientKey}{$orderNumber}{$amount}{$currencyCode}";
 
         return hash($digestAlgo, $data);
@@ -29,14 +43,15 @@ class Digest
     /**
      * Verifies a digest.
      *
-     * @param $clientKey
      * @param $digest
      * @param $payload
+     * @param null|int $storeId
      * @param string $digestAlgo
      * @return bool
      */
-    public function verify($clientKey, $digest, $payload, $digestAlgo = self::DIGEST_ALGO_256)
+    public function verify($digest, $payload, $storeId = null, $digestAlgo = self::DIGEST_ALGO_256)
     {
+        $clientKey = $this->config->getClientKey($storeId);
         $expectedPayload = "{$clientKey}{$payload}";
 
         $expectedDigest = hash($digestAlgo, $expectedPayload);

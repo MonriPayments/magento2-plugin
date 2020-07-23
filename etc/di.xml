@@ -130,6 +130,14 @@
     </virtualType>
     <!-- END Requests -->
 
+    <!-- Responses -->
+    <type name="Monri\Payments\Gateway\Response\OrderUpdateHandler">
+        <arguments>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+    <!-- END Responses -->
+
     <!-- Controllers -->
         <!-- Redirect gateway -->
     <type name="Monri\Payments\Controller\Redirect\Form\Data">
