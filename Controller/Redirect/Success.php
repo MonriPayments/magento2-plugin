@@ -51,7 +51,9 @@ class Success extends AbstractGatewayResponse
     public function execute()
     {
         $log = [
-            'location' => __METHOD__
+            'location' => __METHOD__,
+            'errors' => [],
+            'success' => true,
         ];
 
         /** @var Redirect $resultRedirect */
@@ -79,8 +81,12 @@ class Success extends AbstractGatewayResponse
             }
 
         } catch (InputException | NoSuchEntityException $e) {
+            $log['errors'][] = 'Exception caught: ' . $e->getMessage();
+            $log['success'] = false;
             $this->messageManager->addNoticeMessage(__('Problem finding your order.'));
         } catch (Exception $e) {
+            $log['errors'][] = 'Unexpected exception caught: ' . $e->getMessage();
+            $log['success'] = false;
             $this->messageManager->addNoticeMessage(__('Unexpected problem with processing your order.'));
         } finally {
             $this->logger->debug($log);

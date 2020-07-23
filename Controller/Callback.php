@@ -8,6 +8,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\InputException;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Payment\Gateway\Command\CommandManagerInterface;
 use Magento\Payment\Model\InfoInterface;
@@ -50,7 +51,10 @@ class Callback extends AbstractGatewayResponse
     public function execute()
     {
         $log = [
-            'location' => __METHOD__
+            'location' => __METHOD__,
+            'errors' => [],
+            'success' => true,
+            'payload' => []
         ];
 
         /** @var Redirect $resultRedirect */
@@ -59,10 +63,12 @@ class Callback extends AbstractGatewayResponse
         try {
             $gatewayPayload = $this->getRequest()->getContent();
             if (empty($gatewayPayload)) {
-                return $resultRaw->setHttpResponseCode(400);
+                throw new InputException(__('Gateway payload empty.'));
             }
 
             $gatewayResponse = $this->jsonSerializer->unserialize($gatewayPayload);
+
+            $log['payload'] = $gatewayResponse;
 
             $orderNumber = $gatewayResponse['order_number'];
 
@@ -77,7 +83,13 @@ class Callback extends AbstractGatewayResponse
                 'digest' => $digest,
                 'digest_data' => $gatewayPayload
             ]);
+        } catch (InputException $e) {
+            $log['errors'][] = 'Exception caught: ' . $e->getMessage();
+            $log['success'] = false;
+            return $resultRaw->setHttpResponseCode(400);
         } catch (Exception $e) {
+            $log['errors'][] = 'Unexpected exception caught: ' . $e->getMessage();
+            $log['success'] = false;
             return $resultRaw->setHttpResponseCode(500);
         } finally {
             $this->logger->debug($log);

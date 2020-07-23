@@ -51,7 +51,9 @@ class Cancel extends AbstractGatewayResponse
     public function execute()
     {
         $log = [
-            'location' => __METHOD__
+            'location' => __METHOD__,
+            'errors' => [],
+            'success' => true,
         ];
 
         /** @var Redirect $resultRedirect */
@@ -65,6 +67,7 @@ class Cancel extends AbstractGatewayResponse
             $gatewayResponse = $this->getRequest()->getParams();
 
             if ($gatewayResponse['order_number'] !== $order->getIncrementId()) {
+                $log['errors'][] = 'Order number from session not matching the one in gateway response.';
                 throw new NotFoundException(__('Order not found.'));
             }
 
@@ -76,13 +79,19 @@ class Cancel extends AbstractGatewayResponse
             $result = $this->processGatewayResponse($gatewayResponse, $payment, ['disabled' => true]);
 
             if (isset($result['message'])) {
+                $log['errors'][] = 'Error processing payment: ' . $result['message'];
                 $this->messageManager->addNoticeMessage(__('Error processing your payment: %1', $result['message']));
             } else {
+                $log['errors'][] = 'Error processing payment.';
                 $this->messageManager->addNoticeMessage(__('Error processing your payment.'));
             }
         } catch (InputException | NoSuchEntityException | NotFoundException $e) {
+            $log['errors'][] = 'Caught exception: ' . $e->getMessage();
+            $log['success'] = false;
             $this->messageManager->addNoticeMessage(__('Problem finding your order.'));
         } catch (Exception $e) {
+            $log['errors'][] = 'Caught unexpected exception: ' . $e->getMessage();
+            $log['success'] = false;
             $this->messageManager->addNoticeMessage(__('Unexpected problem with processing your order.'));
         } finally {
             $this->checkoutSession->restoreQuote();

@@ -73,7 +73,10 @@ class Data extends Action
     public function execute()
     {
         $log = [
-            'location' => __METHOD__
+            'location' => __METHOD__,
+            'errors' => [],
+            'success' => true,
+            'payload' => []
         ];
 
         /** @var Json $resultJson */
@@ -83,6 +86,7 @@ class Data extends Action
             $orderId = $this->checkoutSession->getData('last_order_id');
 
             if (!$orderId) {
+                $log['errors'][] = 'Missing order ID field.';
                 throw new InputException(__('Missing fields.'));
             }
 
@@ -98,12 +102,17 @@ class Data extends Action
                 'url' => $this->config->getFormRedirectURL($order->getStoreId()),
                 'error' => null
             ]);
+
+            $log['payload'] = $result->get();
         } catch (InputException | NoSuchEntityException | CommandException $e) {
             $resultJson->setData([
                 'payload' => [],
                 'url' => '',
                 'error' => __('There has been an issue with processing the data for your payment.')
             ]);
+
+            $log['errors'][] = 'Exception caught: ' . $e->getMessage();
+            $log['success'] = false;
 
             $resultJson->setHttpResponseCode(400);
             return $resultJson;
@@ -113,6 +122,9 @@ class Data extends Action
                 'url' => '',
                 'error' => __('Unexpected error processing your payment.')
             ]);
+
+            $log['errors'][] = 'Unexpected exception caught: ' . $e->getMessage();
+            $log['success'] = false;
 
             $resultJson->setHttpResponseCode(500);
             return $resultJson;

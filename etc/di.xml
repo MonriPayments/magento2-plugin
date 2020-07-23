@@ -194,6 +194,12 @@
     <!-- END Logger -->
 
     <!-- HTTP Clients -->
+    <type name="Monri\Payments\Gateway\Http\Client">
+        <arguments>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+
     <virtualType name="MonriPaymentsXmlClient" type="Monri\Payments\Gateway\Http\Client">
         <arguments>
             <argument name="requestType" xsi:type="string">application/xml</argument>
