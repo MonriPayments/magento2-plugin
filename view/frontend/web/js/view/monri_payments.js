@@ -1,3 +1,12 @@
+/**
+ * This file is part of the Monri Payments module
+ *
+ * (c) Monri Payments d.o.o.
+ *
+ * For the full copyright and license information, please view the NOTICE
+ * and LICENSE files that were distributed with this source code.
+ */
+
 define(
     [
         'uiComponent',

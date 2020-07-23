@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the Monri Payments module
+ *
+ * (c) Monri Payments d.o.o.
+ *
+ * For the full copyright and license information, please view the NOTICE
+ * and LICENSE files that were distributed with this source code.
+ */
+
 namespace Monri\Payments\Controller\Redirect\Form;
 
 use Exception;
@@ -19,6 +28,9 @@ use Magento\Payment\Model\Method\Logger;
 use Magento\Sales\Model\OrderRepository;
 use Monri\Payments\Gateway\Config;
 
+/**
+ * @SuppressWarnings(PHPMD.AllPurposeAction)
+ */
 class Data extends Action
 {
     /**

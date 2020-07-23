@@ -1,12 +1,22 @@
 <?php
 
+/**
+ * This file is part of the Monri Payments module
+ *
+ * (c) Monri Payments d.o.o.
+ *
+ * For the full copyright and license information, please view the NOTICE
+ * and LICENSE files that were distributed with this source code.
+ */
+
 namespace Monri\Payments\Gateway\Validator;
 
+use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use Monri\Payments\Gateway\Config;
 
-class CurrencyValidator extends \Magento\Payment\Gateway\Validator\AbstractValidator
+class CurrencyValidator extends AbstractValidator
 {
 
     /**

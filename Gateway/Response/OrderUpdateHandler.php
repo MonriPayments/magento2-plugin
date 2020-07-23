@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the Monri Payments module
+ *
+ * (c) Monri Payments d.o.o.
+ *
+ * For the full copyright and license information, please view the NOTICE
+ * and LICENSE files that were distributed with this source code.
+ */
+
 namespace Monri\Payments\Gateway\Response;
 
 use Magento\Framework\Exception\AlreadyExistsException;
@@ -9,6 +18,8 @@ use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Model\Method\Logger;
+use Magento\Sales\Api\Data\OrderInterface;
+use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
@@ -19,6 +30,9 @@ use Magento\Sales\Model\ResourceModel\Order\Payment\Transaction as TransactionRe
 use Magento\Sales\Model\OrderRepository;
 use Monri\Payments\Gateway\Config;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class OrderUpdateHandler implements HandlerInterface
 {
     /**
@@ -110,43 +124,28 @@ class OrderUpdateHandler implements HandlerInterface
         $status = $response['status'];
         $transactionType = isset($response['transaction_type']) ? $response['transaction_type'] : null;
 
+        $log['action'] = $this->config->getTransactionType($order->getStoreId()) === Config::TRANSACTION_TYPE_AUTHORIZE
+            ? 'authorize'
+            : 'capture';
+
         if ($status === 'approved' && !in_array($transactionType, ['refund', 'void'])) {
             $log['status'] = 'approved';
-            $payment->setTransactionId($this->getTransactionId($response));
-            $payment->setTransactionAdditionalInfo(
-                Transaction::RAW_DETAILS,
-                $response
-            );
 
-            if (!$order->canInvoice() || $this->checkIfTransactionProcessed($payment)) {
-                // Already processed this transaction.
-                $log['errors'][] = 'Transaction already processed or order cannot be invoiced.';
+            try {
+                $this->processSuccessfulPayment($payment, $order, $response);
+            } catch (AlreadyExistsException $e) {
+                $log['errors'][] = 'Transaction already processed or order cannot be invoiced: %e' . $e->getMessage();
                 $this->logger->debug($log);
                 return;
             }
-
-            // Consider storing transaction type with payment.
-            if ($this->config->getTransactionType($order->getStoreId()) === Config::TRANSACTION_TYPE_AUTHORIZE) {
-                $log['action'] = 'authorize';
-                $this->setAuthorizedPayment($payment);
-            } else {
-                $log['action'] = 'capture';
-                $this->setCapturedPayment($payment);
-            }
         } else {
             $log['status'] = 'denied';
-            if (isset($response['response_code'])) {
-                try {
-                    $payment->setAdditionalInformation(
-                        'gateway_response_code',
-                        $response['response_code']
-                    );
-                } catch (LocalizedException $e) {
-                    $log['errors'][] = 'Could not set gateway response code: ' . $e->getMessage();
-                }
-            }
 
-            $this->orderManagement->cancel($order->getEntityId());
+            try {
+                $this->processUnsuccessfulPayment($payment, $order, $response);
+            } catch (LocalizedException $e) {
+                $log['errors'][] = 'Issue when processing unsuccessful payment: ' . $e->getMessage();
+            }
         }
 
         $this->orderRepository->save($order);
@@ -160,12 +159,73 @@ class OrderUpdateHandler implements HandlerInterface
     }
 
     /**
+     * Processes a successful payment.
+     *
+     * @param OrderPaymentInterface $payment
+     * @param OrderInterface $order
+     * @param array $response
+     * @throws AlreadyExistsException
+     */
+    protected function processSuccessfulPayment(
+        OrderPaymentInterface $payment,
+        OrderInterface $order,
+        array $response
+    ) {
+        /** @var Payment $payment */
+        $payment->setTransactionId($this->getTransactionId($response));
+        $payment->setTransactionAdditionalInfo(
+            Transaction::RAW_DETAILS,
+            $response
+        );
+
+        if (!$order->canInvoice() || $this->checkIfTransactionProcessed($payment)) {
+            // Already processed this transaction.
+            throw new AlreadyExistsException(__('Transaction already processed.'));
+        }
+
+        if ($this->config->getTransactionType($order->getStoreId()) === Config::TRANSACTION_TYPE_AUTHORIZE) {
+            $this->setAuthorizedPayment($payment);
+        } else {
+            $this->setCapturedPayment($payment);
+        }
+    }
+
+    /**
+     * Processes an unsuccessful payment.
+     *
+     * @param OrderPaymentInterface $payment
+     * @param OrderInterface $order
+     * @param array $response
+     * @throws LocalizedException
+     */
+    protected function processUnsuccessfulPayment(
+        OrderPaymentInterface $payment,
+        OrderInterface $order,
+        array $response
+    ) {
+        /** @var Payment $payment */
+        try {
+            if (isset($response['response_code'])) {
+                $payment->setAdditionalInformation(
+                    'gateway_response_code',
+                    $response['response_code']
+                );
+            }
+        } catch (LocalizedException $e) {
+            throw new LocalizedException(__('Could not set response code on payment: %1', $e->getMessage()));
+        } finally {
+            $this->orderManagement->cancel($order->getEntityId());
+        }
+    }
+
+    /**
      * Registers an authorized payment.
      *
-     * @param Payment $payment
+     * @param OrderPaymentInterface $payment
      */
-    protected function setAuthorizedPayment(Payment $payment)
+    protected function setAuthorizedPayment(OrderPaymentInterface $payment)
     {
+        /** @var Payment $payment */
         $payment->setIsTransactionClosed(false);
         $payment->registerAuthorizationNotification($payment->getOrder()->getBaseGrandTotal());
     }
@@ -173,10 +233,11 @@ class OrderUpdateHandler implements HandlerInterface
     /**
      * Registers a paid payment.
      *
-     * @param Payment $payment
+     * @param OrderPaymentInterface $payment
      */
-    protected function setCapturedPayment(Payment $payment)
+    protected function setCapturedPayment(OrderPaymentInterface $payment)
     {
+        /** @var Payment $payment */
         $payment->getOrder()->setState(Order::STATE_PROCESSING);
         $payment->registerCaptureNotification($payment->getOrder()->getBaseGrandTotal());
     }

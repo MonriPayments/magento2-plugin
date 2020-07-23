@@ -1,5 +1,14 @@
 <?xml version="1.0"?>
 
+<!--
+    * This file is part of the Monri Payments module
+    *
+    * (c) Monri Payments d.o.o.
+    *
+    * For the full copyright and license information, please view the NOTICE
+    * and LICENSE files that were distributed with this source code.
+-->
+
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
     <!-- Monri Payments base -->
     <virtualType name="MonriPaymentsFacade" type="Magento\Payment\Model\Method\Adapter">

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the Monri Payments module
+ *
+ * (c) Monri Payments d.o.o.
+ *
+ * For the full copyright and license information, please view the NOTICE
+ * and LICENSE files that were distributed with this source code.
+ */
+
 namespace Monri\Payments\Controller;
 
 use Magento\Framework\App\Action\Action;
@@ -15,6 +24,9 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\OrderRepository;
 use Monri\Payments\Model\GetOrderIdByIncrement;
 
+/**
+ * @SuppressWarnings(PHPMD.AllPurposeAction)
+ */
 abstract class AbstractGatewayResponse extends Action
 {
     /**

@@ -1,7 +1,17 @@
 <?php
 
+/**
+ * This file is part of the Monri Payments module
+ *
+ * (c) Monri Payments d.o.o.
+ *
+ * For the full copyright and license information, please view the NOTICE
+ * and LICENSE files that were distributed with this source code.
+ */
+
 namespace Monri\Payments\Gateway\Http\Serializer;
 
+use InvalidArgumentException;
 use Magento\Framework\Convert\ConvertArray;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Serialize\SerializerInterface;
@@ -33,7 +43,7 @@ class Xml implements SerializerInterface
      *
      * @param string|int|float|bool|array|null $data
      * @return string|bool
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @since 101.0.0
      */
     public function serialize($data)
@@ -42,7 +52,7 @@ class Xml implements SerializerInterface
             $rootNode = array_key_first($data);
             return $this->convertArray->assocToXml($data[$rootNode], $rootNode)->asXML();
         } catch (LocalizedException $e) {
-            throw new \InvalidArgumentException('Could not convert data to XML', 0, $e);
+            throw new InvalidArgumentException('Could not convert data to XML', 0, $e);
         }
     }
 
@@ -51,7 +61,7 @@ class Xml implements SerializerInterface
      *
      * @param string $string
      * @return string|int|float|bool|array|null
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @since 101.0.0
      */
     public function unserialize($string)

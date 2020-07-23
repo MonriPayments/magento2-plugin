@@ -1,5 +1,14 @@
 <?xml version="1.0"?>
 
+<!--
+    * This file is part of the Monri Payments module
+    *
+    * (c) Monri Payments d.o.o.
+    *
+    * For the full copyright and license information, please view the NOTICE
+    * and LICENSE files that were distributed with this source code.
+-->
+
 <mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Payment:etc/error_mapping.xsd">
     <message_list>
         <!-- Messages for merchants and administrators -->

@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the Monri Payments module
+ *
+ * (c) Monri Payments d.o.o.
+ *
+ * For the full copyright and license information, please view the NOTICE
+ * and LICENSE files that were distributed with this source code.
+ */
+
 namespace Monri\Payments\Gateway;
 
 class Config extends \Magento\Payment\Gateway\Config\Config
@@ -114,6 +123,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     /**
      * @param null|int $storeId
      * @return bool
+     *
+     * @SuppressWarnings(PHPMD.BooleanGetMethodName)
      */
     public function getIsSandboxMode($storeId = null)
     {
@@ -132,6 +143,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     /**
      * @param null $storeId
      * @return array
+     *
+     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
     public function getAvailableCurrencyCodes($storeId = null)
     {

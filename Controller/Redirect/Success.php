@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the Monri Payments module
+ *
+ * (c) Monri Payments d.o.o.
+ *
+ * For the full copyright and license information, please view the NOTICE
+ * and LICENSE files that were distributed with this source code.
+ */
+
 namespace Monri\Payments\Controller\Redirect;
 
 use Exception;
@@ -16,6 +25,9 @@ use Magento\Sales\Model\OrderRepository;
 use Monri\Payments\Controller\AbstractGatewayResponse;
 use Monri\Payments\Model\GetOrderIdByIncrement;
 
+/**
+ * @SuppressWarnings(PHPMD.AllPurposeAction)
+ */
 class Success extends AbstractGatewayResponse
 {
 
@@ -74,7 +86,9 @@ class Success extends AbstractGatewayResponse
             $result = $this->processGatewayResponse($gatewayResponse, $payment, $digestData);
 
             if (isset($result['response_code_message'])) {
-                $this->messageManager->addNoticeMessage(__('The payment has been accepted: %1', $result['response_code_message']));
+                $this->messageManager->addNoticeMessage(
+                    __('The payment has been accepted: %1', $result['response_code_message'])
+                );
             } else {
                 $this->messageManager->addNoticeMessage(__('The payment has been accepted.'));
             }

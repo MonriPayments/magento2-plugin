@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * This file is part of the Monri Payments module
+ *
+ * (c) Monri Payments d.o.o.
+ *
+ * For the full copyright and license information, please view the NOTICE
+ * and LICENSE files that were distributed with this source code.
+ */
+
 namespace Monri\Payments\Controller\Adminhtml\Log;
 
 use Exception;
@@ -12,6 +21,9 @@ use Magento\Framework\Exception\NotFoundException;
 use Magento\Framework\Filesystem\Io\File;
 use Magento\Framework\Logger\Handler\Base;
 
+/**
+ * @SuppressWarnings(PHPMD.AllPurposeAction)
+ */
 class Download extends AbstractAction
 {
     const ADMIN_RESOURCE = 'Magento_Backend::system';
