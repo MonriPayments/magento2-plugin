@@ -1,5 +1,13 @@
 {
     "name": "monri/payments",
+    "authors": [
+        {
+            "name": "Favicode eCommerce Agency",
+            "email": "contact@favicode.net",
+            "homepage": "https://favicode.net",
+            "role": "Developer"
+        }
+    ],
     "description": "The official Monri Payments Magento 2 module",
     "version": "1.0.0",
     "require": {

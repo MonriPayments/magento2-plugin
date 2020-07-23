@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the Monri Payments module
  *
@@ -7,6 +6,8 @@
  *
  * For the full copyright and license information, please view the NOTICE
  * and LICENSE files that were distributed with this source code.
+ *
+ * @author Favicode <contact@favicode.net>
  */
 
 namespace Monri\Payments\Controller\Redirect;
