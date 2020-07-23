@@ -29,44 +29,112 @@ class Config extends \Magento\Payment\Gateway\Config\Config
 
     const FORM_ENDPOINT = 'v2/form';
 
-    public function getGatewayBaseURL($storeId = null) {
+    protected $_availableCurrencies = [
+        'USD',
+        'EUR',
+        'BAM',
+        'HRK',
+    ];
+
+    /**
+     * @param null|int $storeId
+     * @return string
+     */
+    public function getGatewayBaseURL($storeId = null)
+    {
         return $this->getIsSandboxMode($storeId) ? self::GATEWAY_SANDBOX_URL : self::GATEWAY_PRODUCTION_URL;
     }
 
-    public function getClientKey($storeId = null) {
+    /**
+     * @param null|int $storeId
+     * @return string
+     */
+    public function getClientKey($storeId = null)
+    {
         return $this->getValue(self::CLIENT_KEY, $storeId);
     }
 
-    public function getClientAuthenticityToken($storeId = null) {
+    /**
+     * @param null|int $storeId
+     * @return string
+     */
+    public function getClientAuthenticityToken($storeId = null)
+    {
         return $this->getValue(self::CLIENT_AUTHENTICITY_TOKEN, $storeId);
     }
 
-    public function getGatewayResourceURL($resource, $storeId = null) {
+    /**
+     * @param string $resource
+     * @param null|int $storeId
+     * @return string
+     */
+    public function getGatewayResourceURL($resource, $storeId = null)
+    {
         return sprintf($this->getGatewayBaseURL($storeId), $resource);
     }
 
+    /**
+     * @param string $resource
+     * @param string $object
+     * @param null|int $storeId
+     * @return string
+     */
     public function getGatewayTransactionManagementURL($resource, $object, $storeId = null)
     {
         return $this->getGatewayResourceURL(sprintf('transactions/%s/%s.xml', $object, $resource), $storeId);
     }
 
-    public function getTransactionType($storeId = null) {
+    /**
+     * @param null|int $storeId
+     * @return string
+     */
+    public function getTransactionType($storeId = null)
+    {
         return $this->getValue(self::TRANSACTION_TYPE, $storeId);
     }
 
-    public function getFormRedirectURL($storeId = null) {
+    /**
+     * @param null|int $storeId
+     * @return string
+     */
+    public function getFormRedirectURL($storeId = null)
+    {
         return $this->getGatewayResourceURL(self::FORM_ENDPOINT, $storeId);
     }
 
-    public function getGatewayLanguage($storeId = null) {
+    /**
+     * @param null|int $storeId
+     * @return string
+     */
+    public function getGatewayLanguage($storeId = null)
+    {
         return $this->getValue(self::LANGUAGE, $storeId);
     }
 
-    public function getIsSandboxMode($storeId = null) {
-        return $this->getValue(self::SANDBOX, $storeId);
+    /**
+     * @param null|int $storeId
+     * @return bool
+     */
+    public function getIsSandboxMode($storeId = null)
+    {
+        return (bool) $this->getValue(self::SANDBOX, $storeId);
     }
 
-    public function getInstallments($storeId = null) {
+    /**
+     * @param null|int $storeId
+     * @return int|null
+     */
+    public function getInstallments($storeId = null)
+    {
         return $this->getValue(self::INSTALLMENTS, $storeId);
+    }
+
+    /**
+     * @param null $storeId
+     * @return array
+     */
+    public function getAvailableCurrencyCodes($storeId = null)
+    {
+        return $this->_availableCurrencies;
     }
 }

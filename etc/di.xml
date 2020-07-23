@@ -8,6 +8,7 @@
             <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
             <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info</argument>
             <argument name="commandPool" xsi:type="object">MonriPaymentsCommandPool</argument>
+            <argument name="validatorPool" xsi:type="object">MonriPaymentsValidatorPool</argument>
             <argument name="valueHandlerPool" xsi:type="object">MonriPaymentsValueHandlerPool</argument>
         </arguments>
     </virtualType>
@@ -31,6 +32,21 @@
             <argument name="methodCode" xsi:type="string">monri_payments</argument>
         </arguments>
     </type>
+
+    <virtualType name="MonriPaymentsValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">MonriPaymentsCountryValidator</item>
+                <item name="currency" xsi:type="string">Monri\Payments\Gateway\Validator\CurrencyValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config</argument>
+        </arguments>
+    </virtualType>
     <!-- END Monri Payments base -->
 
     <!-- Backend -->

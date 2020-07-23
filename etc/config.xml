@@ -13,6 +13,7 @@
 
                 <!-- Internal config -->
                 <model>MonriPaymentsFacade</model>
+                <allowspecific>0</allowspecific>
                 <can_initialize>1</can_initialize>
                 <can_authorize>0</can_authorize>
                 <can_capture>1</can_capture>
