@@ -33,6 +33,20 @@
     </type>
     <!-- END Monri Payments base -->
 
+    <!-- Backend -->
+    <type name="Monri\Payments\Block\Adminhtml\Config\DownloadLog">
+        <arguments>
+            <argument name="loggerHandler" xsi:type="object">MonriPaymentsVirtualDebugHandler</argument>
+        </arguments>
+    </type>
+
+    <type name="Monri\Payments\Controller\Adminhtml\Log\Download">
+        <arguments>
+            <argument name="loggerHandler" xsi:type="object">MonriPaymentsVirtualDebugHandler</argument>
+        </arguments>
+    </type>
+    <!-- END Backend -->
+
     <!-- Commands -->
         <!-- Command pool -->
     <virtualType name="MonriPaymentsCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">

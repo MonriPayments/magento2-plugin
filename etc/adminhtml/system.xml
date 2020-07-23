@@ -49,6 +49,13 @@
                     <label>Debug</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                 </field>
+                <field id="download_log" type="button" sortOrder="75"
+                       showInDefault="1" showInWebsite="1" showInStore="0">
+                    <frontend_model>Monri\Payments\Block\Adminhtml\Config\DownloadLog</frontend_model>
+                    <depends>
+                        <field id="*/*/debug">1</field>
+                    </depends>
+                </field>
                 <field id="urls" translate="label" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Gateway Configuration Information</label>
                     <frontend_model>Monri\Payments\Block\Adminhtml\Config\Merchant\UrlInfo</frontend_model>
