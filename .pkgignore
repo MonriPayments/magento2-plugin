@@ -7,3 +7,5 @@ Makefile
 dist/
 *dist/**\*
 .pkgignore
+README.md
+CHANGELOG.md
