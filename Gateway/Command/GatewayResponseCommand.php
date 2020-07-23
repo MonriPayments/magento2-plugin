@@ -121,7 +121,9 @@ class GatewayResponseCommand implements CommandInterface
     {
         $errors = array_merge($validationResult->getErrorCodes(), $validationResult->getFailsDescription());
 
-        $message = !empty($errors) ? __(implode(PHP_EOL, $errors)) : __('There has been an issue processing your payment.');
+        $message = !empty($errors)
+            ? __(implode(PHP_EOL, $errors))
+            : __('There has been an issue processing your payment.');
 
         throw new CommandException($message);
     }

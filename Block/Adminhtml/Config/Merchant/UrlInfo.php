@@ -66,7 +66,7 @@ class UrlInfo extends Field
 
     private function getUrlText($code)
     {
-        switch($code) {
+        switch ($code) {
             case self::SUCCESS_CODE:
                 return __('Success URL');
 

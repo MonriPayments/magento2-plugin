@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Monri\Payments\Gateway\Command\Redirect;
-
 
 use Magento\Payment\Gateway\Command;
 use Magento\Payment\Gateway\Command\Result\ArrayResultFactory;

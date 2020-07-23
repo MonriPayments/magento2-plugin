@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Monri\Payments\Helper;
-
 
 class Formatter
 {
@@ -17,7 +15,8 @@ class Formatter
         return (int)round($price * 100);
     }
 
-    public function formatText($text, $maxLength = 30, $stripNonAlphanumeric = true) {
+    public function formatText($text, $maxLength = 30, $stripNonAlphanumeric = true)
+    {
         if (strlen($text) > $maxLength) {
             //TODO: Consider doing wordwrap instead?
             $text = substr($text, 0, $maxLength);

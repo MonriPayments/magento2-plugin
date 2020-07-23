@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Monri\Payments\Controller;
 
 use Exception;

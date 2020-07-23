@@ -33,7 +33,8 @@ class Digest
      * @param string $digestAlgo
      * @return string
      */
-    public function build($orderNumber, $currencyCode, $amount, $storeId = null, $digestAlgo = self::DIGEST_ALGO_256) {
+    public function build($orderNumber, $currencyCode, $amount, $storeId = null, $digestAlgo = self::DIGEST_ALGO_256)
+    {
         $clientKey = $this->config->getClientKey($storeId);
         $data = "{$clientKey}{$orderNumber}{$amount}{$currencyCode}";
 

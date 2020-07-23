@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Monri\Payments\Gateway\Http;
-
 
 use Magento\Framework\Convert\ConvertArray;
 use Magento\Framework\Exception\LocalizedException;

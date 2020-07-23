@@ -154,7 +154,7 @@ class Client implements PaymentClientInterface
             } else {
                 throw new ClientException(__('Client error (%1)', $statusCode));
             }
-        } else if ($statusCode >= 500 && $statusCode <= 599) {
+        } elseif ($statusCode >= 500 && $statusCode <= 599) {
             throw new ClientException(__('Server error (%1)', $statusCode));
         }
     }

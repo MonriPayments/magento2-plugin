@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Monri\Payments\Controller\Redirect\Form;
-
 
 use Exception;
 use Magento\Checkout\Model\Session;

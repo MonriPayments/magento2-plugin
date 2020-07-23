@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Monri\Payments\Model;
 
 use Magento\Framework\Exception\LocalizedException;

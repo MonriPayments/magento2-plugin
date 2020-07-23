@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Monri\Payments\Gateway\Validator;
-
 
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;

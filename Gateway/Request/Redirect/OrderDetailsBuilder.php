@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Monri\Payments\Gateway\Request\Redirect;
-
 
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;

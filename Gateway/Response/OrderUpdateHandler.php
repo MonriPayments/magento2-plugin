@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Monri\Payments\Gateway\Response;
-
 
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\InputException;

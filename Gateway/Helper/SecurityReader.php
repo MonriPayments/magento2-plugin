@@ -2,7 +2,6 @@
 
 namespace Monri\Payments\Gateway\Helper;
 
-
 use InvalidArgumentException;
 
 class SecurityReader

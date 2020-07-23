@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Monri\Payments\Gateway\Http\Serializer;
-
 
 use Magento\Framework\Convert\ConvertArray;
 use Magento\Framework\Exception\LocalizedException;
@@ -66,7 +64,8 @@ class Xml implements SerializerInterface
         return $this->normalizeArray($simpleXmlElement->asArray());
     }
 
-    protected function normalizeArray(array $array) {
+    protected function normalizeArray(array $array)
+    {
         $normalizedArray = [];
 
         foreach ($array as $key => $value) {

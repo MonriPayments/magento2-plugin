@@ -1,8 +1,6 @@
 <?php
 
-
 namespace Monri\Payments\Gateway\Validator;
-
 
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Validator\AbstractValidator;
@@ -50,7 +48,7 @@ class DigestValidator extends AbstractValidator
             return $this->createResult(true);
         }
 
-        if (empty($verificationData) || !isset($verificationData['digest']) || !isset($verificationData['digest_data'])) {
+        if (!isset($verificationData['digest']) || !isset($verificationData['digest_data'])) {
             return $this->createResult(false, [__('Gateway response invalid.')]);
         }
 
