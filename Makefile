@@ -1,7 +1,8 @@
 PACKAGE_VERSION = $(shell composer config version)
 PACKAGE_NAME    = $(shell composer config name | sed 's/\//_/')
+FILE_PATH       = "./dist/$(PACKAGE_NAME)-$(PACKAGE_VERSION).zip"
 
-EXCLUDE_FILES = $(shell cat .pkgignore | sed 's/^.*$/"\.\/&"\/' | tr '\n' ' ')
+EXCLUDE_FILES = $(shell cat .pkgignore | tr '\n' ' ')
 
 package:
-	zip -r "./dist/$(PACKAGE_NAME)-$(PACKAGE_VERSION).zip" ./ -x $(EXCLUDE_FILES)
+	rm $(FILE_PATH) && zip -r $(FILE_PATH) ./ -x $(EXCLUDE_FILES)
