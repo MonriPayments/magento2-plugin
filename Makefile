@@ -6,6 +6,3 @@ EXCLUDE_FILES = $(shell cat .pkgignore | tr '\n' ' ')
 
 package:
 	rm $(FILE_PATH) && zip -r $(FILE_PATH) ./ -x $(EXCLUDE_FILES)
-
-static-code-check:
-    phpcs --standard=Magento2 .
