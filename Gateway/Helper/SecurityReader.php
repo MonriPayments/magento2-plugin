@@ -19,6 +19,7 @@ class SecurityReader
      * @param array $subject
      * @return array
      */
+    // phpcs:ignore Magento2.Functions.StaticFunction
     public static function readVerificationData(array $subject)
     {
         if (!isset($subject['verification_data']) || !is_array($subject['verification_data'])) {
