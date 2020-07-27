@@ -54,9 +54,7 @@ class Download extends AbstractAction
     }
 
     /**
-     * Execute action based on request and return result
-     *
-     * Note: Request will be added as operation argument in future
+     * Download log for administrators
      *
      * @return ResultInterface|ResponseInterface
      * @throws NotFoundException
