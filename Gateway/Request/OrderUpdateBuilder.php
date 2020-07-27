@@ -11,6 +11,7 @@ namespace Monri\Payments\Gateway\Request;
 
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
+use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
 use Monri\Payments\Gateway\Config;
 use Monri\Payments\Helper\Formatter;
@@ -68,7 +69,12 @@ class OrderUpdateBuilder implements BuilderInterface
         $payment = $paymentDO->getPayment();
         $order = $payment->getOrder();
 
-        $amount = SubjectReader::readAmount($buildSubject);
+        try {
+            $amount = SubjectReader::readAmount($buildSubject);
+        } catch (\InvalidArgumentException $e) {
+            // Assume entire amount if no amount is set.
+            $amount = $payment->getAmountOrdered();
+        }
 
         $gatewayAmount = $this->formatter->formatPrice($amount);
         $orderNumber = $order->getIncrementId();
