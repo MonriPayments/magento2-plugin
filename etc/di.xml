@@ -151,7 +151,7 @@
             <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\OrderUpdateHandler</argument>
             <argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\TransferResponseValidator</argument>
             <argument name="logger" xsi:type="object">MonriPaymentsVirtualLogger</argument>
-            <argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsMapper</argument>
+            <argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsWithRawMapper</argument>
         </arguments>
     </virtualType>
         <!-- END Command definitions -->
@@ -262,9 +262,16 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="MonriPaymentsErrorsMapper" type="Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapper">
+    <virtualType name="MonriPaymentsErrorsMapper" type="Monri\Payments\Gateway\ErrorMapper\ErrorMessageMapper">
         <arguments>
             <argument name="messageMapping" xsi:type="object">MonriPaymentsErrorsMapData</argument>
+            <argument name="mapRawMessages" xsi:type="boolean">false</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsErrorsWithRawMapper" type="MonriPaymentsErrorsMapper">
+        <arguments>
+            <argument name="mapRawMessages" xsi:type="boolean">true</argument>
         </arguments>
     </virtualType>
     <!-- /Errors Map -->
