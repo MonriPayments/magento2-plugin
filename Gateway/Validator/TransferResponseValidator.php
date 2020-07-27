@@ -27,9 +27,9 @@ class TransferResponseValidator extends AbstractValidator
             return $this->createResult(true);
         }
 
-        $responseMessage = isset($response['response_message']) ? $response['response_message'] : '';
+        $responseMessage = isset($response['response_message']) ? __($response['response_message']) : '';
 
-        $responseMessages = [__('Gateway response invalid or no response code set: %1', $responseMessage)];
+        $responseMessages = [$responseMessage];
         $responseCodes = [$responseCode];
 
         return $this->createResult(false, $responseMessages, $responseCodes);
