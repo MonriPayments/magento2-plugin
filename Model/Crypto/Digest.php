@@ -13,7 +13,7 @@ use Monri\Payments\Gateway\Config;
 
 class Digest
 {
-    const DIGEST_ALGO_256 = 'sha512';
+    const DIGEST_ALGO_512 = 'sha512';
 
     const DIGEST_ALGO_1 = 'sha1';
 
@@ -40,7 +40,7 @@ class Digest
      * @param string $digestAlgo
      * @return string
      */
-    public function build($orderNumber, $currencyCode, $amount, $storeId = null, $digestAlgo = self::DIGEST_ALGO_256)
+    public function build($orderNumber, $currencyCode, $amount, $storeId = null, $digestAlgo = self::DIGEST_ALGO_512)
     {
         $clientKey = $this->config->getClientKey($storeId);
         $data = "{$clientKey}{$orderNumber}{$amount}{$currencyCode}";
@@ -57,7 +57,7 @@ class Digest
      * @param string $digestAlgo
      * @return bool
      */
-    public function verify($digest, $payload, $storeId = null, $digestAlgo = self::DIGEST_ALGO_256)
+    public function verify($digest, $payload, $storeId = null, $digestAlgo = self::DIGEST_ALGO_512)
     {
         $clientKey = $this->config->getClientKey($storeId);
         $expectedPayload = "{$clientKey}{$payload}";

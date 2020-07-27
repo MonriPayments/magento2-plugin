@@ -81,7 +81,7 @@
                 <item name="gateway_response" xsi:type="string">MonriPaymentsGatewayResponseCommand</item>
                 <item name="capture" xsi:type="string">MonriPaymentsCaptureCommand</item>
                 <item name="refund" xsi:type="string">MonriPaymentsRefundCommand</item>
-                <item name="cancel" xsi:type="string">MonriPaymentsVoidCommand</item>
+                <item name="void" xsi:type="string">MonriPaymentsVoidCommand</item>
             </argument>
         </arguments>
     </virtualType>
