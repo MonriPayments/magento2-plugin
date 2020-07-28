@@ -95,10 +95,14 @@ class Success extends AbstractGatewayResponse
             $log['errors'][] = 'Exception caught: ' . $e->getMessage();
             $log['success'] = false;
             $this->messageManager->addNoticeMessage(__('Order not found.'));
+
+            return $resultRedirect->setPath('checkout/cart');
         } catch (Exception $e) {
             $log['errors'][] = 'Unexpected exception caught: ' . $e->getMessage();
             $log['success'] = false;
             $this->messageManager->addNoticeMessage(__('Error processing payment, please try again later.'));
+
+            return $resultRedirect->setPath('checkout/cart');
         } finally {
             $this->logger->debug($log);
         }
