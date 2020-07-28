@@ -9,6 +9,8 @@
 
 namespace Monri\Payments\Gateway\Request\Redirect;
 
+use Magento\Framework\DataObjectFactory;
+use Magento\Framework\Event\ManagerInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Monri\Payments\Helper\Formatter;
@@ -28,10 +30,24 @@ class OrderDetailsBuilder implements BuilderInterface
      */
     private $formatter;
 
+    /**
+     * @var ManagerInterface
+     */
+    private $eventManager;
+
+    /**
+     * @var DataObjectFactory
+     */
+    private $dataObjectFactory;
+
     public function __construct(
-        Formatter $formatter
+        Formatter $formatter,
+        ManagerInterface $eventManager,
+        DataObjectFactory $dataObjectFactory
     ) {
         $this->formatter = $formatter;
+        $this->eventManager = $eventManager;
+        $this->dataObjectFactory = $dataObjectFactory;
     }
 
     /**
@@ -49,6 +65,21 @@ class OrderDetailsBuilder implements BuilderInterface
         $orderNumber = $order->getOrderIncrementId();
 
         $orderInfo = __('Order: #%1', $orderNumber);
+
+        $transportObject = $this->dataObjectFactory->create([
+            'data' => [
+                'description' => $orderInfo
+            ]
+        ]);
+
+        // For custom order descriptions
+        $this->eventManager->dispatch('monri_payments_order_description_after', [
+            'order' => $order,
+            'payment' => $paymentDataObject->getPayment(),
+            'transportObject' => $transportObject
+        ]);
+
+        $orderInfo = $transportObject->getData('description');
 
         $orderAmount = $this->formatter->formatPrice(
             $order->getGrandTotalAmount()
