@@ -8,11 +8,10 @@ use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 
-class RefundHandler extends AbstractTransactionHandler
+class CaptureHandler extends AbstractTransactionHandler
 {
-
     /**
-     * Processes a refund transaction.
+     * Processes a capture transaction.
      *
      * @param OrderPaymentInterface $payment
      * @param OrderInterface $order
@@ -20,7 +19,7 @@ class RefundHandler extends AbstractTransactionHandler
      */
     protected function handleTransaction(OrderPaymentInterface $payment, OrderInterface $order, array $response)
     {
-        // Allow only a single refund of a payment.
+        // Allow only a single capture of a payment.
         $payment->setShouldCloseParentTransaction(true);
     }
 }
