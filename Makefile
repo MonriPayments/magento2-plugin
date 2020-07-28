@@ -5,4 +5,4 @@ FILE_PATH       = "./dist/$(PACKAGE_NAME)-$(PACKAGE_VERSION).zip"
 EXCLUDE_FILES = $(shell cat .pkgignore | tr '\n' ' ')
 
 package:
-	rm $(FILE_PATH) && zip -r $(FILE_PATH) ./ -x $(EXCLUDE_FILES)
+	(rm $(FILE_PATH) || true) && zip -r $(FILE_PATH) ./ -x $(EXCLUDE_FILES)
