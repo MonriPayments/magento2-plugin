@@ -34,6 +34,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
 
     const TRANSACTION_TYPE_AUTHORIZE = 'authorize';
 
+    const TRANSACTION_TYPE_PURCHASE = 'purchase';
+
     const FORM_ENDPOINT = 'v2/form';
 
     protected $_availableCurrencies = [
@@ -44,6 +46,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     ];
 
     /**
+     * Returns the base gateway URL for a given store ID.
+     *
      * @param null|int $storeId
      * @return string
      */
@@ -53,6 +57,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * Returns the configured client key.
+     *
      * @param null|int $storeId
      * @return string
      */
@@ -62,6 +68,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * Returns the configured authenticity token.
+     *
      * @param null|int $storeId
      * @return string
      */
@@ -71,6 +79,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * Returns the gateway URL for a given resource and store ID.
+     *
      * @param string $resource
      * @param null|int $storeId
      * @return string
@@ -81,6 +91,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * Returns the transaction management URL for a given resource object and action.
+     *
      * @param string $resource
      * @param string $object
      * @param null|int $storeId
@@ -92,6 +104,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * Returns the configured transaction type ('purchase' or 'authorize').
+     *
      * @param null|int $storeId
      * @return string
      */
@@ -101,6 +115,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * Returns the base redirect URL for a given store ID.
+     *
      * @param null|int $storeId
      * @return string
      */
@@ -110,6 +126,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * Returns the configured language for gateway.
+     *
      * @param null|int $storeId
      * @return string
      */
@@ -119,6 +137,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * Returns true if sandbox mode is enabled, false if otherwise.
+     *
      * @param null|int $storeId
      * @return bool
      *
@@ -130,6 +150,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * Returns the configured number of installments.
+     *
      * @param null|int $storeId
      * @return int|null
      */
@@ -139,6 +161,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * Returns the available currency codes for a given store ID.
+     *
      * @param null $storeId
      * @return array
      *

@@ -86,6 +86,12 @@
         </arguments>
     </virtualType>
 
+    <type name="Monri\Payments\Gateway\Command\InitializeCommand">
+        <arguments>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+
         <!-- Commands manager -->
     <virtualType name="MonriPaymentsCommandManager" type="Magento\Payment\Gateway\Command\CommandManager">
         <arguments>
@@ -172,6 +178,17 @@
 
     <!-- Responses -->
     <type name="Monri\Payments\Gateway\Response\OrderUpdateHandler">
+        <arguments>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+            <argument name="transactionHandlers" xsi:type="array">
+                <item name="purchase" xsi:type="object">Monri\Payments\Gateway\Response\Transactions\PurchaseHandler</item>
+                <item name="authorize" xsi:type="object">Monri\Payments\Gateway\Response\Transactions\AuthorizeHandler</item>
+            </argument>
+            <argument name="unsuccessfulTransactionHandler" xsi:type="object">Monri\Payments\Gateway\Response\Transactions\UnsuccessfulHandler</argument>
+        </arguments>
+    </type>
+
+    <type name="Monri\Payments\Gateway\Response\Transactions\UnsuccessfulHandler">
         <arguments>
             <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
         </arguments>

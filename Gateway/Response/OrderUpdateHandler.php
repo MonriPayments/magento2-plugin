@@ -9,22 +9,20 @@
 
 namespace Monri\Payments\Gateway\Response;
 
+use Exception;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\InputException;
-use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\ObjectManager\TMapFactory;
+use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
+use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\Logger;
-use Magento\Sales\Api\Data\OrderInterface;
-use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\Order\Payment;
-use Magento\Sales\Model\Order\Payment\Transaction;
-use Magento\Sales\Model\Order\Payment\TransactionFactory;
-use Magento\Sales\Model\ResourceModel\Order\Payment\Transaction as TransactionResource;
 use Magento\Sales\Model\OrderRepository;
 use Monri\Payments\Gateway\Config;
 
@@ -54,36 +52,41 @@ class OrderUpdateHandler implements HandlerInterface
     private $config;
 
     /**
-     * @var TransactionFactory
-     */
-    private $transactionFactory;
-
-    /**
-     * @var TransactionResource
-     */
-    private $transactionResource;
-
-    /**
      * @var Logger
      */
     private $logger;
+
+    /**
+     * @var HandlerInterface[]
+     */
+    private $transactionHandlers;
+    /**
+     * @var HandlerInterface
+     */
+    private $unsuccessfulTransactionHandler;
 
     public function __construct(
         OrderRepository $orderRepository,
         OrderManagementInterface $orderManagement,
         OrderSender $orderSender,
-        TransactionFactory $transactionFactory,
-        TransactionResource $transactionResource,
         Logger $logger,
+        TMapFactory $TMapFactory,
+        array $transactionHandlers,
+        HandlerInterface $unsuccessfulTransactionHandler,
         Config $config
     ) {
         $this->orderRepository = $orderRepository;
         $this->orderSender = $orderSender;
         $this->orderManagement = $orderManagement;
         $this->config = $config;
-        $this->transactionFactory = $transactionFactory;
-        $this->transactionResource = $transactionResource;
         $this->logger = $logger;
+
+        $this->transactionHandlers = $TMapFactory->create([
+            'type' => HandlerInterface::class,
+            'array' => $transactionHandlers
+        ]);
+
+        $this->unsuccessfulTransactionHandler = $unsuccessfulTransactionHandler;
     }
 
     /**
@@ -95,6 +98,7 @@ class OrderUpdateHandler implements HandlerInterface
      * @throws AlreadyExistsException
      * @throws InputException
      * @throws NoSuchEntityException
+     * @throws CommandException
      */
     public function handle(array $handlingSubject, array $response)
     {
@@ -119,31 +123,18 @@ class OrderUpdateHandler implements HandlerInterface
         /** @var Order $order */
         $order = $payment->getOrder();
 
-        $status = $response['status'];
-        $transactionType = isset($response['transaction_type']) ? $response['transaction_type'] : null;
+        if (!isset($response['transaction_type'])) {
+            $response['transaction_type'] = $this->getTransactionTypeFromPayment($payment, $order);
+        }
 
-        $log['action'] = $this->config->getTransactionType($order->getStoreId()) === Config::TRANSACTION_TYPE_AUTHORIZE
-            ? 'authorize'
-            : 'capture';
-
-        if ($status === 'approved' && !in_array($transactionType, ['refund', 'void'])) {
-            $log['status'] = 'approved';
-
-            try {
-                $this->processSuccessfulPayment($payment, $order, $response);
-            } catch (AlreadyExistsException $e) {
-                $log['errors'][] = 'Transaction already processed or order cannot be invoiced: %e' . $e->getMessage();
-                $this->logger->debug($log);
-                return;
+        try {
+            if ($this->isSuccessfulResponse($response)) {
+                $this->processSuccessfulGatewayResponse($handlingSubject, $response);
+            } else {
+                $this->processUnsuccessfulGatewayResponse($handlingSubject, $response);
             }
-        } else {
-            $log['status'] = 'denied';
-
-            try {
-                $this->processUnsuccessfulPayment($payment, $order, $response);
-            } catch (LocalizedException $e) {
-                $log['errors'][] = 'Issue when processing unsuccessful payment: ' . $e->getMessage();
-            }
+        } catch (Exception $e) {
+            throw new CommandException(__('Failed to process transaction: %1', $e->getMessage()));
         }
 
         $this->orderRepository->save($order);
@@ -157,118 +148,63 @@ class OrderUpdateHandler implements HandlerInterface
     }
 
     /**
-     * Processes a successful payment.
+     * Performs any necessary actions for a given transaction type.
      *
-     * @param OrderPaymentInterface $payment
-     * @param OrderInterface $order
+     * @param array $handlingSubject
      * @param array $response
-     * @throws AlreadyExistsException
      */
-    protected function processSuccessfulPayment(
-        OrderPaymentInterface $payment,
-        OrderInterface $order,
+    protected function processSuccessfulGatewayResponse(
+        array $handlingSubject,
         array $response
     ) {
-        /** @var Payment $payment */
-        $payment->setTransactionId($this->getTransactionId($response));
-        $payment->setTransactionAdditionalInfo(
-            Transaction::RAW_DETAILS,
-            $response
-        );
+        $transactionType = isset($response['transaction_type']) ? $response['transaction_type'] : null;
 
-        if (!$order->canInvoice() || $this->checkIfTransactionProcessed($payment)) {
-            // Already processed this transaction.
-            throw new AlreadyExistsException(__('Transaction already processed.'));
-        }
-
-        if ($this->config->getTransactionType($order->getStoreId()) === Config::TRANSACTION_TYPE_AUTHORIZE) {
-            $this->setAuthorizedPayment($payment);
-        } else {
-            $this->setCapturedPayment($payment);
+        if (isset($this->transactionHandlers[$transactionType])) {
+            $this->transactionHandlers[$transactionType]->handle($handlingSubject, $response);
         }
     }
 
     /**
-     * Processes an unsuccessful payment.
+     * Processes an unsuccessful transaction.
      *
-     * @param OrderPaymentInterface $payment
-     * @param OrderInterface $order
+     * @param array $handlingSubject
      * @param array $response
-     * @throws LocalizedException
      */
-    protected function processUnsuccessfulPayment(
-        OrderPaymentInterface $payment,
-        OrderInterface $order,
+    protected function processUnsuccessfulGatewayResponse(
+        array $handlingSubject,
         array $response
     ) {
-        /** @var Payment $payment */
-        try {
-            if (isset($response['response_code'])) {
-                $payment->setAdditionalInformation(
-                    'gateway_response_code',
-                    $response['response_code']
-                );
-            }
-        } catch (LocalizedException $e) {
-            throw new LocalizedException(__('Could not set response code on payment: %1', $e->getMessage()));
-        } finally {
-            $this->orderManagement->cancel($order->getEntityId());
-        }
+        $this->unsuccessfulTransactionHandler->handle($handlingSubject, $response);
     }
 
     /**
-     * Registers an authorized payment.
-     *
-     * @param OrderPaymentInterface $payment
-     */
-    protected function setAuthorizedPayment(OrderPaymentInterface $payment)
-    {
-        /** @var Payment $payment */
-        $payment->setIsTransactionClosed(false);
-        $payment->registerAuthorizationNotification($payment->getOrder()->getBaseGrandTotal());
-    }
-
-    /**
-     * Registers a paid payment.
-     *
-     * @param OrderPaymentInterface $payment
-     */
-    protected function setCapturedPayment(OrderPaymentInterface $payment)
-    {
-        /** @var Payment $payment */
-        $payment->getOrder()->setState(Order::STATE_PROCESSING);
-        $payment->registerCaptureNotification($payment->getOrder()->getBaseGrandTotal());
-    }
-
-    /**
-     * Crafts the ID for the transaction.
+     * Determines if a given response is successful.
      *
      * @param array $response
+     * @return bool
+     */
+    protected function isSuccessfulResponse(array $response)
+    {
+        $isSuccessCode = isset($response['response_code']) ? $response['response_code'] === '0000' : true;
+
+        return $isSuccessCode && $response['status'] === 'approved';
+    }
+
+    /**
+     * Returns the transaction type.
+     *
+     * @param InfoInterface $payment
+     * @param Order $order
      * @return string
      */
-    protected function getTransactionId(array $response)
+    protected function getTransactionTypeFromPayment(InfoInterface $payment, Order $order)
     {
-        $orderNumber = $response['order_number'];
-        $approvalCode = $response['approval_code'];
+        $transactionType = $payment->getAdditionalInformation('transaction_type');
 
-        return "{$orderNumber}-{$approvalCode}";
-    }
+        if (!$transactionType) {
+            $transactionType = $this->config->getTransactionType($order->getStoreId());
+        }
 
-    protected function checkIfTransactionProcessed(Payment $payment)
-    {
-        $transactionTxnId = $payment->getTransactionId();
-        $paymentId = $payment->getId();
-        $orderId = $payment->getOrder()->getId();
-
-        /** @var Transaction $transaction */
-        $transaction = $this->transactionFactory->create();
-        $this->transactionResource->loadObjectByTxnId(
-            $transaction,
-            $orderId,
-            $paymentId,
-            $transactionTxnId
-        );
-
-        return (bool) $transaction->getId();
+        return $transactionType;
     }
 }
