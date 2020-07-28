@@ -14,7 +14,7 @@ class AuthorizeHandler extends AbstractTransactionHandler
 {
 
     /**
-     * Processes a transaction.
+     * Processes a successful authorize transaction.
      *
      * @param OrderPaymentInterface $payment
      * @param OrderInterface $order

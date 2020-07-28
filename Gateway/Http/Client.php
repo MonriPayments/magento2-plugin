@@ -40,16 +40,23 @@ class Client implements PaymentClientInterface
      */
     private $logger;
 
+    /**
+     * @var int
+     */
+    private $timeout;
+
     public function __construct(
         ClientInterfaceFactory $httpClientFactory,
         SerializerInterface $serializer,
         Logger $logger,
+        $timeout = 5,
         $requestType = 'application/xml'
     ) {
         $this->httpClientFactory = $httpClientFactory;
         $this->serializer = $serializer;
         $this->requestType = $requestType;
         $this->logger = $logger;
+        $this->timeout = $timeout;
     }
 
     /**
@@ -73,6 +80,8 @@ class Client implements PaymentClientInterface
 
         /** @var ClientInterface $client */
         $client = $this->httpClientFactory->create();
+
+        $client->setTimeout($this->timeout);
 
         $client->setHeaders([
             'Content-Type' => $this->requestType

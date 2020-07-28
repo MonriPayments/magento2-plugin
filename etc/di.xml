@@ -183,6 +183,7 @@
             <argument name="transactionHandlers" xsi:type="array">
                 <item name="purchase" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\PurchaseHandler</item>
                 <item name="authorize" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\AuthorizeHandler</item>
+                <item name="refund" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\RefundHandler</item>
             </argument>
             <argument name="unsuccessfulTransactionHandler" xsi:type="object">Monri\Payments\Gateway\Response\Transactions\UnsuccessfulHandler</argument>
         </arguments>

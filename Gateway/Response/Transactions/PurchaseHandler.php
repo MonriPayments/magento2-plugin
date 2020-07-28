@@ -15,7 +15,7 @@ class PurchaseHandler extends AbstractTransactionHandler
 {
 
     /**
-     * Processes a transaction.
+     * Processes a successful purchase transaction.
      *
      * @param OrderPaymentInterface $payment
      * @param OrderInterface $order
