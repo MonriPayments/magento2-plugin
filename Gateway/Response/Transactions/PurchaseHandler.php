@@ -9,12 +9,12 @@
 
 namespace Monri\Payments\Gateway\Response\Transactions;
 
-use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\Order\Payment\Transaction;
+use Monri\Payments\Gateway\Exception\TransactionAlreadyProcessedException;
 
 class PurchaseHandler extends AbstractTransactionHandler
 {
@@ -25,7 +25,7 @@ class PurchaseHandler extends AbstractTransactionHandler
      * @param OrderPaymentInterface $payment
      * @param OrderInterface $order
      * @param array $response
-     * @throws AlreadyExistsException
+     * @throws TransactionAlreadyProcessedException
      */
     protected function handleTransaction(OrderPaymentInterface $payment, OrderInterface $order, array $response)
     {
@@ -38,7 +38,9 @@ class PurchaseHandler extends AbstractTransactionHandler
 
         if (!$order->canInvoice() || $this->checkIfTransactionProcessed($payment)) {
             // Already processed this transaction.
-            throw new AlreadyExistsException(__('Transaction already processed.'));
+            throw new TransactionAlreadyProcessedException(
+                __('Transaction %1 already processed.', $payment->getTransactionId())
+            );
         }
 
         $payment->getOrder()->setState(Order::STATE_PROCESSING);

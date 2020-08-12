@@ -23,7 +23,7 @@ class UrlInfo extends Field
     const CANCEL_ROUTE = 'monripayments/redirect/cancel';
     const CANCEL_CODE = 'cancel';
 
-    const CALLBACK_ROUTE = 'monripayments/callback';
+    const CALLBACK_ROUTE = 'monripayments/gateway/callback';
     const CALLBACK_CODE = 'callback';
 
     protected $_routes = [

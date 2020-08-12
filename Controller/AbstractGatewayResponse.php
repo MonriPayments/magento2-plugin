@@ -20,6 +20,7 @@ use Magento\Payment\Gateway\Command\CommandManagerInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\OrderRepository;
+use Monri\Payments\Gateway\Exception\TransactionAlreadyProcessedException;
 use Monri\Payments\Model\GetOrderIdByIncrement;
 
 /**
@@ -77,9 +78,13 @@ abstract class AbstractGatewayResponse extends Action
      */
     protected function getOrderByIncrementId($orderIncrementId)
     {
-        return $this->getOrderById(
-            $this->getOrderIdByIncrement->execute($orderIncrementId)
-        );
+        $id = $this->getOrderIdByIncrement->execute($orderIncrementId);
+
+        if (!$id) {
+            throw new NoSuchEntityException(__('Order not found.'));
+        }
+
+        return $this->getOrderById($id);
     }
 
     /**
@@ -91,6 +96,7 @@ abstract class AbstractGatewayResponse extends Action
      * @return array
      * @throws CommandException
      * @throws NotFoundException
+     * @throws TransactionAlreadyProcessedException
      */
     protected function processGatewayResponse(array $gatewayResponse, InfoInterface $payment, $verificationData)
     {

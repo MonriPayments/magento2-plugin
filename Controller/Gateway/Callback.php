@@ -7,7 +7,7 @@
  * @author Favicode <contact@favicode.net>
  */
 
-namespace Monri\Payments\Controller;
+namespace Monri\Payments\Controller\Gateway;
 
 use Exception;
 use Magento\Framework\App\Action\Context;
@@ -15,11 +15,15 @@ use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\Exception\InputException;
+use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\Serializer\Json;
+use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Gateway\Command\CommandManagerInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\Logger;
 use Magento\Sales\Model\OrderRepository;
+use Monri\Payments\Controller\AbstractGatewayResponse;
+use Monri\Payments\Gateway\Exception\TransactionAlreadyProcessedException;
 use Monri\Payments\Model\GetOrderIdByIncrement;
 
 /**
@@ -87,15 +91,26 @@ class Callback extends AbstractGatewayResponse
             $payment = $order->getPayment();
 
             $digest = $this->getRequestDigest();
+            if (empty($digest)) {
+                throw new InputException(__('Invalid request.'));
+            }
 
             $this->processGatewayResponse($gatewayResponse, $payment, [
                 'digest' => $digest,
                 'digest_data' => $gatewayPayload
             ]);
-        } catch (InputException $e) {
+        } catch (TransactionAlreadyProcessedException $e) {
+            $log['errors'][] = 'Already processed: ' . $e->getMessage();
+            $log['success'] = true;
+            return $resultRaw->setHttpResponseCode(200);
+        } catch (InputException | CommandException $e) {
             $log['errors'][] = 'Exception caught: ' . $e->getMessage();
             $log['success'] = false;
             return $resultRaw->setHttpResponseCode(400);
+        } catch (NoSuchEntityException $e) {
+            $log['errors'][] = 'Not Found Exception caught: ' . $e->getMessage();
+            $log['success'] = false;
+            return $resultRaw->setHttpResponseCode(404);
         } catch (Exception $e) {
             $log['errors'][] = 'Unexpected exception caught: ' . $e->getMessage();
             $log['success'] = false;

@@ -25,6 +25,7 @@ use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\OrderRepository;
 use Monri\Payments\Gateway\Config;
+use Monri\Payments\Gateway\Exception\TransactionAlreadyProcessedException;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -133,6 +134,8 @@ class OrderUpdateHandler implements HandlerInterface
             } else {
                 $this->processUnsuccessfulGatewayResponse($handlingSubject, $response);
             }
+        } catch (TransactionAlreadyProcessedException $e) {
+            throw $e;
         } catch (Exception $e) {
             throw new CommandException(__('Failed to process transaction: %1', $e->getMessage()));
         }

@@ -21,6 +21,7 @@ use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\Logger;
 use Magento\Sales\Model\OrderRepository;
 use Monri\Payments\Controller\AbstractGatewayResponse;
+use Monri\Payments\Gateway\Exception\TransactionAlreadyProcessedException;
 use Monri\Payments\Model\GetOrderIdByIncrement;
 
 /**
@@ -90,7 +91,9 @@ class Success extends AbstractGatewayResponse
             } else {
                 $this->messageManager->addNoticeMessage(__('The payment has been accepted.'));
             }
-
+        } catch (TransactionAlreadyProcessedException $e) {
+            $log['errors'][] = 'Already processed: ' . $e->getMessage();
+            $log['success'] = true;
         } catch (InputException | NoSuchEntityException $e) {
             $log['errors'][] = 'Exception caught: ' . $e->getMessage();
             $log['success'] = false;

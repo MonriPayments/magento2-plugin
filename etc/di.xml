@@ -222,7 +222,7 @@
         <!-- END Redirect gateway -->
 
         <!-- Gateway callback -->
-    <type name="Monri\Payments\Controller\Callback">
+    <type name="Monri\Payments\Controller\Gateway\Callback">
         <arguments>
             <argument name="commandManager" xsi:type="object">MonriPaymentsCommandManager</argument>
         </arguments>
