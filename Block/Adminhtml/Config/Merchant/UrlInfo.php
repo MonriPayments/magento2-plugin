@@ -11,8 +11,10 @@ namespace Monri\Payments\Block\Adminhtml\Config\Merchant;
 
 use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field;
+use Magento\Framework\App\Request\Http;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\Url;
+use Magento\Store\Model\StoreManagerInterface;
 
 class UrlInfo extends Field
 {
@@ -36,14 +38,21 @@ class UrlInfo extends Field
      */
     private $frontendUrlBuilder;
 
+    /**
+     * @var Http
+     */
+    private $request;
+
     public function __construct(
         Context $context,
         Url $frontendUrlBuilder,
+        Http $request,
         array $data = []
     ) {
         $this->frontendUrlBuilder = $frontendUrlBuilder;
 
         parent::__construct($context, $data);
+        $this->request = $request;
     }
 
     /**
@@ -68,10 +77,15 @@ class UrlInfo extends Field
 
     private function generateUrls()
     {
+        $storeId = $this->request->getParam('store', 0);
+
         $urls = [];
 
         foreach ($this->_routes as $routeName => $route) {
-            $urls[$routeName] = $this->frontendUrlBuilder->getUrl($route);
+            $urls[$routeName] = $this->frontendUrlBuilder->getUrl($route, [
+                '_nosid' => true,
+                '_scope' => $storeId
+            ]);
         }
 
         return $urls;

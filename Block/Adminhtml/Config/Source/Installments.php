@@ -31,7 +31,7 @@ class Installments implements OptionSourceInterface
         for ($i = self::MIN_INSTALLMENTS; $i <= self::MAX_INSTALLMENTS; $i++) {
             $installments[] = [
                 'value' => "{$i}",
-                'label' => __('%1 installment(s)', $i),
+                'label' => $i,
             ];
         }
 
