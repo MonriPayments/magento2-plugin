@@ -77,7 +77,7 @@ class CustomerInfoBuilder implements BuilderInterface
             self::ZIP_FIELD => $this->formatter->formatText($zipCode, 9),
             self::COUNTRY_FIELD => $countryCode,
             self::PHONE_FIELD => $this->formatter->formatText($phoneNumber, 30),
-            self::EMAIL_FIELD => $this->formatter->formatText($email, 100, false),
+            self::EMAIL_FIELD => $this->formatter->formatText($email, 100),
         ];
     }
 }

@@ -14,7 +14,6 @@ use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\App\Request\Http;
 use Magento\Framework\Data\Form\Element\AbstractElement;
 use Magento\Framework\Url;
-use Magento\Store\Model\StoreManagerInterface;
 
 class UrlInfo extends Field
 {
@@ -77,7 +76,7 @@ class UrlInfo extends Field
 
     private function generateUrls()
     {
-        $storeId = $this->request->getParam('store', 0);
+        $storeId = (int) $this->request->getParam('store', 0);
 
         $urls = [];
 

@@ -88,7 +88,7 @@ class OrderDetailsBuilder implements BuilderInterface
         $currencyCode = $order->getCurrencyCode();
 
         return [
-            self::ORDER_INFO_FIELD => $this->formatter->formatText($orderInfo, 300, false),
+            self::ORDER_INFO_FIELD => $this->formatter->formatText($orderInfo, 300),
             self::ORDER_NUMBER_FIELD => $this->formatter->formatText($orderNumber),
             self::AMOUNT_FIELD => $orderAmount,
             self::CURRENCY_FIELD => $currencyCode,

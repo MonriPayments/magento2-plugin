@@ -22,10 +22,16 @@ class Formatter
         return (int)round($price * 100);
     }
 
-    public function formatText($text, $maxLength = 30, $stripNonAlphanumeric = true)
+    /**
+     * Formats text according to Monri's specification.
+     *
+     * @param string $text
+     * @param int $maxLength
+     * @return string
+     */
+    public function formatText($text, $maxLength = 30)
     {
         if (strlen($text) > $maxLength) {
-            //TODO: Consider doing wordwrap instead?
             $text = substr($text, 0, $maxLength);
         }
 
