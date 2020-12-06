@@ -93,6 +93,91 @@
                     <frontend_model>Monri\Payments\Block\Adminhtml\Config\Merchant\UrlInfo</frontend_model>
                 </field>
             </group>
+            <group id="monri_components" translate="label" type="text"
+                   sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Monri Components</label>
+                <field id="active" translate="label" type="select" sortOrder="0"
+                       showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enabled</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Monri Payments Version - 1.0.0]]></comment>
+                </field>
+                <field id="title" translate="label" type="text" sortOrder="10"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Title</label>
+                </field>
+                <field id="client_key" translate="label comment" type="obscure" sortOrder="20"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Key</label>
+                    <comment><![CDATA[Obtain this value from your Monri Administration dashboard.]]></comment>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="client_authenticity_token" translate="label comment" type="obscure" sortOrder="30"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Authenticity Token</label>
+                    <comment><![CDATA[Obtain this value from your Monri Administration dashboard.]]></comment>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                </field>
+                <field id="language" translate="label comment" type="select" sortOrder="40"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Language</label>
+                    <comment><![CDATA[The language that will be used for Monri form on Checkout.]]></comment>
+                    <source_model>\Monri\Payments\Block\Adminhtml\Config\Source\Components\Languages</source_model>
+                </field>
+                <field id="transaction_type" translate="label" type="select" sortOrder="50"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Transaction Type</label>
+                    <source_model>Monri\Payments\Block\Adminhtml\Config\Source\TransactionTypes</source_model>
+                </field>
+                <!--
+                <field id="installments" translate="label" type="select" sortOrder="60"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Maximum Number of Installments</label>
+                    <source_model>Monri\Payments\Block\Adminhtml\Config\Source\Installments</source_model>
+                </field>
+                -->
+                <field id="sandbox" translate="label" type="select" sortOrder="70"
+                       showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Sandbox Mode</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="debug" translate="label" type="select" sortOrder="80"
+                       showInDefault="1" showInWebsite="0" showInStore="0">
+                    <label>Debug</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                </field>
+                <field id="download_log" type="button" sortOrder="90"
+                       showInDefault="1" showInWebsite="1" showInStore="0">
+                    <frontend_model>Monri\Payments\Block\Adminhtml\Config\DownloadLog</frontend_model>
+                    <depends>
+                        <field id="*/*/debug">1</field>
+                    </depends>
+                </field>
+                <field id="allowspecific" translate="label" type="allowspecific" sortOrder="100"
+                       showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment from Applicable Countries</label>
+                    <source_model>Magento\Payment\Model\Config\Source\Allspecificcountries</source_model>
+                </field>
+                <field id="specificcountry" translate="label" type="multiselect" sortOrder="110"
+                       showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Payment from Specific Countries</label>
+                    <source_model>Magento\Directory\Model\Config\Source\Country</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+                <field id="sort_order" translate="label" type="text" sortOrder="120"
+                       showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Sort Order</label>
+                    <frontend_class>validate-number</frontend_class>
+                </field>
+                <!--
+                <field id="urls" translate="label comment" sortOrder="130"
+                       showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Gateway Configuration Information</label>
+                    <comment><![CDATA[Enter this into your Monri Administration dashboard.]]></comment>
+                    <frontend_model>Monri\Payments\Block\Adminhtml\Config\Merchant\UrlInfo</frontend_model>
+                </field>
+                -->
+            </group>
         </section>
     </system>
 </config>

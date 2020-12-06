@@ -294,4 +294,75 @@
         </arguments>
     </virtualType>
     <!-- /Errors Map -->
+
+
+
+    <virtualType name="MonriComponentsFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">Monri\Payments\Gateway\Config\Components::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info</argument>
+
+            <argument name="valueHandlerPool" xsi:type="object">MonriComponentsValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">MonriComponentsValidatorPool</argument>
+            <argument name="commandPool" xsi:type="object">MonriComponentsCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriComponentsValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">MonriComponentsConfigHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriComponentsConfigHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Monri\Payments\Gateway\Config\Components">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Monri\Payments\Gateway\Config\Components::CODE</argument>
+        </arguments>
+    </type>
+    <!-- @todo: CurrencyValidator -->
+    <virtualType name="MonriComponentsValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">MonriComponentsCountryValidator</item>
+                <item name="currency" xsi:type="string">Monri\Payments\Gateway\Validator\CurrencyValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriComponentsCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config</argument>
+        </arguments>
+    </virtualType>
+
+
+    <virtualType name="MonriComponentsCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <!--
+                <item name="create_request" xsi:type="string">MonriPaymentsCreateRequestCommand</item>
+                <item name="initialize" xsi:type="string">Monri\Payments\Gateway\Command\InitializeCommand</item>
+                <item name="gateway_response" xsi:type="string">MonriPaymentsGatewayResponseCommand</item>
+                -->
+
+                <!--
+                <item name="initialize_payment" xsi:type="string">MonriComponentsInitializePaymentCommand</item>
+                -->
+
+                <item name="capture" xsi:type="string">MonriPaymentsCaptureCommand</item>
+                <item name="refund" xsi:type="string">MonriPaymentsRefundCommand</item>
+                <item name="void" xsi:type="string">MonriPaymentsVoidCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
 </config>
