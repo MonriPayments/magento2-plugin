@@ -49,6 +49,22 @@ class Digest
     }
 
     /**
+     * @param string $timestamp
+     * @param string $bodyAsString
+     * @param null $storeId
+     * @return string
+     */
+    public function buildPayment(string $timestamp, string $bodyAsString, $storeId = null)
+    {
+        $clientKey = $this->config->getClientKey($storeId);
+        $clientAuthenticityToken = $this->config->getClientAuthenticityToken($storeId);
+
+        $data = "{$clientKey}{$timestamp}{$clientAuthenticityToken}{$bodyAsString}";
+
+        return hash(self::DIGEST_ALGO_512, $data);
+    }
+
+    /**
      * Verifies a digest.
      *
      * @param $digest

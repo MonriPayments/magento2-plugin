@@ -83,9 +83,12 @@ class Client implements PaymentClientInterface
 
         $client->setTimeout($this->timeout);
 
-        $client->setHeaders([
-            'Content-Type' => $this->requestType
-        ]);
+        $client->setHeaders(array_merge(
+            $transferObject->getHeaders(),
+            [
+                'Content-Type' => $this->requestType
+            ]
+        ));
 
         if ($requestMethod === 'POST') {
             $client->post($requestUri, $requestPayload);

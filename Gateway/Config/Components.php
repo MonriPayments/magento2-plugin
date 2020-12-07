@@ -102,6 +102,17 @@ class Components extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * @param $resource
+     * @param $object
+     * @param null $storeId
+     * @return string
+     */
+    public function getGatewayPaymentCreateURL($storeId = null)
+    {
+        return $this->getGatewayResourceURL('v2/payment/new', $storeId);
+    }
+
+    /**
      * Returns the configured transaction type ('purchase' or 'authorize').
      *
      * @param null|int $storeId
