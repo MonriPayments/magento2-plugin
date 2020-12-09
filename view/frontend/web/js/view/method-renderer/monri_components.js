@@ -40,26 +40,12 @@ define(
 
             initialize: function () {
                 this._super();
-
-                //make sure script is loaded before any other action!!
                 this.monriAddScriptTag();
-                this.monriCreatePayment();
             },
 
-            monriAddScriptTag: function() {
-                var element, scriptTag;
-
-                if (!scriptTagAdded) {
-                    element = document.createElement('script');
-                    scriptTag = document.getElementsByTagName('script')[0];
-
-                    //element.async = true;
-                    // get base url from window.checkout
-                    element.src = 'https://ipgtest.monri.com/dist/components.js';
-
-                    scriptTag.parentNode.insertBefore(element, scriptTag);
-                    scriptTagAdded = true;
-                }
+            monriAddScriptTag: async function() {
+                $.getScript('https://ipgtest.monri.com/dist/components.js')
+                    .done(this.monriCreatePayment.bind(this));
             },
 
             monriCreatePayment: function() {
