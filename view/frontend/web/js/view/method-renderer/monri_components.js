@@ -15,9 +15,10 @@ define(
         'Magento_Checkout/js/model/error-processor',
         'Magento_Checkout/js/model/full-screen-loader',
         'Magento_Customer/js/customer-data',
-        'mage/url'
+        'mage/url',
+        'Magento_Checkout/js/model/quote',
     ],
-    function (Component, $, _, mageTemplate, errorProcessor, fullScreenLoader, customerData, urlBuilder) {
+    function (Component, $, _, mageTemplate, errorProcessor, fullScreenLoader, customerData, urlBuilder, quote) {
         'use strict';
 
         var scriptTagAdded = false;
@@ -82,7 +83,7 @@ define(
                 console.log('placeOrder', data);
 
                 // get from billing address
-                const transactionParams = {
+                /*const transactionParams = {
                     address: "Adresa 123",
                     fullName: "Test Test",
                     city: "Osijek",
@@ -91,9 +92,9 @@ define(
                     country: "HR",
                     email: "ivan@favicode.net",
                     orderInfo: "Testna trx"
-                };
+                };*/
 
-                this.monriInstance.confirmPayment(this.monriCardInstance, transactionParams).then(function (result) {
+                this.monriInstance.confirmPayment(this.monriCardInstance, this.getTransactionData()).then(function (result) {
                     console.log(result);
 
                     if (result.error) {
@@ -115,6 +116,22 @@ define(
                     }
                 });
 
+            },
+            getTransactionData: function () {
+                var address = quote.billingAddress();
+
+                var street = address.street[0];
+
+                return {
+                    address: street,
+                    fullName: address.firstname + ' ' + address.lastname,
+                    city: address.city,
+                    zip: address.postcode,
+                    phone: address.telephone,
+                    country: address.countryId,
+                    email:typeof quote.guestEmail === 'string' ? quote.guestEmail : address.email,
+                    orderInfo: 'Test Order Magento'
+                };
             }
 
         });
