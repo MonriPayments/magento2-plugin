@@ -85,7 +85,7 @@ class CreatePayment extends Action
 
         // check payment data, if we have data for this quote, don't init again?
         $payload = $payment->getAdditionalData();
-        //$payload = false;
+        $payload = false;
         if (!$payload) {
             // command needs to either set
             $this->commandManager->executeByCode('create_payment', $payment);
