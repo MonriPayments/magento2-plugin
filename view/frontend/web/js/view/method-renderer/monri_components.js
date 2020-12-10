@@ -21,8 +21,6 @@ define(
     function (Component, $, _, mageTemplate, errorProcessor, fullScreenLoader, customerData, urlBuilder, quote) {
         'use strict';
 
-        var scriptTagAdded = false;
-
         return Component.extend({
             defaults: {
                 template: 'Monri_Payments/components',
@@ -31,9 +29,6 @@ define(
             redirectAfterPlaceOrder: true,
             monriInstance: null,
             monriCardInstance: null,
-
-
-            // /monri/components/createPayment -> get clientSecret
 
             getCode: function() {
                 return 'monri_components';
@@ -55,7 +50,7 @@ define(
 
                 $.get(url)
                     .done(function (response) {
-                        console.log(response);
+                        //console.log(response);
                         this.monriInit(response.data);
                     }.bind(this))
                     .fail(function (response) {
@@ -65,7 +60,8 @@ define(
 
             monriInit: function (data) {
                 //authenticity_token, locale and stlye settings should come from window.checkout
-
+                console.log('Monri Init');
+                console.log(data);
                 this.monriInstance = Monri(data.authenticity_token, {locale: 'hr'});
                 var components = this.monriInstance.components({clientSecret: data.client_secret});
 
@@ -74,53 +70,42 @@ define(
             },
 
             placeOrder: function(data, event) {
+
                 if (event) {
                     event.preventDefault();
                 }
 
-                var self = this;
+                this.monriInstance.confirmPayment(this.monriCardInstance, this.getTransactionData()).then(function (response) {
+                    console.log(response);
 
-                console.log('placeOrder', data);
-
-                // get from billing address
-                /*const transactionParams = {
-                    address: "Adresa 123",
-                    fullName: "Test Test",
-                    city: "Osijek",
-                    zip: "31000",
-                    phone: "+385123456789",
-                    country: "HR",
-                    email: "ivan@favicode.net",
-                    orderInfo: "Testna trx"
-                };*/
-
-                this.monriInstance.confirmPayment(this.monriCardInstance, this.getTransactionData()).then(function (result) {
-                    console.log(result);
-
-                    if (result.error) {
+                    if (response.error) {
                         // add to magento error message ?
-                        alert(result.error.message);
-
+                        alert(response.error.message);
                         //var errorElement = document.getElementById('card-errors');
                         //errorElement.textContent = result.error.message;
                     } else {
-
                         // handle declined on 3DS Cancel
 
-                        if (result.status === 'approved') {
+                        if (response.result.status === 'approved') {
                             // place order
                             //alert('Call parent');
-                            self._super(data, event);
+                            this._super(data, event);
                         }
-
                     }
-                });
+                }.bind(this));
 
             },
             getTransactionData: function () {
                 var address = quote.billingAddress();
 
                 var street = address.street[0];
+                if(typeof address.street[1] !== "undefined"){
+                    street += ' '+address.street[1];
+                }
+
+                if(typeof address.street[2] !== "undefined"){
+                    street += ' '+address.street[2];
+                }
 
                 return {
                     address: street,
