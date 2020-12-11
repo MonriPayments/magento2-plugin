@@ -29,8 +29,9 @@ define(
             redirectAfterPlaceOrder: true,
             monriInstance: null,
             monriCardInstance: null,
+            dataSecret: null,
 
-            getCode: function() {
+            getCode: function () {
                 return 'monri_components';
             },
 
@@ -39,12 +40,12 @@ define(
                 this.monriAddScriptTag();
             },
 
-            monriAddScriptTag: async function() {
+            monriAddScriptTag: async function () {
                 $.getScript('https://ipgtest.monri.com/dist/components.js')
                     .done(this.monriCreatePayment.bind(this));
             },
 
-            monriCreatePayment: function() {
+            monriCreatePayment: function () {
 
                 var url = urlBuilder.build('monripayments/components/createPayment');
 
@@ -62,20 +63,48 @@ define(
                 //authenticity_token, locale and stlye settings should come from window.checkout
                 console.log('Monri Init');
                 console.log(data);
+                this.dataSecret = data.client_secret;
                 this.monriInstance = Monri(data.authenticity_token, {locale: 'hr'});
-                var components = this.monriInstance.components({clientSecret: data.client_secret});
+                var components = this.monriInstance.components({clientSecret: this.dataSecret});
 
                 this.monriCardInstance = components.create('card');
                 this.monriCardInstance.mount(this.monriCardContainerId);
             },
 
-            placeOrder: function(data, event) {
+            placeOrder: function (data, event) {
+
+                var original = this._super.bind(this);
 
                 if (event) {
                     event.preventDefault();
                 }
 
-                this.monriInstance.confirmPayment(this.monriCardInstance, this.getTransactionData()).then(function (response) {
+                var myPromise = new Promise(function (myresolve, myreject) {
+                    this.monriInstance.confirmPayment(this.monriCardInstance, this.getTransactionData())
+                        .then(function (result) {
+                            if (result.error) {
+                                myreject(result.error);
+                            } else {
+                                // handle declined on 3DS Cancel
+                                if (result.result.status === 'approved') {
+                                    myresolve(result.result)
+                                } else {
+                                    myreject(result);
+                                }
+                            }
+                        });
+                }.bind(this));
+
+                myPromise.then(function (r) {
+                    alert(r);
+                    console.log(r);
+                    original(data, event)
+                }.bind(this)).catch(function (r) {
+                    alert(r.message);
+                }.bind(this));
+
+
+                /*this.monriInstance.confirmPayment(this.monriCardInstance, this.getTransactionData()).then(function (response) {
                     console.log(response);
 
                     if (response.error) {
@@ -85,26 +114,24 @@ define(
                         //errorElement.textContent = result.error.message;
                     } else {
                         // handle declined on 3DS Cancel
-
                         if (response.result.status === 'approved') {
-                            // place order
-                            //alert('Call parent');
-                            this._super(data, event);
+                            //@to-do problem with callign parent
+                            this.__proto__.__proto__.placeOrder(data, event);
                         }
                     }
-                }.bind(this));
+                }.bind(this));*/
 
             },
             getTransactionData: function () {
                 var address = quote.billingAddress();
 
                 var street = address.street[0];
-                if(typeof address.street[1] !== "undefined"){
-                    street += ' '+address.street[1];
+                if (typeof address.street[1] !== "undefined") {
+                    street += ' ' + address.street[1];
                 }
 
-                if(typeof address.street[2] !== "undefined"){
-                    street += ' '+address.street[2];
+                if (typeof address.street[2] !== "undefined") {
+                    street += ' ' + address.street[2];
                 }
 
                 return {
@@ -114,11 +141,18 @@ define(
                     zip: address.postcode,
                     phone: address.telephone,
                     country: address.countryId,
-                    email:typeof quote.guestEmail === 'string' ? quote.guestEmail : address.email,
+                    email: typeof quote.guestEmail === 'string' ? quote.guestEmail : address.email,
                     orderInfo: 'Test Order Magento'
                 };
+            },
+            getData: function () {
+                return {
+                    'method': this.item.method,
+                    'additional_data': {
+                        'data_secret': this.dataSecret
+                    }
+                };
             }
-
         });
     }
 );
