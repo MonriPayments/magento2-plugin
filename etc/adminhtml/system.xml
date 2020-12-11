@@ -124,7 +124,7 @@
                     <comment><![CDATA[The language that will be used for Monri form on Checkout.]]></comment>
                     <source_model>\Monri\Payments\Block\Adminhtml\Config\Source\Components\Languages</source_model>
                 </field>
-                <field id="transaction_type" translate="label" type="select" sortOrder="50"
+                <field id="payment_action" translate="label" type="select" sortOrder="50"
                        showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Transaction Type</label>
                     <source_model>Monri\Payments\Block\Adminhtml\Config\Source\TransactionTypes</source_model>

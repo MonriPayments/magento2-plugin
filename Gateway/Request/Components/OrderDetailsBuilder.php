@@ -63,9 +63,10 @@ class OrderDetailsBuilder implements BuilderInterface
         /** @var \Magento\Payment\Gateway\Data\Quote\QuoteAdapter $order */
         $order = $paymentDataObject->getOrder();
 
-        $orderNumber = 'wtest_' . $order->getOrderIncrementId();
+        $orderNumber = 'dtest_' . $order->getOrderIncrementId();
+        $orderNumber = uniqid('wtest_');
 
-        $orderInfo = __('Order: #%1', $orderNumber);
+        $orderInfo = 'Test Order';
 
         $transportObject = $this->dataObjectFactory->create([
             'data' => [
