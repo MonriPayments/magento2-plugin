@@ -24,12 +24,17 @@ define(
         return Component.extend({
             defaults: {
                 template: 'Monri_Payments/components',
-                monriCardContainerId: 'monri-card-container'
+                monriCardContainerId: 'monri-card-container',
+                tracks: {
+                    isLoading: true
+                }
             },
             redirectAfterPlaceOrder: true,
             monriInstance: null,
             monriCardInstance: null,
             dataSecret: null,
+            isLoading: false,
+            result: null,
 
             getCode: function () {
                 return 'monri_components';
@@ -37,6 +42,7 @@ define(
 
             initialize: function () {
                 this._super();
+                this.isLoading = true;
                 this.monriAddScriptTag();
             },
 
@@ -51,12 +57,13 @@ define(
 
                 $.get(url)
                     .done(function (response) {
-                        //console.log(response);
                         this.monriInit(response.data);
                     }.bind(this))
                     .fail(function (response) {
-
-                    });
+                        alert('Error Occured.');
+                    }).always(function () {
+                    this.isLoading = false;
+                }.bind(this));
             },
 
             monriInit: function (data) {
@@ -72,13 +79,10 @@ define(
             },
 
             placeOrder: function (data, event) {
-
                 var original = this._super.bind(this);
-
                 if (event) {
                     event.preventDefault();
                 }
-
                 var myPromise = new Promise(function (myresolve, myreject) {
                     this.monriInstance.confirmPayment(this.monriCardInstance, this.getTransactionData())
                         .then(function (result) {
@@ -87,12 +91,13 @@ define(
                             } else {
                                 // handle declined on 3DS Cancel
                                 if (result.result.status === 'approved') {
+                                    this.result = result.result;
                                     myresolve(result.result)
                                 } else {
                                     myreject(result);
                                 }
                             }
-                        });
+                        }.bind(this));
                 }.bind(this));
 
                 myPromise.then(function (r) {
@@ -102,24 +107,6 @@ define(
                 }.bind(this)).catch(function (r) {
                     alert(r.message);
                 }.bind(this));
-
-
-                /*this.monriInstance.confirmPayment(this.monriCardInstance, this.getTransactionData()).then(function (response) {
-                    console.log(response);
-
-                    if (response.error) {
-                        // add to magento error message ?
-                        alert(response.error.message);
-                        //var errorElement = document.getElementById('card-errors');
-                        //errorElement.textContent = result.error.message;
-                    } else {
-                        // handle declined on 3DS Cancel
-                        if (response.result.status === 'approved') {
-                            //@to-do problem with callign parent
-                            this.__proto__.__proto__.placeOrder(data, event);
-                        }
-                    }
-                }.bind(this));*/
 
             },
             getTransactionData: function () {
@@ -149,7 +136,8 @@ define(
                 return {
                     'method': this.item.method,
                     'additional_data': {
-                        'data_secret': this.dataSecret
+                        'data_secret': this.dataSecret,
+                        'result': this.result
                     }
                 };
             }
