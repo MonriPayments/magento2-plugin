@@ -15,6 +15,7 @@ use Magento\Quote\Model\Quote\Payment;
 
 class PaymentCreateHandler implements HandlerInterface
 {
+    const INITIAL_DATA = 'initial_payment_data';
     /**
      * @param array $handlingSubject
      * @param array $response
@@ -27,15 +28,7 @@ class PaymentCreateHandler implements HandlerInterface
         /** @var Payment $payment */
         $payment = $paymentDO->getPayment();
 
-        $payment->setAdditionalData(json_encode($response));
-        // save quote payment here?
-
-        // what is the difference between additionalData and AdditionalInformation ?!?
-
-        /*
-        $payment
-            ->setAdditionalInformation('order_id', $response['orderId'])
-            ->setAdditionalInformation('redirect_url', $response['redirectUrl']);
-        */
+        //$payment->setAdditionalData(json_encode($response));
+        $payment->setAdditionalInformation(self::INITIAL_DATA, $response);
     }
 }

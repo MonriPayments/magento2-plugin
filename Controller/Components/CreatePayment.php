@@ -84,12 +84,12 @@ class CreatePayment extends Action
         //$payment->setAdditionalData('{"status":"approved","id":"6b3f83ff195e0cbade637f2dcb42b77195073dd0","client_secret":"6b3f83ff195e0cbade637f2dcb42b77195073dd0"}');
 
         // check payment data, if we have data for this quote, don't init again?
-        $payload = $payment->getAdditionalData();
+
         $payload = false;
         if (!$payload) {
             // command needs to either set
             $this->commandManager->executeByCode('create_payment', $payment);
-            $payload = $payment->getAdditionalData();
+            $payload = $payment->getAdditionalInformation(\Monri\Payments\Gateway\Response\Components\PaymentCreateHandler::INITIAL_DATA);
         }
 
         // save reserved id and additional data
