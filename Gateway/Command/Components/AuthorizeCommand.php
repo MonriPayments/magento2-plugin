@@ -5,6 +5,7 @@
  */
 namespace Monri\Payments\Gateway\Command\Components;
 
+use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapperInterface;
 use Magento\Payment\Gateway\Http\ClientException;
@@ -50,6 +51,8 @@ class AuthorizeCommand implements CommandInterface
 
     public function execute(array $commandSubject)
     {
+        $payment = SubjectReader::readPayment($commandSubject);
+
 
         if ($this->validator !== null) {
             $result = $this->validator->validate(
