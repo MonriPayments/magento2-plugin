@@ -101,8 +101,6 @@ define(
                 }.bind(this));
 
                 myPromise.then(function (r) {
-                    alert(r);
-                    console.log(r);
                     original(data, event)
                 }.bind(this)).catch(function (r) {
                     alert(r.message);
@@ -133,13 +131,14 @@ define(
                 };
             },
             getData: function () {
-                return {
+                var data = {
                     'method': this.item.method,
                     'additional_data': {
-                        'data_secret': this.dataSecret,
-                        'result': this.result
+                        'data_secret': this.dataSecret
                     }
                 };
+                data['additional_data'] = _.extend(data['additional_data'], this.result);
+                return data;
             }
         });
     }
