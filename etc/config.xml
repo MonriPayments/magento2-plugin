@@ -48,7 +48,7 @@
                 <!-- Internal config -->
                 <model>MonriComponentsFacade</model>
                 <allowspecific>0</allowspecific>
-                <can_initialize>0</can_initialize>
+                <can_initialize>1</can_initialize>
                 <can_authorize>1</can_authorize>
                 <can_capture>1</can_capture>
                 <can_order>0</can_order>
