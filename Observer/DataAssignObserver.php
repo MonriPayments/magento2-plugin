@@ -5,9 +5,8 @@ namespace Monri\Payments\Observer;
 use Magento\Framework\Event\Observer;
 use Magento\Payment\Observer\AbstractDataAssignObserver;
 use Magento\Quote\Api\Data\PaymentInterface;
-use Amazon\Payment\Plugin\AdditionalInformation;
 use Magento\Quote\Model\Quote\Payment;
-use Magento\Vault\Api\Data\PaymentTokenInterface;
+
 
 class DataAssignObserver extends AbstractDataAssignObserver
 {
