@@ -58,13 +58,15 @@ class AuthorizeHandler implements HandlerInterface
         /** @var Order $order */
         $order = $payment->getOrder();
 
+        $payment->setTransactionAdditionalInfo(Transaction::RAW_DETAILS, $transactionData);
+        
         $payment
             ->setTransactionId($this->getTransactionId($transactionData))
             ->setIsTransactionClosed(0)
             ->registerAuthorizationNotification($payment->getOrder()->getBaseGrandTotal());
 
         //$payment->setTransactionId($this->getTransactionId($transactionData));
-        //$payment->setTransactionAdditionalInfo(Transaction::RAW_DETAILS, $transactionData);
+
 
         /*$payment->setTransactionId($this->getTransactionId($transactionData));
         $payment->setTransactionAdditionalInfo(
