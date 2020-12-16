@@ -31,7 +31,7 @@
             <div class="primary">
                 <button class="action primary checkout"
                         type="submit"
-                        data-bind="click: placeOrder, enable: (getCode() == isChecked())"
+                        data-bind="click: placeOrder, enable: (getCode() == isChecked() && monriReady)"
                         disabled>
                     <span data-bind="i18n: 'Place Order'"></span>
                 </button>
