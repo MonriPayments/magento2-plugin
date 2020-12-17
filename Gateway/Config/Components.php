@@ -113,6 +113,15 @@ class Components extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
+     * @param null|int $storeId
+     * @return string
+     */
+    public function getComponentsJsURL($storeId = null)
+    {
+        return $this->getGatewayResourceURL('dist/components.js', $storeId);
+    }
+
+    /**
      * Returns the configured transaction type ('purchase' or 'authorize').
      *
      * @param null|int $storeId
