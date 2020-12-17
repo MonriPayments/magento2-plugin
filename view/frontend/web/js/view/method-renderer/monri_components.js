@@ -229,15 +229,7 @@ define(
                 };
                 data['additional_data'] = _.extend(data['additional_data'], this.result);
                 return data;
-            },
-
-            /*
-            getCheckoutConfig: function ($key) {
-                return $key ?
-                    window.checkoutConfig.payment.monri_components[$key] :
-                    window.checkoutConfig.payment.monri_components;
             }
-            */
         });
     }
 );
