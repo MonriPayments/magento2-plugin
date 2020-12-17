@@ -18,6 +18,9 @@ define(
     function (Component, $, _, customerData, quote, urlBuilder, $t) {
         'use strict';
 
+        var monriConfig = window.checkoutConfig.payment.monri_components;
+        console.log('monriConfig', monriConfig);
+
         return Component.extend({
             defaults: {
                 template: 'Monri_Payments/components',
@@ -37,7 +40,8 @@ define(
 
             monriInstance: null,
             monriCardInstance: null,
-            dataSecret: null,
+
+            clientSecret: null,
             result: null,
 
             getCode: function () {
@@ -117,21 +121,23 @@ define(
             },
 
             monriInit: function (data) {
-                //authenticity_token, locale and style settings should come from window.checkout
                 console.log('monriInit', data);
 
                 // if this is same init, don't change previous form
-                if (this.dataSecret === data.client_secret) {
+                if (this.clientSecret === data.client_secret) {
                     this.isLoading = false;
                     this.monriReady = true;
                     return;
                 }
 
-                this.dataSecret = data.client_secret;
+                this.clientSecret = data.client_secret;
 
                 $('#'+this.monriCardContainerId).empty();
-                this.monriInstance = Monri(data.authenticity_token, {locale: 'hr'});
-                var components = this.monriInstance.components({clientSecret: this.dataSecret});
+
+                this.monriInstance = Monri(monriConfig.authenticityToken, {
+                    locale: monriConfig.locale
+                });
+                var components = this.monriInstance.components({clientSecret: this.clientSecret});
                 this.monriCardInstance = components.create('card');
                 this.monriCardInstance.mount(this.monriCardContainerId);
 
@@ -218,12 +224,20 @@ define(
                 var data = {
                     'method': this.item.method,
                     'additional_data': {
-                        'data_secret': this.dataSecret
+                        'data_secret': this.clientSecret
                     }
                 };
                 data['additional_data'] = _.extend(data['additional_data'], this.result);
                 return data;
+            },
+
+            /*
+            getCheckoutConfig: function ($key) {
+                return $key ?
+                    window.checkoutConfig.payment.monri_components[$key] :
+                    window.checkoutConfig.payment.monri_components;
             }
+            */
         });
     }
 );

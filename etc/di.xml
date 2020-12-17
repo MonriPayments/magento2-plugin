@@ -338,6 +338,7 @@
         </arguments>
     </virtualType>
 
+    <!-- @todo: wrong config on few places !! -->
     <virtualType name="MonriComponentsCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
         <arguments>
             <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config</argument>

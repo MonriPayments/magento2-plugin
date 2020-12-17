@@ -43,7 +43,7 @@ class CreatePayment extends Action
     /**
      * @var Config
      */
-    private $config;
+    //private $config;
 
     /**
      * @var Logger
@@ -54,14 +54,14 @@ class CreatePayment extends Action
         Context $context,
         Session $checkoutSession,
         //OrderRepository $orderRepository,
-        Config $config,
+        //Config $config,
         CommandManagerInterface $commandManager,
         Logger $logger
     ) {
         $this->commandManager = $commandManager;
         $this->checkoutSession = $checkoutSession;
         //$this->orderRepository = $orderRepository;
-        $this->config = $config;
+        //$this->config = $config;
         $this->logger = $logger;
 
         parent::__construct($context);
@@ -73,29 +73,20 @@ class CreatePayment extends Action
         // save to session?
         // call CreatePaymentCommand
 
-        //@todo: add no cache header !!
+        //@todo: add no cache header since it's GET request ?!
 
         $quote = $this->checkoutSession->getQuote();
         $quote->reserveOrderId();
 
-        // monri payment needs to be set on quote!! is it always set? (/set-payment request from checkout)
+        // monri_components payment needs to be set on quote!! is it always set? (/set-payment request from checkout)
         $payment = $quote->getPayment();
 
-        //$payment->setAdditionalData('{"status":"approved","id":"6b3f83ff195e0cbade637f2dcb42b77195073dd0","client_secret":"6b3f83ff195e0cbade637f2dcb42b77195073dd0"}');
-
-        // check payment data, if we have data for this quote, don't init again?
-
-        $payload = false;
-        if (!$payload) {
-            // command needs to either set
-            $this->commandManager->executeByCode('create_payment', $payment);
-            $payload = $payment->getAdditionalInformation(\Monri\Payments\Gateway\Response\Components\PaymentCreateHandler::INITIAL_DATA);
-        }
+        // command needs to either set
+        $this->commandManager->executeByCode('create_payment', $payment);
+        $payload = $payment->getAdditionalInformation(\Monri\Payments\Gateway\Response\Components\PaymentCreateHandler::INITIAL_DATA);
 
         // save reserved id and additional data
         $quote->save();
-
-        //$payload = json_decode($additionalData);
 
         /** @var Json $resultJson */
         $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
@@ -103,7 +94,7 @@ class CreatePayment extends Action
         $resultJson->setData([
             'data' => [
                 'client_secret' => $payload['client_secret'],
-                'authenticity_token' => $this->config->getClientAuthenticityToken()
+                //'authenticity_token' => $this->config->getClientAuthenticityToken()
             ],
             'error' => null
         ]);

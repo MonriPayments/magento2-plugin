@@ -9,6 +9,7 @@
 
 namespace Monri\Payments\Gateway\Http\Components;
 
+use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Payment\Gateway\Http\TransferBuilder;
 use Magento\Payment\Gateway\Http\TransferFactoryInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
@@ -33,20 +34,28 @@ class PaymentCreateTransferFactory implements TransferFactoryInterface
     private $digest;
 
     /**
+     * @var Json
+     */
+    private $json;
+
+    /**
      * PaymentInitializeTransferFactory constructor.
      *
      * @param TransferBuilder $transferBuilder
      * @param Config $config
      * @param Digest $digest
+     * @param Json $json
      */
     public function __construct(
         TransferBuilder $transferBuilder,
         Config $config,
-        Digest $digest
+        Digest $digest,
+        Json $json
     ) {
         $this->transferBuilder = $transferBuilder;
         $this->config = $config;
         $this->digest = $digest;
+        $this->json = $json;
     }
 
     /**
@@ -64,13 +73,11 @@ class PaymentCreateTransferFactory implements TransferFactoryInterface
         }
 
         $uri = $this->config->getGatewayPaymentCreateURL($storeId);
-        //$uri = 'https://ipgtest.monri.com/v2/payment/new';
 
-        //@todo: Move this to Client?
+        //@todo: move this to Client?
         $clientAuthenticityToken = $this->config->getClientAuthenticityToken($storeId);
         $timestamp = time();
-        //$orderId = $request['order_number'];
-        $digest = $this->digest->build($timestamp, json_encode($request), $storeId);
+        $digest = $this->digest->build($timestamp, $this->json->serialize($request), $storeId);
 
         return $this->transferBuilder
                 ->setUri($uri)

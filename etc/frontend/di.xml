@@ -12,4 +12,11 @@
     <type name="Magento\Framework\App\Request\CsrfValidator">
         <plugin name="monripayments_csrf_validator_skip" type="Monri\Payments\Plugin\CallbackCsrfSkip" />
     </type>
+    <type name="Magento\Checkout\Model\CompositeConfigProvider">
+        <arguments>
+            <argument name="configProviders" xsi:type="array">
+                <item name="monri_components_checkout_config_provider" xsi:type="object">Monri\Payments\Model\CheckoutConfigProvider</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
