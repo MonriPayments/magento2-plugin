@@ -356,7 +356,7 @@
                 <item name="initialize" xsi:type="string">MonriComponentsAuthorizeCommand</item>
                 <item name="create_payment" xsi:type="string">MonriComponentsCreatePaymentCommand</item>
 
-                <item name="capture" xsi:type="string">MonriPaymentsCaptureCommand</item>
+                <item name="capture" xsi:type="string">MonriComponentsCaptureCommand</item>
                 <item name="refund" xsi:type="string">MonriPaymentsRefundCommand</item>
                 <item name="void" xsi:type="string">MonriPaymentsVoidCommand</item>
             </argument>
@@ -415,5 +415,16 @@
         </arguments>
     </virtualType>
     <!-- END base component command -->
+
+    <virtualType name="MonriComponentsCaptureCommand" type="MonriPaymentsComponentBaseTransactionCommand">
+        <arguments>
+            <argument name="transferFactory" xsi:type="object">MonriComponentsCaptureFactory</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="MonriComponentsCaptureFactory" type="Monri\Payments\Gateway\Http\OrderUpdateTransferFactory">
+        <arguments>
+            <argument name="resource" xsi:type="string">capture</argument>
+        </arguments>
+    </virtualType>
 
 </config>
