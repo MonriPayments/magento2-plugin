@@ -416,13 +416,28 @@
     </virtualType>
     <!-- END base component command -->
 
+
+
+
+
+
     <virtualType name="MonriComponentsCaptureCommand" type="MonriPaymentsComponentBaseTransactionCommand">
         <arguments>
+            <argument name="requestBuilder" xsi:type="object">MonriComponentsOrderUpdateBuilder</argument>
             <argument name="transferFactory" xsi:type="object">MonriComponentsCaptureFactory</argument>
         </arguments>
     </virtualType>
+
+    <virtualType name="MonriComponentsOrderUpdateBuilder" type="Monri\Payments\Gateway\Request\OrderUpdateBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
+        </arguments>
+    </virtualType>
+
+
     <virtualType name="MonriComponentsCaptureFactory" type="Monri\Payments\Gateway\Http\OrderUpdateTransferFactory">
         <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
             <argument name="resource" xsi:type="string">capture</argument>
         </arguments>
     </virtualType>
