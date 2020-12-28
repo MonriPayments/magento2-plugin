@@ -64,11 +64,11 @@ class OrderDetailsBuilder implements BuilderInterface
         /** @var \Magento\Payment\Gateway\Data\Quote\QuoteAdapter $order */
         $order = $paymentDataObject->getOrder();
 
-        $orderNumber = $order->getOrderIncrementId() . uniqid('-');
+        $orderNumber = $this->formatter->formatText($order->getOrderIncrementId() . uniqid('-'), 40);
 
-        $payment = $paymentDataObject->getPayment()->setAdditionalInformation(self::ORDER_NUMBER_FIELD, $orderNumber);
+        $paymentDataObject->getPayment()->setAdditionalInformation(self::ORDER_NUMBER_FIELD, $orderNumber);
 
-        $orderInfo = 'Order: '.$order->getOrderIncrementId();
+        $orderInfo = __('Order: %1', $order->getOrderIncrementId());
 
         $transportObject = $this->dataObjectFactory->create([
             'data' => [
@@ -94,7 +94,7 @@ class OrderDetailsBuilder implements BuilderInterface
 
         return [
             self::ORDER_INFO_FIELD => $this->formatter->formatText($orderInfo, 100),
-            self::ORDER_NUMBER_FIELD => $this->formatter->formatText($orderNumber, 40),
+            self::ORDER_NUMBER_FIELD => $orderNumber,
             self::AMOUNT_FIELD => $orderAmount,
             self::CURRENCY_FIELD => $currencyCode,
             'transaction_type' => 'authorize'
