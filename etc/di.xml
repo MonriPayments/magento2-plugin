@@ -360,6 +360,7 @@
                 <item name="capture" xsi:type="string">MonriComponentsCaptureCommand</item>
                 <item name="refund" xsi:type="string">MonriComponentsRefundCommand</item>
                 <item name="void" xsi:type="string">MonriComponentsVoidCommand</item>
+                <item name="cancel" xsi:type="string">MonriComponentsVoidCommand</item>
             </argument>
         </arguments>
     </virtualType>
