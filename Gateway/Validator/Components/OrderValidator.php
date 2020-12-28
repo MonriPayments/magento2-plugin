@@ -14,6 +14,7 @@ use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use Monri\Payments\Gateway\Config;
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use Monri\Payments\Gateway\Request\Components\OrderDetailsBuilder;
 
 class OrderValidator extends AbstractValidator
 {
@@ -31,7 +32,8 @@ class OrderValidator extends AbstractValidator
     public function __construct(
         Config $config,
         ResultInterfaceFactory $resultFactory
-    ) {
+    )
+    {
         parent::__construct($resultFactory);
         $this->config = $config;
     }
@@ -50,22 +52,19 @@ class OrderValidator extends AbstractValidator
         $paymentDataObject = SubjectReader::readPayment($validationSubject);
         $payment = $paymentDataObject->getPayment();
 
-        $trasactionData = (array) $paymentDataObject->getPayment()->getAdditionalInformation('transaction_data');
-        //$initialPaymentData = (array) $paymentData->getPayment()->getAdditionalInformation('initial_payment_data');
+        $transactionData = (array)$paymentDataObject->getPayment()->getAdditionalInformation('transaction_data');
 
-        /*if(!isset($trasactionData['order_number'])
-            || !isset($initialPaymentData['order_number'])
-            || $trasactionData['order_number'] !== $initialPaymentData['order_number']){
-            $isValid = false;
-            $errorMessages[] = __('Order Number is wrong.');
-        }*/
-
-        if($payment->getOrder()->getBaseGrandTotal() != ($trasactionData['amount']/100)) {
+        if ($payment->getAdditionalInformation(OrderDetailsBuilder::ORDER_NUMBER_FIELD) != $transactionData['order_number']) {
             $isValid = false;
             $errorMessages[] = __('Order is not valid.');
         }
 
-        if(!isset($trasactionData['status']) || $trasactionData['status'] != 'approved'){
+        if ($payment->getOrder()->getBaseGrandTotal() != ($transactionData['amount'] / 100)) {
+            $isValid = false;
+            $errorMessages[] = __('Order is not valid.');
+        }
+
+        if (!isset($trasactionData['status']) || $transactionData['status'] != 'approved') {
             $isValid = false;
             $errorMessages[] = __('Transaction was declined.');
         }

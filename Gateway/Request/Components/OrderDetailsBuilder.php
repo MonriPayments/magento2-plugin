@@ -44,7 +44,8 @@ class OrderDetailsBuilder implements BuilderInterface
         Formatter $formatter,
         ManagerInterface $eventManager,
         DataObjectFactory $dataObjectFactory
-    ) {
+    )
+    {
         $this->formatter = $formatter;
         $this->eventManager = $eventManager;
         $this->dataObjectFactory = $dataObjectFactory;
@@ -63,10 +64,11 @@ class OrderDetailsBuilder implements BuilderInterface
         /** @var \Magento\Payment\Gateway\Data\Quote\QuoteAdapter $order */
         $order = $paymentDataObject->getOrder();
 
-        $orderNumber = $order->getOrderIncrementId();
-        //$orderNumber = uniqid('wtest_');
+        $orderNumber = $order->getOrderIncrementId() . uniqid('-');
 
-        $orderInfo = 'Test Order';
+        $payment = $paymentDataObject->getPayment()->setAdditionalInformation(self::ORDER_NUMBER_FIELD, $orderNumber);
+
+        $orderInfo = 'Order: '.$order->getOrderIncrementId();
 
         $transportObject = $this->dataObjectFactory->create([
             'data' => [
@@ -84,7 +86,7 @@ class OrderDetailsBuilder implements BuilderInterface
         $orderInfo = $transportObject->getData('description');
 
         $orderAmount = $this->formatter->formatPrice(
-            //$order->getGrandTotalAmount()
+        //$order->getGrandTotalAmount()
             $paymentDataObject->getPayment()->getQuote()->getBaseGrandTotal() //can we do this better?
         );
 
