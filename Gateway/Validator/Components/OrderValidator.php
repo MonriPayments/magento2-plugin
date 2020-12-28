@@ -64,7 +64,7 @@ class OrderValidator extends AbstractValidator
             $errorMessages[] = __('Order is not valid.');
         }
 
-        if (!isset($trasactionData['status']) || $transactionData['status'] != 'approved') {
+        if (!isset($transactionData['status']) || $transactionData['status'] != 'approved') {
             $isValid = false;
             $errorMessages[] = __('Transaction was declined.');
         }

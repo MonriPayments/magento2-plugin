@@ -43,6 +43,9 @@ define(
 
             clientSecret: null,
             result: null,
+            currentTtl: null,
+            //timeout cca 15 minutes
+            timeLimit: 899,
 
             getCode: function () {
                 return 'monri_components';
@@ -74,7 +77,7 @@ define(
                     .fail(this.monriFailed.bind(this));
             },
 
-            monriAddScriptTag: function() {
+            monriAddScriptTag: function () {
                 var deferred = $.Deferred();
 
                 var element, scriptTag;
@@ -93,7 +96,7 @@ define(
                 return deferred.promise();
             },
 
-            onTotalsUpdate: function() {
+            onTotalsUpdate: function () {
                 this.monriCreatePayment();
             },
 
@@ -108,9 +111,10 @@ define(
 
                 this.isLoading = true;
                 this.monriReady = false;
+                this.currentTtl = this.getTime();
 
                 var url = urlBuilder.build('monripayments/components/createPayment');
-                this.monriCreatePaymentAction = $.get(url)
+                this.monriCreatePaymentAction = $.post(url, {ttl: this.ttl})
                     .done(
                         function (response) {
                             this.monriInit(response.data);
@@ -132,7 +136,7 @@ define(
 
                 this.clientSecret = data.client_secret;
 
-                $('#'+this.monriCardContainerId).empty();
+                $('#' + this.monriCardContainerId).empty();
 
                 this.monriInstance = Monri(monriConfig.authenticityToken, {
                     locale: monriConfig.locale
@@ -158,15 +162,34 @@ define(
              *
              * @param method
              */
-            fixMonriForm: function(method) {
+            fixMonriForm: function (method) {
                 if (method === this.getCode()) {
-                    $('#'+this.monriCardContainerId+'>iframe').css('height', 'auto');
+                    $('#' + this.monriCardContainerId + '>iframe').css('height', 'auto');
                 }
+            },
+
+            checkIsValidOrder: function () {
+                var isValid = true;
+
+                if (this.getTime() >= this.currentTtl + this.timeLimit) {
+                    isValid = false;
+                }
+                return isValid;
             },
 
             placeOrder: function (data, event) {
                 if (event) {
                     event.preventDefault();
+                }
+
+                if (!this.checkIsValidOrder()) {
+
+                    this.messageContainer.addErrorMessage({
+                        message: $t('Sorry, timeout occured. Payment form will be reloaded.')
+                    });
+
+                    this.monriCreatePayment();
+                    return;
                 }
 
                 var parentPlaceOrder = this._super.bind(this);
@@ -229,6 +252,10 @@ define(
                 };
                 data['additional_data'] = _.extend(data['additional_data'], this.result);
                 return data;
+            },
+
+            getTime: function () {
+                return Math.floor(Date.now() / 1000);
             }
         });
     }
