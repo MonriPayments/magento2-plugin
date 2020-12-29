@@ -10,6 +10,7 @@ namespace Monri\Payments\Gateway\Config;
 class Components extends \Monri\Payments\Gateway\Config
 {
     const CODE = 'monri_components';
+    const PAYMENT_ACTION = 'payment_action';
 
     /**
      * @param $resource
@@ -29,5 +30,14 @@ class Components extends \Monri\Payments\Gateway\Config
     public function getComponentsJsURL($storeId = null)
     {
         return $this->getGatewayResourceURL('dist/components.js', $storeId);
+    }
+
+    /**
+     * @param null $storeId
+     * @return mixed
+     */
+    public function getPaymentAction($storeId = null)
+    {
+        return $this->getValue(self::PAYMENT_ACTION, $storeId);
     }
 }

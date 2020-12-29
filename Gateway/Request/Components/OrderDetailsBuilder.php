@@ -14,6 +14,7 @@ use Magento\Framework\Event\ManagerInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Monri\Payments\Helper\Formatter;
+use Monri\Payments\Gateway\Config\Components as ComponentsConfig;
 
 class OrderDetailsBuilder implements BuilderInterface
 {
@@ -40,15 +41,22 @@ class OrderDetailsBuilder implements BuilderInterface
      */
     private $dataObjectFactory;
 
+    /**
+     * @var ComponentsConfig
+     */
+    private $config;
+
     public function __construct(
         Formatter $formatter,
         ManagerInterface $eventManager,
-        DataObjectFactory $dataObjectFactory
+        DataObjectFactory $dataObjectFactory,
+        ComponentsConfig $config
     )
     {
         $this->formatter = $formatter;
         $this->eventManager = $eventManager;
         $this->dataObjectFactory = $dataObjectFactory;
+        $this->config = $config;
     }
 
     /**
@@ -86,7 +94,6 @@ class OrderDetailsBuilder implements BuilderInterface
         $orderInfo = $transportObject->getData('description');
 
         $orderAmount = $this->formatter->formatPrice(
-        //$order->getGrandTotalAmount()
             $paymentDataObject->getPayment()->getQuote()->getBaseGrandTotal() //can we do this better?
         );
 
@@ -97,7 +104,7 @@ class OrderDetailsBuilder implements BuilderInterface
             self::ORDER_NUMBER_FIELD => $orderNumber,
             self::AMOUNT_FIELD => $orderAmount,
             self::CURRENCY_FIELD => $currencyCode,
-            'transaction_type' => 'authorize'
+            'transaction_type' => $this->config->getPaymentAction($paymentDataObject->getPayment()->getQuote()->getStoreId())
         ];
     }
 }
