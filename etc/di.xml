@@ -355,6 +355,7 @@
                 <item name="gateway_response" xsi:type="string">MonriPaymentsGatewayResponseCommand</item>
                 -->
                 <item name="initialize" xsi:type="string">MonriComponentsAuthorizeCommand</item>
+                <item name="authorize" xsi:type="string">MonriComponentsAuthorizeCommand</item>
                 <item name="create_payment" xsi:type="string">MonriComponentsCreatePaymentCommand</item>
 
                 <item name="capture" xsi:type="string">MonriComponentsCaptureCommand</item>

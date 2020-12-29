@@ -62,8 +62,8 @@ class AuthorizeHandler implements HandlerInterface
         
         $payment
             ->setTransactionId($this->getTransactionId($transactionData))
-            ->setIsTransactionClosed(0)
-            ->registerAuthorizationNotification($payment->getOrder()->getBaseGrandTotal());
+            ->setIsTransactionClosed(0);
+            //->registerAuthorizationNotification($payment->getOrder()->getBaseGrandTotal());
 
         //$payment->setTransactionId($this->getTransactionId($transactionData));
 
