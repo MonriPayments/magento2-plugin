@@ -407,7 +407,7 @@
     <!-- base component command -->
     <virtualType name="MonriPaymentsComponentBaseTransactionCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">MonriComponentsOrderUpdateBuilder</argument>
+            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\Components\OrderUpdateBuilder</argument>
             <argument name="transferFactory" xsi:type="object">Monri\Payments\Gateway\Http\OrderUpdateTransferFactory</argument>
             <argument name="client" xsi:type="object">MonriPaymentsXmlClient</argument>
             <argument name="handler" xsi:type="object">MonriComponentsOrderUpdateHandler</argument>
@@ -418,11 +418,6 @@
     </virtualType>
     <!-- END base component command -->
 
-    <virtualType name="MonriComponentsOrderUpdateBuilder" type="Monri\Payments\Gateway\Request\OrderUpdateBuilder">
-        <arguments>
-            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
-        </arguments>
-    </virtualType>
     <virtualType name="MonriComponentsOrderUpdateHandler" type="Monri\Payments\Gateway\Response\OrderUpdateHandler">
         <arguments>
             <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
