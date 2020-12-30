@@ -46,6 +46,7 @@ define(
             currentTtl: null,
             //timeout cca 15 minutes
             timeLimit: 899,
+            afterRenderDeffer: null,
 
             getCode: function () {
                 return 'monri_components';
@@ -72,9 +73,11 @@ define(
                     .fail(this.monriFailed.bind(this));
                */
 
-                this.monriAddScriptTag()
-                    .done(this.monriCreatePayment.bind(this))
-                    .fail(this.monriFailed.bind(this));
+                this.afterRenderDeffer = $.Deferred();
+                $.when(this.monriAddScriptTag(), this.afterRenderDeffer.promise())
+                    .then(this.monriCreatePayment.bind(this));
+                    //.catch(this.monriFailed.bind(this));
+
             },
 
             monriAddScriptTag: function () {
@@ -241,6 +244,10 @@ define(
                     email: typeof quote.guestEmail === 'string' ? quote.guestEmail : address.email,
                     orderInfo: 'Test Order Magento'
                 };
+            },
+
+            start: function () {
+                this.afterRenderDeffer.resolve();
             },
 
             getData: function () {
