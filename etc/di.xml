@@ -349,15 +349,8 @@
     <virtualType name="MonriComponentsCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
             <argument name="commands" xsi:type="array">
-                <!--
-                <item name="create_request" xsi:type="string">MonriPaymentsCreateRequestCommand</item>
-                <item name="initialize" xsi:type="string">Monri\Payments\Gateway\Command\InitializeCommand</item>
-                <item name="gateway_response" xsi:type="string">MonriPaymentsGatewayResponseCommand</item>
-                -->
                 <item name="initialize" xsi:type="string">MonriComponentsInitializeCommand</item>
-
                 <item name="create_payment" xsi:type="string">MonriComponentsCreatePaymentCommand</item>
-
                 <item name="capture" xsi:type="string">MonriComponentsCaptureCommand</item>
                 <item name="refund" xsi:type="string">MonriComponentsRefundCommand</item>
                 <item name="void" xsi:type="string">MonriComponentsVoidCommand</item>
@@ -372,9 +365,7 @@
             <argument name="transferFactory" xsi:type="object">Monri\Payments\Gateway\Http\Components\PaymentCreateTransferFactory</argument>
             <argument name="client" xsi:type="object">MonriComponentsJsonClient</argument>
             <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\Components\PaymentCreateHandler</argument>
-            <!--argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\TransferResponseValidator</argument-->
             <argument name="logger" xsi:type="object">MonriPaymentsVirtualLogger</argument>
-            <!--argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsWithRawMapper</argument-->
         </arguments>
     </virtualType>
 
