@@ -83,24 +83,6 @@ class InitializeHandler implements HandlerInterface
         }
     }
 
-    protected function checkIfTransactionProcessed(Payment $payment)
-    {
-        $transactionTxnId = $payment->getTransactionId();
-        $paymentId = $payment->getId();
-        $orderId = $payment->getOrder()->getId();
-
-        /** @var Transaction $transaction */
-        $transaction = $this->transactionFactory->create();
-        $this->transactionResource->loadObjectByTxnId(
-            $transaction,
-            $orderId,
-            $paymentId,
-            $transactionTxnId
-        );
-
-        return (bool)$transaction->getId();
-    }
-
     protected function getTransactionId(array $transactionData)
     {
         $orderNumber = $transactionData['order_number'];

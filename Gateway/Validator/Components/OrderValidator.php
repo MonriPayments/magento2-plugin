@@ -56,17 +56,17 @@ class OrderValidator extends AbstractValidator
 
         if ($payment->getAdditionalInformation(OrderDetailsBuilder::ORDER_NUMBER_FIELD) != $transactionData['order_number']) {
             $isValid = false;
-            $errorMessages[] = __('Order is not valid.');
+            $errorMessages[] = __('Order ID is not valid.');
         }
 
         if ($payment->getOrder()->getBaseGrandTotal() != ($transactionData['amount'] / 100)) {
             $isValid = false;
-            $errorMessages[] = __('Order is not valid.');
+            $errorMessages[] = __('Order amount is not valid.');
         }
 
         if (!isset($transactionData['status']) || $transactionData['status'] != 'approved') {
             $isValid = false;
-            $errorMessages[] = __('Transaction was declined.');
+            $errorMessages[] = __('Transaction has status declined.');
         }
 
         return $this->createResult($isValid, $errorMessages);

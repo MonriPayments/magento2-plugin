@@ -41,16 +41,23 @@ class Download extends AbstractAction
      */
     private $fileFactory;
 
+    /**
+     * @var Base
+     */
+    private $componentsLoggerHandler;
+
     public function __construct(
         Action\Context $context,
         File $fileClient,
         FileFactory $fileFactory,
-        Base $loggerHandler
+        Base $loggerHandler,
+        Base $componentsLoggerHandler
     ) {
         parent::__construct($context);
         $this->fileClient = $fileClient;
         $this->loggerHandler = $loggerHandler;
         $this->fileFactory = $fileFactory;
+        $this->componentsLoggerHandler = $componentsLoggerHandler;
     }
 
     /**
@@ -61,7 +68,14 @@ class Download extends AbstractAction
      */
     public function execute()
     {
-        $filePath = (string) $this->loggerHandler->getUrl();
+        $isComponents = (bool) $this->getRequest()->getParam('components', false);
+
+        if($isComponents) {
+            $filePath = (string) $this->componentsLoggerHandler->getUrl();
+        }else {
+            $filePath = (string) $this->loggerHandler->getUrl();
+        }
+
         $fileName = $this->fileClient->getPathInfo($filePath)['basename'];
 
         try {

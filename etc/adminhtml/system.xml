@@ -148,7 +148,7 @@
                 </field>
                 <field id="download_log" type="button" sortOrder="90"
                        showInDefault="1" showInWebsite="1" showInStore="0">
-                    <frontend_model>Monri\Payments\Block\Adminhtml\Config\DownloadLog</frontend_model>
+                    <frontend_model>MonriComponentsConfigDownloadLog</frontend_model>
                     <depends>
                         <field id="*/*/debug">1</field>
                     </depends>
@@ -169,14 +169,6 @@
                     <label>Sort Order</label>
                     <frontend_class>validate-number</frontend_class>
                 </field>
-                <!--
-                <field id="urls" translate="label comment" sortOrder="130"
-                       showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Gateway Configuration Information</label>
-                    <comment><![CDATA[Enter this into your Monri Administration dashboard.]]></comment>
-                    <frontend_model>Monri\Payments\Block\Adminhtml\Config\Merchant\UrlInfo</frontend_model>
-                </field>
-                -->
             </group>
         </section>
     </system>

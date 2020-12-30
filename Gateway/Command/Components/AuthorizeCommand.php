@@ -7,18 +7,16 @@
 namespace Monri\Payments\Gateway\Command\Components;
 
 use Magento\Payment\Gateway\Command\CommandException;
-use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\ErrorMapper\ErrorMessageMapperInterface;
-use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
-use Magento\Payment\Gateway\Http\ConverterException;
 use Magento\Payment\Gateway\Http\TransferFactoryInterface;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ValidatorInterface;
 use Psr\Log\LoggerInterface;
+use Magento\Payment\Model\Method\Logger;
 
 class AuthorizeCommand implements CommandInterface
 {
@@ -38,6 +36,11 @@ class AuthorizeCommand implements CommandInterface
     private $errorMessageMapper;
 
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
      * @param BuilderInterface $requestBuilder
      * @param TransferFactoryInterface $transferFactory
      * @param ClientInterface $client
@@ -47,16 +50,16 @@ class AuthorizeCommand implements CommandInterface
      * @param ErrorMessageMapperInterface|null $errorMessageMapper
      */
     public function __construct(
+        LoggerInterface $logger,
         ValidatorInterface $validator = null,
         HandlerInterface $handler = null,
         ErrorMessageMapperInterface $errorMessageMapper = null
     )
     {
-
-
         $this->validator = $validator;
         $this->handler = $handler;
         $this->errorMessageMapper = $errorMessageMapper;
+        $this->logger = $logger;
     }
 
     public function execute(array $commandSubject)
@@ -76,6 +79,10 @@ class AuthorizeCommand implements CommandInterface
         }
     }
 
+    /**
+     * @param ResultInterface $result
+     * @throws CommandException
+     */
     private function processErrors(ResultInterface $result)
     {
         $messages = [];
