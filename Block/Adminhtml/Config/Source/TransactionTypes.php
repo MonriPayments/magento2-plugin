@@ -14,6 +14,9 @@ use Magento\Framework\Data\OptionSourceInterface;
 class TransactionTypes implements OptionSourceInterface
 {
 
+    const ACTION_AUTORIZE = 'authorize';
+    const ACTION_PURCHASE = 'purchase';
+
     /**
      * Return array of transaction types for redirect gateway.
      *
@@ -22,8 +25,8 @@ class TransactionTypes implements OptionSourceInterface
     public function toOptionArray()
     {
         return [
-            ['value' => 'purchase', 'label' => __('Purchase')],
-            ['value' => 'authorize', 'label' => __('Authorize Only')],
+            ['value' => self::ACTION_PURCHASE, 'label' => __('Purchase')],
+            ['value' => self::ACTION_AUTORIZE, 'label' => __('Authorize Only')],
         ];
     }
 }

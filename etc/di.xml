@@ -354,8 +354,8 @@
                 <item name="initialize" xsi:type="string">Monri\Payments\Gateway\Command\InitializeCommand</item>
                 <item name="gateway_response" xsi:type="string">MonriPaymentsGatewayResponseCommand</item>
                 -->
-                <item name="initialize" xsi:type="string">MonriComponentsAuthorizeCommand</item>
-                <item name="authorize" xsi:type="string">MonriComponentsAuthorizeCommand</item>
+                <item name="initialize" xsi:type="string">MonriComponentsInitializeCommand</item>
+
                 <item name="create_payment" xsi:type="string">MonriComponentsCreatePaymentCommand</item>
 
                 <item name="capture" xsi:type="string">MonriComponentsCaptureCommand</item>
@@ -378,10 +378,10 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="MonriComponentsAuthorizeCommand" type="Monri\Payments\Gateway\Command\Components\AuthorizeCommand">
+    <virtualType name="MonriComponentsInitializeCommand" type="Monri\Payments\Gateway\Command\Components\AuthorizeCommand">
         <arguments>
             <argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\Components\OrderValidator</argument>
-            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\Components\Transactions\AuthorizeHandler</argument>
+            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\Components\Transactions\InitializeHandler</argument>
         </arguments>
     </virtualType>
 

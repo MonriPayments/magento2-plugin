@@ -61,8 +61,6 @@ class AuthorizeCommand implements CommandInterface
 
     public function execute(array $commandSubject)
     {
-        //$payment = SubjectReader::readPayment($commandSubject);
-
         if ($this->validator !== null) {
             $result = $this->validator->validate($commandSubject);
             if (!$result->isValid()) {
@@ -76,8 +74,6 @@ class AuthorizeCommand implements CommandInterface
                 []
             );
         }
-
-
     }
 
     private function processErrors(ResultInterface $result)

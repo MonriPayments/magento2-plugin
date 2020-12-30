@@ -17,8 +17,9 @@ use Magento\Sales\Model\Order\Payment\Transaction;
 use Magento\Sales\Model\Order\Payment\TransactionFactory;
 use Magento\Sales\Model\ResourceModel\Order\Payment\Transaction as TransactionResource;
 use Monri\Payments\Gateway\Exception\TransactionAlreadyProcessedException;
+use Monri\Payments\Gateway\Config\Components as ComponentsConfig;
 
-class AuthorizeHandler implements HandlerInterface
+class InitializeHandler implements HandlerInterface
 {
     /**
      * @var TransactionFactory
@@ -30,12 +31,20 @@ class AuthorizeHandler implements HandlerInterface
      */
     private $transactionResource;
 
+    /**
+     * @var ComponentsConfig
+     */
+    private $config;
+
     public function __construct(
         TransactionFactory $transactionFactory,
-        TransactionResource $transactionResource
-    ) {
+        TransactionResource $transactionResource,
+        ComponentsConfig $config
+    )
+    {
         $this->transactionFactory = $transactionFactory;
         $this->transactionResource = $transactionResource;
+        $this->config = $config;
     }
 
     /**
@@ -50,39 +59,28 @@ class AuthorizeHandler implements HandlerInterface
 
         $paymentDataObject = SubjectReader::readPayment($handlingSubject);
 
+        $stateObject = SubjectReader::readStateObject($handlingSubject);
+        $stateObject->setData('state', Order::STATE_PROCESSING);
+
         /** @var Payment $payment */
         $payment = $paymentDataObject->getPayment();
 
         $transactionData = $payment->getAdditionalInformation('transaction_data');
 
-        /** @var Order $order */
-        $order = $payment->getOrder();
-
         $payment->setTransactionAdditionalInfo(Transaction::RAW_DETAILS, $transactionData);
-        
+
         $payment
             ->setTransactionId($this->getTransactionId($transactionData))
             ->setIsTransactionClosed(0);
-            //->registerAuthorizationNotification($payment->getOrder()->getBaseGrandTotal());
 
-        //$payment->setTransactionId($this->getTransactionId($transactionData));
-
-
-        /*$payment->setTransactionId($this->getTransactionId($transactionData));
-        $payment->setTransactionAdditionalInfo(
-            Transaction::RAW_DETAILS,
-            $transactionData
-        );
-
-        if (!$order->canInvoice() || $this->checkIfTransactionProcessed($payment)) {
-            // Already processed this transaction.
-            throw new TransactionAlreadyProcessedException(
-                __('Transaction %1 already processed.', $payment->getTransactionId())
-            );
-        }*/
-
-        //$payment->setIsTransactionClosed(false);
-        //$payment->registerAuthorizationNotification($payment->getOrder()->getBaseGrandTotal());
+        switch ($this->config->getPaymentAction()) {
+            case \Monri\Payments\Block\Adminhtml\Config\Source\TransactionTypes::ACTION_AUTORIZE:
+                $payment->registerAuthorizationNotification($payment->getOrder()->getBaseGrandTotal());
+                break;
+            case \Monri\Payments\Block\Adminhtml\Config\Source\TransactionTypes::ACTION_PURCHASE:
+                $payment->registerCaptureNotification($payment->getOrder()->getBaseGrandTotal());
+                break;
+        }
     }
 
     protected function checkIfTransactionProcessed(Payment $payment)
@@ -100,7 +98,7 @@ class AuthorizeHandler implements HandlerInterface
             $transactionTxnId
         );
 
-        return (bool) $transaction->getId();
+        return (bool)$transaction->getId();
     }
 
     protected function getTransactionId(array $transactionData)
