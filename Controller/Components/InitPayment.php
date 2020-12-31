@@ -17,6 +17,4 @@ class InitPayment
     // with quote or emulate payment info?
 
     //GetClientSecret
-
-
 }

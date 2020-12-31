@@ -32,8 +32,7 @@ class OrderValidator extends AbstractValidator
     public function __construct(
         Config $config,
         ResultInterfaceFactory $resultFactory
-    )
-    {
+    ) {
         parent::__construct($resultFactory);
         $this->config = $config;
     }

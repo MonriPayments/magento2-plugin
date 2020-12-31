@@ -19,8 +19,5 @@ class CreatePaymentCommand implements CommandInterface
         // TODO: Implement execute() method.
 
         // return response array
-
     }
-
-
 }

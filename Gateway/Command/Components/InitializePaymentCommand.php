@@ -18,7 +18,4 @@ class InitializePaymentCommand implements CommandInterface
     {
         // TODO: Implement execute() method.
     }
-
-
-
 }

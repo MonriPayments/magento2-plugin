@@ -101,5 +101,4 @@ class CreatePayment extends Action
 
         return $resultJson;
     }
-
 }

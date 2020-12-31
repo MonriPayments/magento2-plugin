@@ -54,8 +54,7 @@ class AuthorizeCommand implements CommandInterface
         ValidatorInterface $validator = null,
         HandlerInterface $handler = null,
         ErrorMessageMapperInterface $errorMessageMapper = null
-    )
-    {
+    ) {
         $this->validator = $validator;
         $this->handler = $handler;
         $this->errorMessageMapper = $errorMessageMapper;

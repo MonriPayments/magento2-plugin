@@ -51,8 +51,7 @@ class OrderDetailsBuilder implements BuilderInterface
         ManagerInterface $eventManager,
         DataObjectFactory $dataObjectFactory,
         ComponentsConfig $config
-    )
-    {
+    ) {
         $this->formatter = $formatter;
         $this->eventManager = $eventManager;
         $this->dataObjectFactory = $dataObjectFactory;

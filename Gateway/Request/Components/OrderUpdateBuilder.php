@@ -77,7 +77,7 @@ class OrderUpdateBuilder implements BuilderInterface
         }
 
         $gatewayAmount = $this->formatter->formatPrice($amount);
-        $orderNumber = $payment->getAdditionalInformation( \Monri\Payments\Gateway\Request\Components\OrderDetailsBuilder::ORDER_NUMBER_FIELD);
+        $orderNumber = $payment->getAdditionalInformation(\Monri\Payments\Gateway\Request\Components\OrderDetailsBuilder::ORDER_NUMBER_FIELD);
         $currencyCode = $order->getOrderCurrencyCode();
         $authenticityToken = $this->config->getClientAuthenticityToken($order->getStoreId());
 

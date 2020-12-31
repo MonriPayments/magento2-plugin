@@ -70,9 +70,9 @@ class Download extends AbstractAction
     {
         $isComponents = (bool) $this->getRequest()->getParam('components', false);
 
-        if($isComponents) {
+        if ($isComponents) {
             $filePath = (string) $this->componentsLoggerHandler->getUrl();
-        }else {
+        } else {
             $filePath = (string) $this->loggerHandler->getUrl();
         }
 

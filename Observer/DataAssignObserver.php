@@ -7,7 +7,6 @@ use Magento\Payment\Observer\AbstractDataAssignObserver;
 use Magento\Quote\Api\Data\PaymentInterface;
 use Magento\Quote\Model\Quote\Payment;
 
-
 class DataAssignObserver extends AbstractDataAssignObserver
 {
     /**

@@ -40,8 +40,7 @@ class InitializeHandler implements HandlerInterface
         TransactionFactory $transactionFactory,
         TransactionResource $transactionResource,
         ComponentsConfig $config
-    )
-    {
+    ) {
         $this->transactionFactory = $transactionFactory;
         $this->transactionResource = $transactionResource;
         $this->config = $config;
