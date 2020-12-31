@@ -42,9 +42,8 @@ define(
 
             clientSecret: null,
             result: null,
-            currentTtl: null,
-            //timeout cca 15 minutes
-            timeLimit: 899,
+            transactionTime: null,
+            transactionTimeLimit: monriConfig.transactionTimeLimit,
             afterRenderDeffer: null,
 
             getCode: function () {
@@ -108,14 +107,19 @@ define(
                     console.log('monriCreatePayment ABORT');
                 }
 
-                console.log('monriCreatePayment CREATE');
-
                 this.isLoading = true;
                 this.monriReady = false;
-                this.currentTtl = this.getTime();
+
+                var currentTime = this.getTime();
+                if(monriConfig.transactionTime){
+                    this.transactionTime = monriConfig.transactionTime;
+                }else{
+                    this.transactionTime = currentTime;
+                }
+
 
                 var url = urlBuilder.build('monripayments/components/createPayment');
-                this.monriCreatePaymentAction = $.post(url, {ttl: this.ttl})
+                this.monriCreatePaymentAction = $.post(url, {ttl: currentTime})
                     .done(
                         function (response) {
                             this.monriInit(response.data);
@@ -172,7 +176,7 @@ define(
             checkIsValidOrder: function () {
                 var isValid = true;
 
-                if (this.getTime() >= this.currentTtl + this.timeLimit) {
+                if (this.getTime() >= this.currentTtl + this.transactionTimeLimit) {
                     isValid = false;
                 }
                 return isValid;

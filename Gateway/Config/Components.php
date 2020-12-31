@@ -8,6 +8,7 @@ class Components extends \Monri\Payments\Gateway\Config
 {
     const CODE = 'monri_components';
     const PAYMENT_ACTION = 'payment_action';
+    const TRANSACTION_TTL = 899;
 
     /**
      * @param $resource
