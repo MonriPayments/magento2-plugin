@@ -75,8 +75,7 @@ define(
 
                 this.afterRenderDeffer = $.Deferred();
                 $.when(this.monriAddScriptTag(), this.afterRenderDeffer.promise())
-                    .then(this.monriCreatePayment.bind(this));
-                    //.catch(this.monriFailed.bind(this));
+                    .then(this.monriCreatePayment.bind(this), this.monriFailed.bind(this));
 
             },
 
