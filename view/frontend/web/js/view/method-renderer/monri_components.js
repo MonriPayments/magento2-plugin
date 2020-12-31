@@ -19,7 +19,6 @@ define(
         'use strict';
 
         var monriConfig = window.checkoutConfig.payment.monri_components;
-        console.log('monriConfig', monriConfig);
 
         return Component.extend({
             defaults: {
@@ -198,11 +197,11 @@ define(
 
                 this.monriInstance.confirmPayment(this.monriCardInstance, this.getTransactionData())
                     .then(function (result) {
-                        console.log('MonriResult', result);
 
                         if (result.error) {
                             this.messageContainer.addErrorMessage({
-                                message: $t(result.error.message)
+                                //message: $t(result.error.message)
+                                message: $t('Transaction declined.')
                             });
                             return;
                         }
@@ -210,7 +209,6 @@ define(
                         // handle declined on 3DS Cancel
                         if (result.result.status === 'approved') {
                             this.result = result.result;
-                            console.log('parentPlaceOrder');
                             parentPlaceOrder(data, event);
                         } else {
                             this.messageContainer.addErrorMessage({
