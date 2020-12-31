@@ -1,11 +1,4 @@
 <?php
-/**
- * This file is part of the Monri Payments module
- *
- * (c) Monri Payments d.o.o.
- *
- * @author Favicode <contact@favicode.net>
- */
 
 namespace Monri\Payments\Gateway\Request\Components;
 
@@ -16,6 +9,7 @@ use Magento\Sales\Model\Order\Payment;
 use Monri\Payments\Gateway\Config\Components as ComponentsConfig;
 use Monri\Payments\Helper\Formatter;
 use Monri\Payments\Model\Crypto\Digest;
+use Monri\Payments\Gateway\Request\Components\OrderDetailsBuilder;
 
 class OrderUpdateBuilder implements BuilderInterface
 {
@@ -77,7 +71,7 @@ class OrderUpdateBuilder implements BuilderInterface
         }
 
         $gatewayAmount = $this->formatter->formatPrice($amount);
-        $orderNumber = $payment->getAdditionalInformation(\Monri\Payments\Gateway\Request\Components\OrderDetailsBuilder::ORDER_NUMBER_FIELD);
+        $orderNumber = $payment->getAdditionalInformation(OrderDetailsBuilder::ORDER_NUMBER_FIELD);
         $currencyCode = $order->getOrderCurrencyCode();
         $authenticityToken = $this->config->getClientAuthenticityToken($order->getStoreId());
 

@@ -73,7 +73,10 @@ class DownloadLog extends Field
 
         try {
             if ($this->fileDriver->isExists($logFilePath) !== false) {
-                $downloadUrl = $this->_urlBuilder->getUrl('monripayments/log/download', ['_query'=>['components'=>$this->components]]);
+
+                $downloadUrl = $this->_urlBuilder->getUrl('monripayments/log/download', [
+                    '_query'=>['components'=>$this->components]]);
+
                 $action = "window.open('$downloadUrl', '_blank')";
                 $downloadButton
                     ->setData('label', __('Download Log'))

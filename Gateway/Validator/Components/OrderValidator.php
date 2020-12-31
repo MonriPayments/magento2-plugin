@@ -52,8 +52,9 @@ class OrderValidator extends AbstractValidator
         $payment = $paymentDataObject->getPayment();
 
         $transactionData = (array)$paymentDataObject->getPayment()->getAdditionalInformation('transaction_data');
+        $orderNumber = $payment->getAdditionalInformation(OrderDetailsBuilder::ORDER_NUMBER_FIELD);
 
-        if ($payment->getAdditionalInformation(OrderDetailsBuilder::ORDER_NUMBER_FIELD) != $transactionData['order_number']) {
+        if ($orderNumber != $transactionData['order_number']) {
             $isValid = false;
             $errorMessages[] = __('Order ID is not valid.');
         }

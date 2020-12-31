@@ -7,9 +7,6 @@ namespace Monri\Payments\Model;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Monri\Payments\Gateway\Config\Components as Config;
 
-/**
- * Class CheckoutConfigProvider
- */
 class CheckoutConfigProvider implements ConfigProviderInterface
 {
     /**

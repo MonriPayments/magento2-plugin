@@ -103,7 +103,9 @@ class OrderDetailsBuilder implements BuilderInterface
             self::ORDER_NUMBER_FIELD => $orderNumber,
             self::AMOUNT_FIELD => $orderAmount,
             self::CURRENCY_FIELD => $currencyCode,
-            'transaction_type' => $this->config->getPaymentAction($paymentDataObject->getPayment()->getQuote()->getStoreId())
+            'transaction_type' => $this->config->getPaymentAction(
+                $paymentDataObject->getPayment()->getQuote()->getStoreId()
+            )
         ];
     }
 }
