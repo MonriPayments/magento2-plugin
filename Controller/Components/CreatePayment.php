@@ -69,7 +69,7 @@ class CreatePayment extends Action
             return;
         }
 
-        if (!$this->_isValidTransaction($quote->getPayment(), $ttl)) {
+        //if (!$this->_isValidTransaction($quote->getPayment(), $ttl)) {
             $dataObject = new \Magento\Framework\DataObject();
             $dataObject->setData('ttl', $ttl);
             
@@ -78,7 +78,7 @@ class CreatePayment extends Action
                 $quote->getPayment(),
                 ['stateObject' => $dataObject]
             );
-        }
+        //}
 
         $payload = $quote->getPayment()->getAdditionalInformation(PaymentCreateHandler::INITIAL_DATA);
 
