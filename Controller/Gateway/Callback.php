@@ -14,6 +14,7 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Framework\Serialize\Serializer\Json;
@@ -99,7 +100,7 @@ class Callback extends AbstractGatewayResponse
                 'digest' => $digest,
                 'digest_data' => $gatewayPayload
             ]);
-        } catch (TransactionAlreadyProcessedException $e) {
+        } catch (TransactionAlreadyProcessedException | AlreadyExistsException $e) {
             $log['errors'][] = 'Already processed: ' . $e->getMessage();
             $log['success'] = true;
             return $resultRaw->setHttpResponseCode(200);

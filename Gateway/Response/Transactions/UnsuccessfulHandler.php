@@ -55,11 +55,13 @@ class UnsuccessfulHandler extends AbstractTransactionHandler
         }
 
         try {
-            /** @var Payment $payment */
-            $payment->setAdditionalInformation(
-                'gateway_response_code',
-                $response['response_code']
-            );
+            if (isset($response['response_code'])) {
+                /** @var Payment $payment */
+                $payment->setAdditionalInformation(
+                    'gateway_response_code',
+                    $response['response_code']
+                );
+            }
         } catch (LocalizedException $e) {
             $this->logger->debug(['Failed to set gateway response code for payment: ' . $e->getMessage()]);
         }
