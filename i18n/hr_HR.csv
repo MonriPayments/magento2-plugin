@@ -1,0 +1,29 @@
+"Download Log","Preuzimanje Loga"
+"Download Log (no file)","Preuzimanje Loga (nema datoteke)"
+"No installments","Jednokratno"
+English,Engleski
+Spanish,Španjolski
+Bosnian,Bosanski
+Croatian,Hrvatski
+Purchase,Naplata
+"Authorize Only","Autorizacija"
+"File not on disk.","Datoteka ne postoji."
+"Order not found.","Narudžba nije pronađena."
+"The payment has been denied: %1","Plaćanje je odbijeno: %1"
+"The payment has been denied.","Plaćanje je odbijeno."
+"Error processing payment, please try again later.","Greška prilikom obrade, molimo pokušajte kasnije."
+"The payment has been accepted: %1","Plaćanje prihvaćeno: %1"
+"The payment has been accepted.","Plaćanje prihvaćeno."
+"There has been an issue processing your payment.","Greška prilikom obrade vaše uplate."
+"Order: #%1","Narudžba: #%1"
+"The currency selected is not supported by Monri Payments.","Odabrana valuta nije podržana od strane Monrija."
+"Request has an invalid signature.","Zahtjev ima neispravan potpis."
+"Place Order","Naruči"
+Title,Naziv
+Language,Jezik
+"Transaction Type","Tip transakcije"
+Installments,Rate
+"Sandbox mode","Testni način"
+"Payment from Applicable Countries","Plaćanje iz odgovarajućih zemalja"
+"Payment from Specific Countries","Plaćanje iz određenih zemalja"
+"Gateway Configuration Information","Informacije o konfiguraciji"
