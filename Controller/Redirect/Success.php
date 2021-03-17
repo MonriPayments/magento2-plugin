@@ -14,6 +14,7 @@ use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\Result\Redirect;
 use Magento\Framework\Controller\ResultFactory;
+use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Command\CommandManagerInterface;
@@ -91,7 +92,7 @@ class Success extends AbstractGatewayResponse
             } else {
                 $this->messageManager->addNoticeMessage(__('The payment has been accepted.'));
             }
-        } catch (TransactionAlreadyProcessedException $e) {
+        } catch (TransactionAlreadyProcessedException | AlreadyExistsException $e) {
             $log['errors'][] = 'Already processed: ' . $e->getMessage();
             $log['success'] = true;
         } catch (InputException | NoSuchEntityException $e) {

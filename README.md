@@ -7,8 +7,8 @@ exclude any unwanted directories. The built package will be placed inside of the
 
 ## Compatibility
 Our goal is to be compatible with the following Magento 2 versions:
-- 2.2
 - 2.3
+- 2.4
 
 ## How to contribute
 
