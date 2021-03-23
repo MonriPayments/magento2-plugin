@@ -127,7 +127,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
         return $this->getGatewayResourceURL(self::FORM_ENDPOINT, $storeId);
     }
 
-    public function getOrderStatusResourceURL($storeId = null) {
+    public function getOrderStatusResourceURL($storeId = null)
+    {
         return $this->getGatewayResourceURL(self::ORDER_STATUS_ENDPOINT, $storeId);
     }
 

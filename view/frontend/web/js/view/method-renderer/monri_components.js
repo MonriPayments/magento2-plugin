@@ -12,10 +12,20 @@ define(
         'underscore',
         'Magento_Customer/js/customer-data',
         'Magento_Checkout/js/model/quote',
+        'Monri_Payments/js/view/method-renderer/monri_components/style',
         'mage/url',
         'mage/translate'
     ],
-    function (Component, $, _, customerData, quote, urlBuilder, $t) {
+    function (
+        Component,
+        $,
+        _,
+        customerData,
+        quote,
+        style,
+        urlBuilder,
+        $t
+    ) {
         'use strict';
 
         var monriConfig = window.checkoutConfig.payment.monri_components;
@@ -42,9 +52,9 @@ define(
 
             clientSecret: null,
             result: null,
-            transactionTime: null,
-            transactionTimeLimit: monriConfig.transactionTimeLimit,
-            afterRenderDeffer: null,
+            transactionTimeout: null,
+            transactionTimeLimit: 900,
+            afterRenderDefer: null,
 
             getCode: function () {
                 return 'monri_components';
@@ -64,15 +74,8 @@ define(
                     }
                 }.bind(this));
 
-                // add script & create payment
-                /*
-                $.getScript('https://ipgtest.monri.com/dist/components.js')
-                    .done(this.monriCreatePayment.bind(this))
-                    .fail(this.monriFailed.bind(this));
-               */
-
-                this.afterRenderDeffer = $.Deferred();
-                $.when(this.monriAddScriptTag(), this.afterRenderDeffer.promise())
+                this.afterRenderDefer = $.Deferred();
+                $.when(this.monriAddScriptTag(), this.afterRenderDefer.promise())
                     .then(this.monriCreatePayment.bind(this), this.monriFailed.bind(this));
 
             },
@@ -83,15 +86,12 @@ define(
                 var element, scriptTag;
                 element = document.createElement('script');
 
-                // get base url from window.checkout
-                element.src = 'https://ipgtest.monri.com/dist/components.js';
+                element.src = monriConfig.componentsJsUrl;
                 element.onload = deferred.resolve;
                 element.onerror = deferred.reject;
 
                 scriptTag = document.getElementsByTagName('script')[0];
                 scriptTag.parentNode.insertBefore(element, scriptTag);
-
-                //@todo: add interval to check window.Monri if some browsers don't support onload?
 
                 return deferred.promise();
             },
@@ -104,22 +104,16 @@ define(
                 if (this.monriCreatePaymentAction) {
                     this.monriCreatePaymentAction.abort();
                     this.monriCreatePaymentAction = null;
-                    console.log('monriCreatePayment ABORT');
                 }
 
                 this.isLoading = true;
                 this.monriReady = false;
 
-                var currentTime = this.getTime();
-                if(monriConfig.transactionTime){
-                    this.transactionTime = monriConfig.transactionTime;
-                }else{
-                    this.transactionTime = currentTime;
-                }
-
+                var currentTime = this.getCurrentTime();
+                this.transactionTimeout = currentTime + this.transactionTimeLimit;
 
                 var url = urlBuilder.build('monripayments/components/createPayment');
-                this.monriCreatePaymentAction = $.post(url, {ttl: currentTime})
+                this.monriCreatePaymentAction = $.post(url)
                     .done(
                         function (response) {
                             this.monriInit(response.data);
@@ -130,8 +124,6 @@ define(
             },
 
             monriInit: function (data) {
-                console.log('monriInit', data);
-
                 // if this is same init, don't change previous form
                 if (this.clientSecret === data.client_secret) {
                     this.isLoading = false;
@@ -146,8 +138,13 @@ define(
                 this.monriInstance = Monri(monriConfig.authenticityToken, {
                     locale: monriConfig.locale
                 });
+
                 var components = this.monriInstance.components({clientSecret: this.clientSecret});
-                this.monriCardInstance = components.create('card');
+
+                this.monriCardInstance = components.create('card', {
+                    style: style,
+                });
+
                 this.monriCardInstance.mount(this.monriCardContainerId);
 
                 this.isLoading = false;
@@ -174,12 +171,7 @@ define(
             },
 
             checkIsValidOrder: function () {
-                var isValid = true;
-
-                if (this.getTime() >= this.currentTtl + this.transactionTimeLimit) {
-                    isValid = false;
-                }
-                return isValid;
+                return this.getCurrentTime() < this.transactionTimeout;
             },
 
             placeOrder: function (data, event) {
@@ -188,7 +180,6 @@ define(
                 }
 
                 if (!this.checkIsValidOrder()) {
-
                     this.messageContainer.addErrorMessage({
                         message: $t('Sorry, timeout occured. Payment form will be reloaded.')
                     });
@@ -203,10 +194,12 @@ define(
                     .then(function (result) {
 
                         if (result.error) {
+                            var message = result.error.message ? result.error.message : $t('Transaction declined.');
+
                             this.messageContainer.addErrorMessage({
-                                //message: $t(result.error.message)
-                                message: $t('Transaction declined.')
+                                message: message
                             });
+
                             return;
                         }
 
@@ -243,26 +236,27 @@ define(
                     phone: address.telephone,
                     country: address.countryId,
                     email: typeof quote.guestEmail === 'string' ? quote.guestEmail : address.email,
-                    orderInfo: 'Test Order Magento'
+                    orderInfo: 'Magento Order'
                 };
             },
 
             start: function () {
-                this.afterRenderDeffer.resolve();
+                this.afterRenderDefer.resolve();
             },
 
             getData: function () {
+                var additionalData = _.extend({
+                    'data_secret': this.clientSecret
+                }, this.result);
+
                 var data = {
                     'method': this.item.method,
-                    'additional_data': {
-                        'data_secret': this.clientSecret
-                    }
+                    'additional_data': additionalData
                 };
-                data['additional_data'] = _.extend(data['additional_data'], this.result);
                 return data;
             },
 
-            getTime: function () {
+            getCurrentTime: function () {
                 return Math.floor(Date.now() / 1000);
             }
         });

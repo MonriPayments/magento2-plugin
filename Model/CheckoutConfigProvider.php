@@ -7,7 +7,6 @@ namespace Monri\Payments\Model;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Monri\Payments\Gateway\Config\Components as Config;
 use Magento\Checkout\Model\Session;
-use Monri\Payments\Gateway\Response\Components\PaymentCreateHandler;
 
 class CheckoutConfigProvider implements ConfigProviderInterface
 {
@@ -36,18 +35,14 @@ class CheckoutConfigProvider implements ConfigProviderInterface
     {
         $config = [];
         if ($this->config->getValue('active')) {
-
             $quote = $this->checkoutSession->getQuote();
-            $payment = $quote->getPayment();
 
             $config = [
                 'payment' => [
                     Config::CODE => [
-                        'componentsJsUrl' => $this->config->getComponentsJsURL(),
-                        'authenticityToken' => $this->config->getClientAuthenticityToken(),
-                        'locale' => $this->config->getGatewayLanguage(),
-                        'transactionTime' => $payment->getAdditionalInformation(PaymentCreateHandler::TIME_LIMIT_TTL),
-                        'transactionTimeLimit' => Config::TRANSACTION_TTL,
+                        'componentsJsUrl' => $this->config->getComponentsJsURL($quote->getStoreId()),
+                        'authenticityToken' => $this->config->getClientAuthenticityToken($quote->getStoreId()),
+                        'locale' => $this->config->getGatewayLanguage($quote->getStoreId()),
                     ]
                 ]
             ];

@@ -296,8 +296,6 @@
     </virtualType>
     <!-- /Errors Map -->
 
-
-
     <virtualType name="MonriComponentsFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
             <argument name="code" xsi:type="const">Monri\Payments\Gateway\Config\Components::CODE</argument>
@@ -329,7 +327,7 @@
             <argument name="methodCode" xsi:type="const">Monri\Payments\Gateway\Config\Components::CODE</argument>
         </arguments>
     </type>
-    <!-- @todo: CurrencyValidator -->
+
     <virtualType name="MonriComponentsValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
         <arguments>
             <argument name="validators" xsi:type="array">
@@ -339,10 +337,9 @@
         </arguments>
     </virtualType>
 
-    <!-- @todo: wrong config on few places !! -->
     <virtualType name="MonriComponentsCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
         <arguments>
-            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config</argument>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
         </arguments>
     </virtualType>
 
@@ -491,8 +488,5 @@
             <argument name="components" xsi:type="boolean">1</argument>
         </arguments>
     </virtualType>
-
-
-
 
 </config>

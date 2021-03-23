@@ -14,7 +14,7 @@
         <section id="payment">
             <group id="monri_payments" translate="label" type="text"
                    sortOrder="5" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>Monri Payments</label>
+                <label>Monri Redirect</label>
                 <field id="active" translate="label" type="select" sortOrder="0"
                        showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Enabled</label>
@@ -129,13 +129,6 @@
                     <label>Transaction Type</label>
                     <source_model>Monri\Payments\Block\Adminhtml\Config\Source\TransactionTypes</source_model>
                 </field>
-                <!--
-                <field id="installments" translate="label" type="select" sortOrder="60"
-                       showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Maximum Number of Installments</label>
-                    <source_model>Monri\Payments\Block\Adminhtml\Config\Source\Installments</source_model>
-                </field>
-                -->
                 <field id="sandbox" translate="label" type="select" sortOrder="70"
                        showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Sandbox Mode</label>
