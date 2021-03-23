@@ -141,7 +141,7 @@
                 </field>
                 <field id="download_log" type="button" sortOrder="90"
                        showInDefault="1" showInWebsite="1" showInStore="0">
-                    <frontend_model>MonriComponentsConfigDownloadLog</frontend_model>
+                    <frontend_model>Monri\Payments\Block\Adminhtml\Config\DownloadLog</frontend_model>
                     <depends>
                         <field id="*/*/debug">1</field>
                     </depends>
