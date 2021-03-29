@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+
+<!--
+    * This file is part of the Monri Payments module
+    *
+    * (c) Monri Payments d.o.o.
+    *
+    * @author Favicode <contact@favicode.net>
+-->
+
+<mapping xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Payment:etc/error_mapping.xsd">
+    <message_list>
+        <!-- Messages for merchants and administrators -->
+        <message code="0000" translate="true">Approved</message>
+        <message code="1001" translate="true">Card expired</message>
+        <message code="1002" translate="true">Card suspicious</message>
+        <message code="1003" translate="true">Card suspended</message>
+        <message code="1004" translate="true">Card stolen</message>
+        <message code="1005" translate="true">Card lost</message>
+        <message code="1011" translate="true">Card not found</message>
+        <message code="1012" translate="true">Cardholder not found</message>
+        <message code="1014" translate="true">Account not found</message>
+        <message code="1015" translate="true">Invalid request</message>
+        <message code="1016" translate="true">Not sufficient funds</message>
+        <message code="1017" translate="true">Previously reversed</message>
+        <message code="1018" translate="true">Previously reversed</message>
+        <message code="1019" translate="true">Further activity prevents reversal</message>
+        <message code="1020" translate="true">Further activity prevents void</message>
+        <message code="1021" translate="true">Original transaction has been voided</message>
+        <message code="1022" translate="true">Preauthorization is not allowed for this card</message>
+        <message code="1023" translate="true">Only full 3D authentication is allowed for this card</message>
+        <message code="1024" translate="true">Installments are not allowed for this card</message>
+        <message code="1025" translate="true">Transaction with installments can not be send as preauthorization</message>
+        <message code="1026" translate="true">Installments are not allowed for non ZABA cards</message>
+        <message code="1050" translate="true">Transaction declined</message>
+        <message code="1802" translate="true">Missing fields</message>
+        <message code="1803" translate="true">Extra fields exist</message>
+        <message code="1804" translate="true">Invalid card number</message>
+        <message code="1806" translate="true">Card not active</message>
+        <message code="1808" translate="true">Card not configured</message>
+        <message code="1810" translate="true">Invalid amount</message>
+        <message code="1813" translate="true">Cardholder not active</message>
+        <message code="1814" translate="true">Cardholder not configured</message>
+        <message code="1815" translate="true">Cardholder expired</message>
+        <message code="1816" translate="true">Original not found</message>
+    </message_list>
+</mapping>

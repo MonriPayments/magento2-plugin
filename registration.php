@@ -1,7 +1,9 @@
 <?php
 
-\Magento\Framework\Component\ComponentRegistrar::register(
-    \Magento\Framework\Component\ComponentRegistrar::MODULE,
-    'Leftor_PikPay',
+use Magento\Framework\Component\ComponentRegistrar;
+
+ComponentRegistrar::register(
+    ComponentRegistrar::MODULE,
+    'Monri_Payments',
     __DIR__
 );

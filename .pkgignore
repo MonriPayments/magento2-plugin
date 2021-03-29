@@ -1,0 +1,11 @@
+Makefile
+.git/
+*.git*
+.gitignore
+.idea/
+*.idea/**\*
+dist/
+*dist/**\*
+.pkgignore
+README.md
+CHANGELOG.md
