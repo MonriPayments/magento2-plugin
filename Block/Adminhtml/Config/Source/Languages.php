@@ -25,6 +25,7 @@ class Languages implements OptionSourceInterface
             ['value' => 'es', 'label' => __('Spanish')],
             ['value' => 'ba', 'label' => __('Bosnian')],
             ['value' => 'hr', 'label' => __('Croatian')],
+            ['value' => 'si', 'label' => __('Slovenian')],
         ];
     }
 }
