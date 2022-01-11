@@ -48,6 +48,14 @@ class Digest
         return hash($digestAlgo, $data);
     }
 
+    public function buildSimple($orderNumber, $storeId = null)
+    {
+        $clientKey = $this->config->getClientKey($storeId);
+        $data = "${$clientKey}${$orderNumber}";
+
+        return hash('sha1', $data);
+    }
+
     /**
      * Verifies a digest.
      *

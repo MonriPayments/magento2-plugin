@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Monri\Payments\Gateway\Config;
 
-class Components extends \Monri\Payments\Gateway\Config
+use Monri\Payments\Gateway\Config;
+
+class Components extends Config
 {
     const CODE = 'monri_components';
     const PAYMENT_ACTION = 'payment_action';
-    const TRANSACTION_TTL = 899;
 
     /**
      * @param $resource
@@ -32,7 +33,7 @@ class Components extends \Monri\Payments\Gateway\Config
 
     /**
      * @param null $storeId
-     * @return mixed
+     * @return string
      */
     public function getPaymentAction($storeId = null)
     {

@@ -67,7 +67,6 @@
     <type name="Monri\Payments\Controller\Adminhtml\Log\Download">
         <arguments>
             <argument name="loggerHandler" xsi:type="object">MonriPaymentsVirtualDebugHandler</argument>
-            <argument name="componentsLoggerHandler" xsi:type="object">MonriComponentsVirtualDebugHandler</argument>
         </arguments>
     </type>
     <!-- END Backend -->
@@ -296,8 +295,6 @@
     </virtualType>
     <!-- /Errors Map -->
 
-
-
     <virtualType name="MonriComponentsFacade" type="Magento\Payment\Model\Method\Adapter">
         <arguments>
             <argument name="code" xsi:type="const">Monri\Payments\Gateway\Config\Components::CODE</argument>
@@ -329,7 +326,7 @@
             <argument name="methodCode" xsi:type="const">Monri\Payments\Gateway\Config\Components::CODE</argument>
         </arguments>
     </type>
-    <!-- @todo: CurrencyValidator -->
+
     <virtualType name="MonriComponentsValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
         <arguments>
             <argument name="validators" xsi:type="array">
@@ -339,10 +336,9 @@
         </arguments>
     </virtualType>
 
-    <!-- @todo: wrong config on few places !! -->
     <virtualType name="MonriComponentsCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
         <arguments>
-            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config</argument>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
         </arguments>
     </virtualType>
 
@@ -374,7 +370,7 @@
         <arguments>
             <argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\Components\OrderValidator</argument>
             <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\Components\Transactions\InitializeHandler</argument>
-            <argument name="logger" xsi:type="object">MonriComponentsVirtualLogger</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsVirtualLogger</argument>
         </arguments>
     </virtualType>
 
@@ -406,7 +402,7 @@
             <argument name="client" xsi:type="object">MonriPaymentsXmlClient</argument>
             <argument name="handler" xsi:type="object">MonriComponentsOrderUpdateHandler</argument>
             <argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\TransferResponseValidator</argument>
-            <argument name="logger" xsi:type="object">MonriComponentsVirtualLogger</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsVirtualLogger</argument>
             <argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsWithRawMapper</argument>
         </arguments>
     </virtualType>
@@ -461,38 +457,4 @@
         </arguments>
     </virtualType>
     <!-- refund components command end -->
-
-    <!-- Logger -->
-    <virtualType name="MonriComponentsLogger" type="Magento\Payment\Model\Method\Logger">
-        <arguments>
-            <argument name="logger" xsi:type="object">MonriComponentsVirtualLogger</argument>
-            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="MonriComponentsVirtualLogger" type="Magento\Framework\Logger\Monolog">
-        <arguments>
-            <argument name="handlers" xsi:type="array">
-                <item name="debug" xsi:type="object">MonriComponentsVirtualDebugHandler</item>
-            </argument>
-        </arguments>
-    </virtualType>
-
-    <virtualType name="MonriComponentsVirtualDebugHandler" type="Magento\Framework\Logger\Handler\Base">
-        <arguments>
-            <argument name="fileName" xsi:type="string">/var/log/monri_components.log</argument>
-        </arguments>
-    </virtualType>
-    <!-- END Logger -->
-
-    <virtualType name="MonriComponentsConfigDownloadLog" type="Monri\Payments\Block\Adminhtml\Config\DownloadLog">
-        <arguments>
-            <argument name="loggerHandler" xsi:type="object">MonriComponentsVirtualDebugHandler</argument>
-            <argument name="components" xsi:type="boolean">1</argument>
-        </arguments>
-    </virtualType>
-
-
-
-
 </config>

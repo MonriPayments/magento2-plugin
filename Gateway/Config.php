@@ -38,6 +38,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
 
     const FORM_ENDPOINT = 'v2/form';
 
+    const ORDER_STATUS_ENDPOINT = 'orders/show';
+
     protected $_availableCurrencies = [
         'USD',
         'EUR',
@@ -123,6 +125,11 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getFormRedirectURL($storeId = null)
     {
         return $this->getGatewayResourceURL(self::FORM_ENDPOINT, $storeId);
+    }
+
+    public function getOrderStatusResourceURL($storeId = null)
+    {
+        return $this->getGatewayResourceURL(self::ORDER_STATUS_ENDPOINT, $storeId);
     }
 
     /**

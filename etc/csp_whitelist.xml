@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="frame-src">
+            <values>
+                <value id="monri-components-frame-test" type="host">https://ipgtest.monri.com/</value>
+                <value id="monri-components-frame-prod" type="host">https://ipg.monri.com/</value>
+            </values>
+        </policy>
+        <policy id="script-src">
+            <values>
+                <value id="monri-components-script-test" type="host">https://ipgtest.monri.com/</value>
+                <value id="monri-components-script-prod" type="host">https://ipg.monri.com/</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

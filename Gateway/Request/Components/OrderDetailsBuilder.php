@@ -26,6 +26,8 @@ class OrderDetailsBuilder implements BuilderInterface
 
     const CURRENCY_FIELD = 'currency';
 
+    const TRANSACTION_TYPE_FIELD = 'transaction_type';
+
     /**
      * @var Formatter
      */
@@ -90,7 +92,7 @@ class OrderDetailsBuilder implements BuilderInterface
             'transportObject' => $transportObject
         ]);
 
-        $orderInfo = $transportObject->getData('description');
+        $orderInfo = $this->formatter->formatText($transportObject->getData('description'), 100);
 
         $orderAmount = $this->formatter->formatPrice(
             $paymentDataObject->getPayment()->getQuote()->getBaseGrandTotal() //can we do this better?
@@ -98,14 +100,16 @@ class OrderDetailsBuilder implements BuilderInterface
 
         $currencyCode = $order->getCurrencyCode();
 
+        $paymentAction = $this->config->getPaymentAction(
+            $paymentDataObject->getPayment()->getQuote()->getStoreId()
+        );
+
         return [
-            self::ORDER_INFO_FIELD => $this->formatter->formatText($orderInfo, 100),
+            self::ORDER_INFO_FIELD => $orderInfo,
             self::ORDER_NUMBER_FIELD => $orderNumber,
             self::AMOUNT_FIELD => $orderAmount,
             self::CURRENCY_FIELD => $currencyCode,
-            'transaction_type' => $this->config->getPaymentAction(
-                $paymentDataObject->getPayment()->getQuote()->getStoreId()
-            )
+            self::TRANSACTION_TYPE_FIELD => $paymentAction,
         ];
     }
 }
