@@ -17,17 +17,17 @@ use Monri\Payments\Model\Crypto\Digest;
 
 class ProcessingDataBuilder implements BuilderInterface
 {
-    const LANGUAGE_FIELD = 'language';
+    public const LANGUAGE_FIELD = 'language';
 
-    const TRANSACTION_TYPE_FIELD = 'transaction_type';
+    public const TRANSACTION_TYPE_FIELD = 'transaction_type';
 
-    const AUTHENTICITY_TOKEN_FIELD = 'authenticity_token';
+    public const AUTHENTICITY_TOKEN_FIELD = 'authenticity_token';
 
-    const DIGEST_FIELD = 'digest';
+    public const DIGEST_FIELD = 'digest';
 
-    const NUMBER_OF_INSTALLMENTS_FIELD = 'number_of_installments';
+    public const NUMBER_OF_INSTALLMENTS_FIELD = 'number_of_installments';
 
-    const MOTO_FIELD = 'moto';
+    public const MOTO_FIELD = 'moto';
 
     /**
      * @var Formatter
@@ -43,6 +43,13 @@ class ProcessingDataBuilder implements BuilderInterface
      */
     private $config;
 
+    /**
+     * ProcessingDataBuilder constructor.
+     *
+     * @param Formatter $formatter
+     * @param Digest $digest
+     * @param Config $config
+     */
     public function __construct(
         Formatter $formatter,
         Digest $digest,

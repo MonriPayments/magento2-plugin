@@ -24,7 +24,7 @@ use Magento\Framework\Logger\Handler\Base;
  */
 class Download extends AbstractAction
 {
-    const ADMIN_RESOURCE = 'Magento_Backend::system';
+    public const ADMIN_RESOURCE = 'Magento_Payment::payment';
 
     /**
      * @var File
@@ -46,6 +46,15 @@ class Download extends AbstractAction
      */
     private $componentsLoggerHandler;
 
+    /**
+     * Download constructor.
+     *
+     * @param Action\Context $context
+     * @param File $fileClient
+     * @param FileFactory $fileFactory
+     * @param Base $loggerHandler
+     * @param Base $componentsLoggerHandler
+     */
     public function __construct(
         Action\Context $context,
         File $fileClient,

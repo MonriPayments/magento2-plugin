@@ -11,35 +11,38 @@ namespace Monri\Payments\Gateway;
 
 class Config extends \Magento\Payment\Gateway\Config\Config
 {
-    const CODE = 'monri_payments';
+    public const CODE = 'monri_payments';
 
-    const GATEWAY_PRODUCTION_URL = 'https://ipg.monri.com/%s';
-    const GATEWAY_SANDBOX_URL = 'https://ipgtest.monri.com/%s';
+    public const GATEWAY_PRODUCTION_URL = 'https://ipg.monri.com/%s';
+    public const GATEWAY_SANDBOX_URL = 'https://ipgtest.monri.com/%s';
 
-    const SANDBOX = 'sandbox';
+    public const SANDBOX = 'sandbox';
 
-    const CLIENT_KEY = 'client_key';
+    public const CLIENT_KEY = 'client_key';
 
-    const CLIENT_AUTHENTICITY_TOKEN = 'client_authenticity_token';
+    public const CLIENT_AUTHENTICITY_TOKEN = 'client_authenticity_token';
 
-    const TRANSACTION_TYPE = 'transaction_type';
+    public const TRANSACTION_TYPE = 'transaction_type';
 
-    const INSTALLMENTS = 'installments';
+    public const INSTALLMENTS = 'installments';
 
-    const INSTALLMENTS_DISABLED = 'disabled';
+    public const INSTALLMENTS_DISABLED = 'disabled';
 
-    const LANGUAGE = 'language';
+    public const LANGUAGE = 'language';
 
-    const TRANSACTION_TYPE_CAPTURE = 'capture';
+    public const TRANSACTION_TYPE_CAPTURE = 'capture';
 
-    const TRANSACTION_TYPE_AUTHORIZE = 'authorize';
+    public const TRANSACTION_TYPE_AUTHORIZE = 'authorize';
 
-    const TRANSACTION_TYPE_PURCHASE = 'purchase';
+    public const TRANSACTION_TYPE_PURCHASE = 'purchase';
 
-    const FORM_ENDPOINT = 'v2/form';
+    public const FORM_ENDPOINT = 'v2/form';
 
-    const ORDER_STATUS_ENDPOINT = 'orders/show';
+    public const ORDER_STATUS_ENDPOINT = 'orders/show';
 
+    /**
+     * @var string[]
+     */
     protected $_availableCurrencies = [
         'USD',
         'EUR',
@@ -127,6 +130,12 @@ class Config extends \Magento\Payment\Gateway\Config\Config
         return $this->getGatewayResourceURL(self::FORM_ENDPOINT, $storeId);
     }
 
+    /**
+     * Returns order status info url for a given store ID.
+     *
+     * @param int|null $storeId
+     * @return string
+     */
     public function getOrderStatusResourceURL($storeId = null)
     {
         return $this->getGatewayResourceURL(self::ORDER_STATUS_ENDPOINT, $storeId);
@@ -168,14 +177,11 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
-     * Returns the available currency codes for a given store ID.
+     * Returns the available currency codes
      *
-     * @param null $storeId
      * @return array
-     *
-     * @SuppressWarnings(PHPMD.UnusedFormalParameter)
      */
-    public function getAvailableCurrencyCodes($storeId = null)
+    public function getAvailableCurrencyCodes()
     {
         return $this->_availableCurrencies;
     }

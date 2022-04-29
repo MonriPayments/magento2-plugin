@@ -30,8 +30,20 @@ class DownloadLog extends Field
      */
     private $fileDriver;
 
+    /**
+     * @var bool
+     */
     private $components;
 
+    /**
+     * DownloadLog constructor.
+     *
+     * @param Context $context
+     * @param Base $loggerHandler
+     * @param File $fileDriver
+     * @param array $data
+     * @param bool $components
+     */
     public function __construct(
         Context $context,
         Base $loggerHandler,
@@ -45,6 +57,12 @@ class DownloadLog extends Field
         $this->components = $components;
     }
 
+    /**
+     * Render field
+     *
+     * @param AbstractElement $element
+     * @return string
+     */
     public function render(AbstractElement $element)
     {
         $element->unsetData('scope')
@@ -54,6 +72,8 @@ class DownloadLog extends Field
     }
 
     /**
+     * Customize element html
+     *
      * @param AbstractElement $element
      * @return string
      *

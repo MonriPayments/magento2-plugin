@@ -8,13 +8,13 @@ use Monri\Payments\Gateway\Config;
 
 class Components extends Config
 {
-    const CODE = 'monri_components';
-    const PAYMENT_ACTION = 'payment_action';
+    public const CODE = 'monri_components';
+    public const PAYMENT_ACTION = 'payment_action';
 
     /**
-     * @param $resource
-     * @param $object
-     * @param null $storeId
+     * Get payment create url
+     *
+     * @param int|null $storeId
      * @return string
      */
     public function getGatewayPaymentCreateURL($storeId = null)
@@ -23,6 +23,8 @@ class Components extends Config
     }
 
     /**
+     * Get components javascript url
+     *
      * @param null|int $storeId
      * @return string
      */
@@ -32,7 +34,9 @@ class Components extends Config
     }
 
     /**
-     * @param null $storeId
+     * Get configured payment action
+     *
+     * @param int|null $storeId
      * @return string
      */
     public function getPaymentAction($storeId = null)

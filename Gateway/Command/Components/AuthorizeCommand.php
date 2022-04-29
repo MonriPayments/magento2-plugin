@@ -41,12 +41,11 @@ class AuthorizeCommand implements CommandInterface
     private $logger;
 
     /**
-     * @param BuilderInterface $requestBuilder
-     * @param TransferFactoryInterface $transferFactory
-     * @param ClientInterface $client
+     * AuthorizeCommand constructor.
+     *
      * @param LoggerInterface $logger
-     * @param HandlerInterface $handler
-     * @param ValidatorInterface $validator
+     * @param ValidatorInterface|null $validator
+     * @param HandlerInterface|null $handler
      * @param ErrorMessageMapperInterface|null $errorMessageMapper
      */
     public function __construct(
@@ -61,6 +60,9 @@ class AuthorizeCommand implements CommandInterface
         $this->logger = $logger;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function execute(array $commandSubject)
     {
         if ($this->validator !== null) {
@@ -79,6 +81,8 @@ class AuthorizeCommand implements CommandInterface
     }
 
     /**
+     * Process errors
+     *
      * @param ResultInterface $result
      * @throws CommandException
      */

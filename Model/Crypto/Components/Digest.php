@@ -18,6 +18,11 @@ class Digest
      */
     private $config;
 
+    /**
+     * Digest constructor.
+     *
+     * @param Config $config
+     */
     public function __construct(
         Config $config
     ) {
@@ -25,9 +30,11 @@ class Digest
     }
 
     /**
+     * Build digest
+     *
      * @param string $timestamp
      * @param string $bodyAsString
-     * @param null $storeId
+     * @param int|null $storeId
      * @return string
      */
     public function build(string $timestamp, string $bodyAsString, $storeId = null)

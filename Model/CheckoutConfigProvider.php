@@ -20,6 +20,12 @@ class CheckoutConfigProvider implements ConfigProviderInterface
      */
     private $checkoutSession;
 
+    /**
+     * CheckoutConfigProvider constructor.
+     *
+     * @param Config $config
+     * @param Session $session
+     */
     public function __construct(
         Config $config,
         Session $session

@@ -30,6 +30,14 @@ class UnsuccessfulHandler extends AbstractTransactionHandler
      */
     private $logger;
 
+    /**
+     * UnsuccessfulHandler constructor.
+     *
+     * @param TransactionFactory $transactionFactory
+     * @param TransactionResource $transactionResource
+     * @param Logger $logger
+     * @param OrderManagementInterface $orderManagement
+     */
     public function __construct(
         TransactionFactory $transactionFactory,
         TransactionResource $transactionResource,

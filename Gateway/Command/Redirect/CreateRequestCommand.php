@@ -27,6 +27,12 @@ class CreateRequestCommand implements CommandInterface
      */
     private $resultFactory;
 
+    /**
+     * CreateRequestCommand constructor.
+     *
+     * @param BuilderInterface $builder
+     * @param ArrayResultFactory $resultFactory
+     */
     public function __construct(
         BuilderInterface $builder,
         ArrayResultFactory $resultFactory

@@ -38,6 +38,16 @@ class Cancel extends AbstractGatewayResponse
      */
     private $logger;
 
+    /**
+     * Cancel constructor.
+     *
+     * @param Context $context
+     * @param OrderRepository $orderRepository
+     * @param CommandManagerInterface $commandManager
+     * @param GetOrderIdByIncrement $getOrderIdByIncrement
+     * @param Session $checkoutSession
+     * @param Logger $logger
+     */
     public function __construct(
         Context $context,
         OrderRepository $orderRepository,

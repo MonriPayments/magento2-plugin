@@ -32,6 +32,12 @@ abstract class AbstractTransactionHandler implements HandlerInterface
      */
     private $transactionResource;
 
+    /**
+     * AbstractTransactionHandler constructor.
+     *
+     * @param TransactionFactory $transactionFactory
+     * @param TransactionResource $transactionResource
+     */
     public function __construct(
         TransactionFactory $transactionFactory,
         TransactionResource $transactionResource
@@ -41,6 +47,8 @@ abstract class AbstractTransactionHandler implements HandlerInterface
     }
 
     /**
+     * Handles response
+     *
      * @param array $handlingSubject
      * @param array $response
      * @throws AlreadyExistsException
@@ -58,6 +66,12 @@ abstract class AbstractTransactionHandler implements HandlerInterface
         $this->handleTransaction($payment, $order, $response);
     }
 
+    /**
+     * Check if transaction already exists
+     *
+     * @param Payment $payment
+     * @return bool
+     */
     protected function checkIfTransactionProcessed(Payment $payment)
     {
         $transactionTxnId = $payment->getTransactionId();
@@ -76,6 +90,12 @@ abstract class AbstractTransactionHandler implements HandlerInterface
         return (bool) $transaction->getId();
     }
 
+    /**
+     * Resolve transaction id from response
+     *
+     * @param array $response
+     * @return string
+     */
     protected function getTransactionId(array $response)
     {
         $orderNumber = $response['order_number'];

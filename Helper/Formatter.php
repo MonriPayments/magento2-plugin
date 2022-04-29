@@ -14,7 +14,7 @@ class Formatter
     /**
      * Formats the price according to Monri's specification
      *
-     * @param $price
+     * @param float $price
      * @return string
      */
     public function formatPrice($price)

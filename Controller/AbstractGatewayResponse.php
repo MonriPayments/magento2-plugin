@@ -43,6 +43,14 @@ abstract class AbstractGatewayResponse extends Action
      */
     private $getOrderIdByIncrement;
 
+    /**
+     * AbstractGatewayResponse constructor.
+     *
+     * @param Context $context
+     * @param OrderRepository $orderRepository
+     * @param CommandManagerInterface $commandManager
+     * @param GetOrderIdByIncrement $getOrderIdByIncrement
+     */
     public function __construct(
         Context $context,
         OrderRepository $orderRepository,
@@ -59,7 +67,7 @@ abstract class AbstractGatewayResponse extends Action
     /**
      * Get order by ID
      *
-     * @param $orderId
+     * @param int $orderId
      * @return OrderInterface|null
      * @throws InputException
      * @throws NoSuchEntityException
@@ -70,7 +78,9 @@ abstract class AbstractGatewayResponse extends Action
     }
 
     /**
-     * @param $orderIncrementId
+     * Get order by increment id
+     *
+     * @param string $orderIncrementId
      * @return OrderInterface|null
      * @throws InputException
      * @throws NoSuchEntityException
@@ -92,7 +102,7 @@ abstract class AbstractGatewayResponse extends Action
      *
      * @param array $gatewayResponse
      * @param InfoInterface $payment
-     * @param $verificationData
+     * @param mixed $verificationData
      * @return array
      * @throws CommandException
      * @throws NotFoundException

@@ -13,7 +13,6 @@ use Magento\Payment\Gateway\Http\TransferBuilder;
 use Magento\Payment\Gateway\Http\TransferFactoryInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 use Monri\Payments\Gateway\Config;
-use Monri\Payments\Gateway\Request\OrderUpdateBuilder;
 
 class OrderStatusTransferFactory implements TransferFactoryInterface
 {
@@ -31,7 +30,6 @@ class OrderStatusTransferFactory implements TransferFactoryInterface
      * OrderUpdateTransferFactory constructor.
      * @param TransferBuilder $transferBuilder
      * @param Config $config
-     * @param string $resource
      */
     public function __construct(
         TransferBuilder $transferBuilder,
@@ -39,7 +37,6 @@ class OrderStatusTransferFactory implements TransferFactoryInterface
     ) {
         $this->transferBuilder = $transferBuilder;
         $this->config = $config;
-        $this->resource = $resource;
     }
 
     /**

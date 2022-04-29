@@ -19,8 +19,7 @@ class SecurityReader
      * @param array $subject
      * @return array
      */
-    // phpcs:ignore Magento2.Functions.StaticFunction
-    public static function readVerificationData(array $subject)
+    public static function readVerificationData(array $subject)// phpcs:ignore Magento2.Functions.StaticFunction
     {
         if (!isset($subject['verification_data']) || !is_array($subject['verification_data'])) {
             throw new InvalidArgumentException('Verification digest should be provided.');

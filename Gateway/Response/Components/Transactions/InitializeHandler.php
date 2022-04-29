@@ -14,48 +14,32 @@ use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\Order\Payment\Transaction;
-use Magento\Sales\Model\Order\Payment\TransactionFactory;
-use Magento\Sales\Model\ResourceModel\Order\Payment\Transaction as TransactionResource;
-use Monri\Payments\Gateway\Exception\TransactionAlreadyProcessedException;
+use Monri\Payments\Block\Adminhtml\Config\Source\TransactionTypes;
 use Monri\Payments\Gateway\Config\Components as ComponentsConfig;
 
 class InitializeHandler implements HandlerInterface
 {
     /**
-     * @var TransactionFactory
-     */
-    private $transactionFactory;
-
-    /**
-     * @var TransactionResource
-     */
-    private $transactionResource;
-
-    /**
      * @var ComponentsConfig
      */
     private $config;
 
+    /**
+     * InitializeHandler constructor.
+     *
+     * @param ComponentsConfig $config
+     */
     public function __construct(
-        TransactionFactory $transactionFactory,
-        TransactionResource $transactionResource,
         ComponentsConfig $config
     ) {
-        $this->transactionFactory = $transactionFactory;
-        $this->transactionResource = $transactionResource;
         $this->config = $config;
     }
 
     /**
-     * Handles response
-     *
-     * @param array $handlingSubject
-     * @param array $response
-     * @return void
+     * @inheritDoc
      */
     public function handle(array $handlingSubject, array $response)
     {
-
         $paymentDataObject = SubjectReader::readPayment($handlingSubject);
 
         $stateObject = SubjectReader::readStateObject($handlingSubject);
@@ -73,15 +57,21 @@ class InitializeHandler implements HandlerInterface
             ->setIsTransactionClosed(0);
 
         switch ($this->config->getPaymentAction()) {
-            case \Monri\Payments\Block\Adminhtml\Config\Source\TransactionTypes::ACTION_AUTORIZE:
+            case TransactionTypes::ACTION_AUTORIZE:
                 $payment->registerAuthorizationNotification($payment->getOrder()->getBaseGrandTotal());
                 break;
-            case \Monri\Payments\Block\Adminhtml\Config\Source\TransactionTypes::ACTION_PURCHASE:
+            case TransactionTypes::ACTION_PURCHASE:
                 $payment->registerCaptureNotification($payment->getOrder()->getBaseGrandTotal());
                 break;
         }
     }
 
+    /**
+     * Resolve transaction id in data
+     *
+     * @param array $transactionData
+     * @return string
+     */
     protected function getTransactionId(array $transactionData)
     {
         $orderNumber = $transactionData['order_number'];

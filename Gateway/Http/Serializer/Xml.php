@@ -28,6 +28,12 @@ class Xml implements SerializerInterface
      */
     private $convertArray;
 
+    /**
+     * Xml constructor.
+     *
+     * @param ElementFactory $simpleXmlElementFactory
+     * @param ConvertArray $convertArray
+     */
     public function __construct(
         ElementFactory $simpleXmlElementFactory,
         ConvertArray $convertArray
@@ -72,6 +78,12 @@ class Xml implements SerializerInterface
         return $this->normalizeArray($simpleXmlElement->asArray());
     }
 
+    /**
+     * Normalize array
+     *
+     * @param array $array
+     * @return array
+     */
     protected function normalizeArray(array $array)
     {
         $normalizedArray = [];

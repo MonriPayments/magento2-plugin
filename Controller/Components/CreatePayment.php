@@ -30,6 +30,14 @@ class CreatePayment extends Action
      */
     private $logger;
 
+    /**
+     * CreatePayment constructor.
+     *
+     * @param Context $context
+     * @param Session $checkoutSession
+     * @param CommandManagerInterface $commandManager
+     * @param Logger $logger
+     */
     public function __construct(
         Context $context,
         Session $checkoutSession,
@@ -43,6 +51,11 @@ class CreatePayment extends Action
         parent::__construct($context);
     }
 
+    /**
+     * Init Components payment
+     *
+     * @return Json
+     */
     public function execute()
     {
         $log = [

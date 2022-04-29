@@ -45,6 +45,15 @@ class Client implements PaymentClientInterface
      */
     private $timeout;
 
+    /**
+     * Client constructor.
+     *
+     * @param ClientInterfaceFactory $httpClientFactory
+     * @param SerializerInterface $serializer
+     * @param Logger $logger
+     * @param int $timeout
+     * @param string $requestType
+     */
     public function __construct(
         ClientInterfaceFactory $httpClientFactory,
         SerializerInterface $serializer,
@@ -60,7 +69,7 @@ class Client implements PaymentClientInterface
     }
 
     /**
-     * {@inheritDoc}
+     * @inheritDoc
      */
     public function placeRequest(TransferInterface $transferObject)
     {
@@ -138,7 +147,7 @@ class Client implements PaymentClientInterface
     /**
      * Parses response and returns array
      *
-     * @param $response
+     * @param string $response
      * @return array
      */
     protected function parseResponseBody($response)
@@ -156,6 +165,8 @@ class Client implements PaymentClientInterface
     }
 
     /**
+     * Validate server response
+     *
      * @param array $responseBody
      * @param int $statusCode
      * @throws ClientException

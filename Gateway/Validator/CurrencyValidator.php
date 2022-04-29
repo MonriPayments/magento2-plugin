@@ -16,7 +16,6 @@ use Monri\Payments\Gateway\Config;
 
 class CurrencyValidator extends AbstractValidator
 {
-
     /**
      * @var Config
      */
@@ -44,9 +43,8 @@ class CurrencyValidator extends AbstractValidator
     public function validate(array $validationSubject)
     {
         $currency = $validationSubject['currency'];
-        $storeId = $validationSubject['storeId'];
 
-        $availableCurrencies = $this->config->getAvailableCurrencyCodes($storeId);
+        $availableCurrencies = $this->config->getAvailableCurrencyCodes();
 
         if (!in_array($currency, $availableCurrencies)) {
             return $this->createResult(false, [__('The currency selected is not supported by Monri Payments.')]);

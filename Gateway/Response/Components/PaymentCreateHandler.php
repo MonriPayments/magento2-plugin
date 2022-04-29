@@ -15,12 +15,10 @@ use Magento\Quote\Model\Quote\Payment;
 
 class PaymentCreateHandler implements HandlerInterface
 {
-    const INITIAL_DATA = 'initial_payment_data';
+    public const INITIAL_DATA = 'initial_payment_data';
 
     /**
-     * @param array $handlingSubject
-     * @param array $response
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @inheritDoc
      */
     public function handle(array $handlingSubject, array $response)
     {

@@ -18,6 +18,12 @@ class ErrorMessageMapper extends \Magento\Payment\Gateway\ErrorMapper\ErrorMessa
      */
     private $mapRawMessages;
 
+    /**
+     * ErrorMessageMapper constructor.
+     *
+     * @param DataInterface $messageMapping
+     * @param bool $mapRawMessages
+     */
     public function __construct(
         DataInterface $messageMapping,
         $mapRawMessages = false
@@ -26,6 +32,12 @@ class ErrorMessageMapper extends \Magento\Payment\Gateway\ErrorMapper\ErrorMessa
         $this->mapRawMessages = $mapRawMessages;
     }
 
+    /**
+     * Get mapped message
+     *
+     * @param string $code
+     * @return \Magento\Framework\Phrase|string
+     */
     public function getMessage(string $code)
     {
         $message = parent::getMessage($code);

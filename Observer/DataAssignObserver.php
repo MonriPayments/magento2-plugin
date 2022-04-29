@@ -10,6 +10,8 @@ use Magento\Quote\Model\Quote\Payment;
 class DataAssignObserver extends AbstractDataAssignObserver
 {
     /**
+     * Assign needed data to payment
+     *
      * @param Observer $observer
      * @throws \Magento\Framework\Exception\LocalizedException
      */
