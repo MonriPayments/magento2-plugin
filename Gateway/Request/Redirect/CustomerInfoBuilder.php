@@ -67,7 +67,7 @@ class CustomerInfoBuilder implements BuilderInterface
 
         $city = $billingAddress->getCity();
 
-        $zipCode = $billingAddress->getRegionCode();
+        $zipCode = $billingAddress->getPostcode();
 
         $countryCode = $billingAddress->getCountryId();
 

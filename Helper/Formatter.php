@@ -27,10 +27,34 @@ class Formatter
      *
      * @param string $text
      * @param int $maxLength
+     * @param bool $transliterate
      * @return string
      */
-    public function formatText($text, $maxLength = 30)
+    public function formatText($text, $maxLength = 30, $transliterate = false)
     {
+        /**
+         * older ICU versions don't have Latin-ASCII,
+         * so we're trying from best to worse
+         */
+        if ($transliterate) {
+            $trans = [
+                'Any-Latin; Latin-ASCII;',
+                'Any-Latin; NFD; [:Nonspacing Mark:] Remove; NFC;',
+                'Any-Latin;'
+            ];
+            foreach ($trans as $t) {
+                // Find one that exists
+                $transliterate = \Transliterator::create($t);
+                if ($transliterate == null) {
+                    continue;
+                }
+
+                // Transliterate and get out
+                $text = $transliterate->transliterate($text);
+                break;
+            }
+        }
+
         if (strlen($text) > $maxLength) {
             $text = substr($text, 0, $maxLength);
         }
