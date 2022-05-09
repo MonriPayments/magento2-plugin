@@ -21,7 +21,18 @@ use Monri\Payments\Gateway\Helper\RawDetailsFormatter;
 
 class PurchaseHandler extends AbstractTransactionHandler
 {
+    /**
+     * @var RawDetailsFormatter
+     */
+    private $rawDetailsFormatter;
 
+    /**
+     * PurchaseHandler constructor.
+     *
+     * @param TransactionFactory $transactionFactory
+     * @param TransactionResource $transactionResource
+     * @param RawDetailsFormatter $rawDetailsFormatter
+     */
     public function __construct(
         TransactionFactory $transactionFactory,
         TransactionResource $transactionResource,

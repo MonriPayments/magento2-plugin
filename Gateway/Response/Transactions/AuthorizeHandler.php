@@ -25,6 +25,13 @@ class AuthorizeHandler extends AbstractTransactionHandler
      */
     private $rawDetailsFormatter;
 
+    /**
+     * AuthorizeHandler constructor.
+     *
+     * @param TransactionFactory $transactionFactory
+     * @param TransactionResource $transactionResource
+     * @param RawDetailsFormatter $rawDetailsFormatter
+     */
     public function __construct(
         TransactionFactory $transactionFactory,
         TransactionResource $transactionResource,
