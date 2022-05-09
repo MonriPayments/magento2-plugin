@@ -85,7 +85,7 @@ class OrderDetailsBuilder implements BuilderInterface
 
         $paymentDataObject->getPayment()->setAdditionalInformation(self::ORDER_NUMBER_FIELD, $orderNumber);
 
-        $orderInfo = __('Order: %1', $order->getOrderIncrementId());
+        $orderInfo = __('Order: %1', $order->getOrderIncrementId())->render();
 
         $transportObject = $this->dataObjectFactory->create([
             'data' => [
