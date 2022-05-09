@@ -84,6 +84,7 @@ class Cancel extends AbstractGatewayResponse
             );
 
             $gatewayResponse = $this->getRequest()->getParams();
+            $log['payload'] = $gatewayResponse;
 
             if ($gatewayResponse['order_number'] !== $order->getIncrementId()) {
                 $log['errors'][] = 'Order number from session not matching the one in gateway response.';

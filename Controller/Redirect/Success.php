@@ -89,6 +89,7 @@ class Success extends AbstractGatewayResponse
             $payment = $order->getPayment();
 
             $gatewayResponse = $this->getRequest()->getParams();
+            $log['payload'] = $gatewayResponse;
             $gatewayResponse['status'] = 'approved';
 
             $digestData = $this->getDigestData();
