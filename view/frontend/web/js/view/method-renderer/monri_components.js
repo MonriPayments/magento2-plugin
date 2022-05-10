@@ -10,8 +10,8 @@ define(
         'Magento_Checkout/js/view/payment/default',
         'jquery',
         'underscore',
-        'Magento_Customer/js/customer-data',
         'Magento_Checkout/js/model/quote',
+        'Magento_Customer/js/model/customer',
         'Monri_Payments/js/view/method-renderer/monri_components/style',
         'mage/url',
         'mage/translate'
@@ -20,8 +20,8 @@ define(
         Component,
         $,
         _,
-        customerData,
         quote,
+        customer,
         style,
         urlBuilder,
         $t
@@ -228,6 +228,8 @@ define(
                     street += ' ' + address.street[2];
                 }
 
+                var email = customer.isLoggedIn() ? customer.customerData.email : quote.guestEmail;
+
                 return {
                     address: street,
                     fullName: address.firstname + ' ' + address.lastname,
@@ -235,8 +237,8 @@ define(
                     zip: address.postcode,
                     phone: address.telephone,
                     country: address.countryId,
-                    email: typeof quote.guestEmail === 'string' ? quote.guestEmail : address.email,
-                    orderInfo: 'Magento Order'
+                    email: email,
+                    orderInfo: $t('Magento Order')
                 };
             },
 
