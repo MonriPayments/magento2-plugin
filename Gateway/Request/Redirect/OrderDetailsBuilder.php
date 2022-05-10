@@ -71,7 +71,7 @@ class OrderDetailsBuilder implements BuilderInterface
 
         $orderNumber = $order->getOrderIncrementId();
 
-        $orderInfo = __('Order: #%1', $orderNumber)->render();
+        $orderInfo = __('Magento Order')->render();
 
         $transportObject = $this->dataObjectFactory->create([
             'data' => [
