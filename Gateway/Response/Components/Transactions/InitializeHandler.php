@@ -16,6 +16,7 @@ use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\Order\Payment\Transaction;
 use Monri\Payments\Block\Adminhtml\Config\Source\TransactionTypes;
 use Monri\Payments\Gateway\Config\Components as ComponentsConfig;
+use Monri\Payments\Gateway\Helper\RawDetailsFormatter;
 
 class InitializeHandler implements HandlerInterface
 {
@@ -25,14 +26,21 @@ class InitializeHandler implements HandlerInterface
     private $config;
 
     /**
+     * @var RawDetailsFormatter
+     */
+    private $rawDetailsFormatter;
+
+    /**
      * InitializeHandler constructor.
      *
      * @param ComponentsConfig $config
      */
     public function __construct(
-        ComponentsConfig $config
+        ComponentsConfig $config,
+        RawDetailsFormatter $rawDetailsFormatter
     ) {
         $this->config = $config;
+        $this->rawDetailsFormatter = $rawDetailsFormatter;
     }
 
     /**
@@ -50,7 +58,10 @@ class InitializeHandler implements HandlerInterface
 
         $transactionData = $payment->getAdditionalInformation('transaction_data');
 
-        $payment->setTransactionAdditionalInfo(Transaction::RAW_DETAILS, $transactionData);
+        $payment->setTransactionAdditionalInfo(
+            Transaction::RAW_DETAILS,
+            $this->rawDetailsFormatter->format($transactionData)
+        );
 
         $payment
             ->setTransactionId($this->getTransactionId($transactionData))
@@ -74,9 +85,12 @@ class InitializeHandler implements HandlerInterface
      */
     protected function getTransactionId(array $transactionData)
     {
-        $orderNumber = $transactionData['order_number'];
-        $secretCode = $transactionData['data_secret'];
+        $transactionId = $transactionData['order_number'];
 
-        return "{$orderNumber}-{$secretCode}";
+        if (isset($transactionData['transaction_response']['id'])) {
+            $transactionId .= $transactionData['transaction_response']['id'];
+        }
+
+        return $transactionId;
     }
 }
