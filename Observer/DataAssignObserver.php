@@ -52,6 +52,6 @@ class DataAssignObserver extends AbstractDataAssignObserver
         if (!$paymentModel instanceof Payment) {
             return;
         }
-        $paymentModel->setAdditionalInformation('transaction_data', $additionalData);
+        $paymentModel->setAdditionalInformation('transaction_data', $transactionData);
     }
 }

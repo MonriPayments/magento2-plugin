@@ -88,7 +88,7 @@ class InitializeHandler implements HandlerInterface
         $transactionId = $transactionData['order_number'];
 
         if (isset($transactionData['transaction_response']['id'])) {
-            $transactionId .= $transactionData['transaction_response']['id'];
+            $transactionId .= '-' . $transactionData['transaction_response']['id'];
         }
 
         return $transactionId;
