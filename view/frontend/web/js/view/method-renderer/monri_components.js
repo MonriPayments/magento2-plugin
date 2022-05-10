@@ -217,6 +217,7 @@ define(
             },
 
             getTransactionData: function () {
+                var email = customer.isLoggedIn() ? customer.customerData.email : quote.guestEmail;
                 var address = quote.billingAddress();
 
                 var street = address.street[0];
@@ -227,8 +228,6 @@ define(
                 if (typeof address.street[2] !== "undefined") {
                     street += ' ' + address.street[2];
                 }
-
-                var email = customer.isLoggedIn() ? customer.customerData.email : quote.guestEmail;
 
                 return {
                     address: street,
@@ -247,15 +246,15 @@ define(
             },
 
             getData: function () {
-                var additionalData = _.extend({
-                    'data_secret': this.clientSecret
-                }, this.result);
+                var additionalData = {
+                    'data_secret': this.clientSecret,
+                    'transaction_data': JSON.stringify(this.result),
+                };
 
-                var data = {
+                return {
                     'method': this.item.method,
                     'additional_data': additionalData
                 };
-                return data;
             },
 
             getCurrentTime: function () {

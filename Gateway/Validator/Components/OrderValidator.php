@@ -51,7 +51,7 @@ class OrderValidator extends AbstractValidator
         $paymentDataObject = SubjectReader::readPayment($validationSubject);
         $payment = $paymentDataObject->getPayment();
 
-        $transactionData = (array)$paymentDataObject->getPayment()->getAdditionalInformation('transaction_data');
+        $transactionData = (array)$payment->getAdditionalInformation('transaction_data');
         $orderNumber = $payment->getAdditionalInformation(OrderDetailsBuilder::ORDER_NUMBER_FIELD);
 
         if ($orderNumber != $transactionData['order_number']) {
