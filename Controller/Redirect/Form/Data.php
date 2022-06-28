@@ -56,6 +56,16 @@ class Data extends Action
      */
     private $logger;
 
+    /**
+     * Data constructor.
+     *
+     * @param Context $context
+     * @param Session $checkoutSession
+     * @param OrderRepository $orderRepository
+     * @param Config $config
+     * @param CommandManagerInterface $commandManager
+     * @param Logger $logger
+     */
     public function __construct(
         Context $context,
         Session $checkoutSession,

@@ -32,7 +32,7 @@ use Monri\Payments\Model\GetOrderIdByIncrement;
  */
 class Callback extends AbstractGatewayResponse
 {
-    const CALLBACK_DIGEST_PREFIX = 'WP3-callback ';
+    private const CALLBACK_DIGEST_PREFIX = 'WP3-callback ';
 
     /**
      * @var Json
@@ -43,6 +43,16 @@ class Callback extends AbstractGatewayResponse
      */
     private $logger;
 
+    /**
+     * Callback constructor.
+     *
+     * @param Context $context
+     * @param OrderRepository $orderRepository
+     * @param CommandManagerInterface $commandManager
+     * @param GetOrderIdByIncrement $getOrderIdByIncrement
+     * @param Json $jsonSerializer
+     * @param Logger $logger
+     */
     public function __construct(
         Context $context,
         OrderRepository $orderRepository,
@@ -123,6 +133,11 @@ class Callback extends AbstractGatewayResponse
         return $resultRaw->setHttpResponseCode(200);
     }
 
+    /**
+     * Get digest from request
+     *
+     * @return string
+     */
     protected function getRequestDigest()
     {
         $digestHeader = $this->getRequest()->getHeader('Authorization');

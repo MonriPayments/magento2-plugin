@@ -13,15 +13,20 @@ use Monri\Payments\Gateway\Config;
 
 class Digest
 {
-    const DIGEST_ALGO_512 = 'sha512';
+    public const DIGEST_ALGO_512 = 'sha512';
 
-    const DIGEST_ALGO_1 = 'sha1';
+    public const DIGEST_ALGO_1 = 'sha1';
 
     /**
      * @var Config
      */
     private $config;
 
+    /**
+     * Digest constructor.
+     *
+     * @param Config $config
+     */
     public function __construct(
         Config $config
     ) {
@@ -49,10 +54,25 @@ class Digest
     }
 
     /**
+     * Sign order number
+     *
+     * @param string $orderNumber
+     * @param int|null $storeId
+     * @return string
+     */
+    public function buildSimple($orderNumber, $storeId = null)
+    {
+        $clientKey = $this->config->getClientKey($storeId);
+        $data = "${$clientKey}${$orderNumber}";
+
+        return hash('sha1', $data);
+    }
+
+    /**
      * Verifies a digest.
      *
-     * @param $digest
-     * @param $payload
+     * @param string $digest
+     * @param string $payload
      * @param null|int $storeId
      * @param string $digestAlgo
      * @return bool

@@ -19,17 +19,17 @@ use Monri\Payments\Model\Crypto\Digest;
 
 class OrderUpdateBuilder implements BuilderInterface
 {
-    const TRANSACTION_GROUP_FIELD = 'transaction';
+    public const TRANSACTION_GROUP_FIELD = 'transaction';
 
-    const AMOUNT_FIELD = 'amount';
+    public const AMOUNT_FIELD = 'amount';
 
-    const CURRENCY_FIELD = 'currency';
+    public const CURRENCY_FIELD = 'currency';
 
-    const DIGEST_FIELD = 'digest';
+    public const DIGEST_FIELD = 'digest';
 
-    const AUTHENTICITY_TOKEN_FIELD = 'authenticity-token';
+    public const AUTHENTICITY_TOKEN_FIELD = 'authenticity-token';
 
-    const ORDER_NUMBER_FIELD = 'order-number';
+    public const ORDER_NUMBER_FIELD = 'order-number';
 
     /**
      * @var Formatter
@@ -46,6 +46,13 @@ class OrderUpdateBuilder implements BuilderInterface
      */
     private $config;
 
+    /**
+     * OrderUpdateBuilder constructor.
+     *
+     * @param Formatter $formatter
+     * @param Digest $digest
+     * @param Config $config
+     */
     public function __construct(
         Formatter $formatter,
         Digest $digest,

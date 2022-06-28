@@ -15,25 +15,30 @@ use Monri\Payments\Helper\Formatter;
 
 class CustomerInfoBuilder implements BuilderInterface
 {
-    const FULL_NAME_FIELD = 'ch_full_name';
+    public const FULL_NAME_FIELD = 'ch_full_name';
 
-    const ADDRESS_FIELD = 'ch_address';
+    public const ADDRESS_FIELD = 'ch_address';
 
-    const CITY_FIELD = 'ch_city';
+    public const CITY_FIELD = 'ch_city';
 
-    const ZIP_FIELD = 'ch_zip';
+    public const ZIP_FIELD = 'ch_zip';
 
-    const COUNTRY_FIELD = 'ch_country';
+    public const COUNTRY_FIELD = 'ch_country';
 
-    const PHONE_FIELD = 'ch_phone';
+    public const PHONE_FIELD = 'ch_phone';
 
-    const EMAIL_FIELD = 'ch_email';
+    public const EMAIL_FIELD = 'ch_email';
 
     /**
      * @var Formatter
      */
     private $formatter;
 
+    /**
+     * CustomerInfoBuilder constructor.
+     *
+     * @param Formatter $formatter
+     */
     public function __construct(
         Formatter $formatter
     ) {
@@ -62,7 +67,7 @@ class CustomerInfoBuilder implements BuilderInterface
 
         $city = $billingAddress->getCity();
 
-        $zipCode = $billingAddress->getRegionCode();
+        $zipCode = $billingAddress->getPostcode();
 
         $countryCode = $billingAddress->getCountryId();
 

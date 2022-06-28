@@ -20,9 +20,9 @@ use Magento\Payment\Gateway\Validator\ValidatorInterface;
 
 class GatewayResponseCommand implements CommandInterface
 {
-    const STATUS_FIELD = 'status';
+    public const STATUS_FIELD = 'status';
 
-    const STATUS_APPROVED = 'approved';
+    public const STATUS_APPROVED = 'approved';
 
     /**
      * @var Command\Result\ArrayResultFactory
@@ -43,6 +43,14 @@ class GatewayResponseCommand implements CommandInterface
      */
     private $errorMessageMapper;
 
+    /**
+     * GatewayResponseCommand constructor.
+     *
+     * @param Command\Result\ArrayResultFactory $arrayResultFactory
+     * @param HandlerInterface $orderUpdateHandler
+     * @param ErrorMessageMapperInterface $errorMessageMapper
+     * @param ValidatorInterface|null $validator
+     */
     public function __construct(
         Command\Result\ArrayResultFactory $arrayResultFactory,
         HandlerInterface $orderUpdateHandler,
@@ -121,6 +129,8 @@ class GatewayResponseCommand implements CommandInterface
     }
 
     /**
+     * Process errors
+     *
      * @param ResultInterface $validationResult
      * @throws CommandException
      */

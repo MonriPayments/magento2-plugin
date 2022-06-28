@@ -34,6 +34,32 @@
                 <can_capture_partial>1</can_capture_partial>
                 <!-- /Internal config -->
             </monri_payments>
+
+            <monri_components>
+                <!-- Merchant-configurable settings -->
+                <active>0</active>
+                <title>Monri Components</title>
+                <payment_action>authorize</payment_action>
+
+                <client_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <client_authenticity_token backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <!-- /Merchant-configurable settings -->
+
+                <!-- Internal config -->
+                <model>MonriComponentsFacade</model>
+                <allowspecific>0</allowspecific>
+                <can_initialize>1</can_initialize>
+                <can_authorize>1</can_authorize>
+                <can_capture>1</can_capture>
+                <can_order>0</can_order>
+                <can_void>1</can_void>
+                <can_cancel>1</can_cancel>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+                <can_refund>1</can_refund>
+                <can_capture_partial>1</can_capture_partial>
+                <!-- /Internal config -->
+            </monri_components>
         </payment>
     </default>
 </config>

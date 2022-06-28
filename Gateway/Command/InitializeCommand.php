@@ -31,6 +31,12 @@ class InitializeCommand implements CommandInterface
      */
     private $logger;
 
+    /**
+     * InitializeCommand constructor.
+     *
+     * @param Config $config
+     * @param Logger $logger
+     */
     public function __construct(
         Config $config,
         Logger $logger

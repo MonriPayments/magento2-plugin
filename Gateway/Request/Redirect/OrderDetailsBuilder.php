@@ -17,13 +17,13 @@ use Monri\Payments\Helper\Formatter;
 
 class OrderDetailsBuilder implements BuilderInterface
 {
-    const ORDER_INFO_FIELD = 'order_info';
+    public const ORDER_INFO_FIELD = 'order_info';
 
-    const ORDER_NUMBER_FIELD = 'order_number';
+    public const ORDER_NUMBER_FIELD = 'order_number';
 
-    const AMOUNT_FIELD = 'amount';
+    public const AMOUNT_FIELD = 'amount';
 
-    const CURRENCY_FIELD = 'currency';
+    public const CURRENCY_FIELD = 'currency';
 
     /**
      * @var Formatter
@@ -40,6 +40,13 @@ class OrderDetailsBuilder implements BuilderInterface
      */
     private $dataObjectFactory;
 
+    /**
+     * OrderDetailsBuilder constructor.
+     *
+     * @param Formatter $formatter
+     * @param ManagerInterface $eventManager
+     * @param DataObjectFactory $dataObjectFactory
+     */
     public function __construct(
         Formatter $formatter,
         ManagerInterface $eventManager,
@@ -64,7 +71,7 @@ class OrderDetailsBuilder implements BuilderInterface
 
         $orderNumber = $order->getOrderIncrementId();
 
-        $orderInfo = __('Order: #%1', $orderNumber);
+        $orderInfo = __('Order %1', $orderNumber)->render();
 
         $transportObject = $this->dataObjectFactory->create([
             'data' => [
@@ -88,7 +95,7 @@ class OrderDetailsBuilder implements BuilderInterface
         $currencyCode = $order->getCurrencyCode();
 
         return [
-            self::ORDER_INFO_FIELD => $this->formatter->formatText($orderInfo, 300),
+            self::ORDER_INFO_FIELD => $this->formatter->formatText($orderInfo, 300, true),
             self::ORDER_NUMBER_FIELD => $this->formatter->formatText($orderNumber),
             self::AMOUNT_FIELD => $orderAmount,
             self::CURRENCY_FIELD => $currencyCode,

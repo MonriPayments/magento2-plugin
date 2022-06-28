@@ -30,17 +30,39 @@ class DownloadLog extends Field
      */
     private $fileDriver;
 
+    /**
+     * @var bool
+     */
+    private $components;
+
+    /**
+     * DownloadLog constructor.
+     *
+     * @param Context $context
+     * @param Base $loggerHandler
+     * @param File $fileDriver
+     * @param array $data
+     * @param bool $components
+     */
     public function __construct(
         Context $context,
         Base $loggerHandler,
         File $fileDriver,
-        array $data = []
+        array $data = [],
+        bool $components = false
     ) {
         parent::__construct($context, $data);
         $this->loggerHandler = $loggerHandler;
         $this->fileDriver = $fileDriver;
+        $this->components = $components;
     }
 
+    /**
+     * Render field
+     *
+     * @param AbstractElement $element
+     * @return string
+     */
     public function render(AbstractElement $element)
     {
         $element->unsetData('scope')
@@ -50,6 +72,8 @@ class DownloadLog extends Field
     }
 
     /**
+     * Customize element html
+     *
      * @param AbstractElement $element
      * @return string
      *
@@ -69,7 +93,10 @@ class DownloadLog extends Field
 
         try {
             if ($this->fileDriver->isExists($logFilePath) !== false) {
-                $downloadUrl = $this->_urlBuilder->getUrl('monripayments/log/download');
+
+                $downloadUrl = $this->_urlBuilder->getUrl('monripayments/log/download', [
+                    '_query'=>['components'=>$this->components]]);
+
                 $action = "window.open('$downloadUrl', '_blank')";
                 $downloadButton
                     ->setData('label', __('Download Log'))

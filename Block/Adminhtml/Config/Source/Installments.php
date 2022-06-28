@@ -13,9 +13,9 @@ use Magento\Framework\Data\OptionSourceInterface;
 
 class Installments implements OptionSourceInterface
 {
-    const MAX_INSTALLMENTS = 12;
+    public const MAX_INSTALLMENTS = 12;
 
-    const MIN_INSTALLMENTS = 2;
+    public const MIN_INSTALLMENTS = 2;
 
     /**
      * Return array of options for installments.

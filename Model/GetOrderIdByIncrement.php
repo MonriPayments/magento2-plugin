@@ -19,6 +19,11 @@ class GetOrderIdByIncrement
      */
     private $orderResource;
 
+    /**
+     * GetOrderIdByIncrement constructor.
+     *
+     * @param OrderResource $orderResource
+     */
     public function __construct(
         OrderResource $orderResource
     ) {
@@ -28,7 +33,7 @@ class GetOrderIdByIncrement
     /**
      * Get order ID by increment ID.
      *
-     * @param $incrementId
+     * @param string $incrementId
      * @return int
      * @throws LocalizedException
      */

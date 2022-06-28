@@ -19,7 +19,6 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\Logger;
-use Magento\Sales\Api\OrderManagementInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\Order\Payment;
@@ -43,11 +42,6 @@ class OrderUpdateHandler implements HandlerInterface
     private $orderSender;
 
     /**
-     * @var OrderManagementInterface
-     */
-    private $orderManagement;
-
-    /**
      * @var Config
      */
     private $config;
@@ -66,9 +60,19 @@ class OrderUpdateHandler implements HandlerInterface
      */
     private $unsuccessfulTransactionHandler;
 
+    /**
+     * OrderUpdateHandler constructor.
+     *
+     * @param OrderRepository $orderRepository
+     * @param OrderSender $orderSender
+     * @param Logger $logger
+     * @param TMapFactory $TMapFactory
+     * @param array $transactionHandlers
+     * @param HandlerInterface $unsuccessfulTransactionHandler
+     * @param Config $config
+     */
     public function __construct(
         OrderRepository $orderRepository,
-        OrderManagementInterface $orderManagement,
         OrderSender $orderSender,
         Logger $logger,
         TMapFactory $TMapFactory,
@@ -78,7 +82,6 @@ class OrderUpdateHandler implements HandlerInterface
     ) {
         $this->orderRepository = $orderRepository;
         $this->orderSender = $orderSender;
-        $this->orderManagement = $orderManagement;
         $this->config = $config;
         $this->logger = $logger;
 

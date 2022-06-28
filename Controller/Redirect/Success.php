@@ -40,6 +40,16 @@ class Success extends AbstractGatewayResponse
      */
     private $logger;
 
+    /**
+     * Success constructor.
+     *
+     * @param Context $context
+     * @param OrderRepository $orderRepository
+     * @param CommandManagerInterface $commandManager
+     * @param GetOrderIdByIncrement $getOrderIdByIncrement
+     * @param Session $checkoutSession
+     * @param Logger $logger
+     */
     public function __construct(
         Context $context,
         OrderRepository $orderRepository,
@@ -79,6 +89,7 @@ class Success extends AbstractGatewayResponse
             $payment = $order->getPayment();
 
             $gatewayResponse = $this->getRequest()->getParams();
+            $log['payload'] = $gatewayResponse;
             $gatewayResponse['status'] = 'approved';
 
             $digestData = $this->getDigestData();
@@ -115,6 +126,8 @@ class Success extends AbstractGatewayResponse
     }
 
     /**
+     * Resolve digest data from url
+     *
      * @return array
      */
     protected function getDigestData()

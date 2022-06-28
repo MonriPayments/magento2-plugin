@@ -24,7 +24,7 @@ use Magento\Framework\Logger\Handler\Base;
  */
 class Download extends AbstractAction
 {
-    const ADMIN_RESOURCE = 'Magento_Backend::system';
+    public const ADMIN_RESOURCE = 'Magento_Payment::payment';
 
     /**
      * @var File
@@ -41,16 +41,32 @@ class Download extends AbstractAction
      */
     private $fileFactory;
 
+    /**
+     * @var Base
+     */
+    private $componentsLoggerHandler;
+
+    /**
+     * Download constructor.
+     *
+     * @param Action\Context $context
+     * @param File $fileClient
+     * @param FileFactory $fileFactory
+     * @param Base $loggerHandler
+     * @param Base $componentsLoggerHandler
+     */
     public function __construct(
         Action\Context $context,
         File $fileClient,
         FileFactory $fileFactory,
-        Base $loggerHandler
+        Base $loggerHandler,
+        Base $componentsLoggerHandler
     ) {
         parent::__construct($context);
         $this->fileClient = $fileClient;
         $this->loggerHandler = $loggerHandler;
         $this->fileFactory = $fileFactory;
+        $this->componentsLoggerHandler = $componentsLoggerHandler;
     }
 
     /**
@@ -61,7 +77,14 @@ class Download extends AbstractAction
      */
     public function execute()
     {
-        $filePath = (string) $this->loggerHandler->getUrl();
+        $isComponents = (bool) $this->getRequest()->getParam('components', false);
+
+        if ($isComponents) {
+            $filePath = (string) $this->componentsLoggerHandler->getUrl();
+        } else {
+            $filePath = (string) $this->loggerHandler->getUrl();
+        }
+
         $fileName = $this->fileClient->getPathInfo($filePath)['basename'];
 
         try {

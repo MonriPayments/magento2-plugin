@@ -25,7 +25,7 @@ Purchase,Purchase
 "Client error (%1): %2","Client error (%1): %2"
 "Client error (%1)","Client error (%1)"
 "Server error (%1)","Server error (%1)"
-"Order: #%1","Order: #%1"
+"Order %1","Order %1"
 "The currency selected is not supported by Monri Payments.","The currency selected is not supported by Monri Payments."
 "Request has an invalid signature.","Request has an invalid signature."
 "Place Order","Place Order"

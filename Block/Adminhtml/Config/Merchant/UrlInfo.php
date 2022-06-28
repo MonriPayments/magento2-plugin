@@ -17,15 +17,18 @@ use Magento\Framework\Url;
 
 class UrlInfo extends Field
 {
-    const SUCCESS_ROUTE = 'monripayments/redirect/success';
-    const SUCCESS_CODE = 'success';
+    private const SUCCESS_ROUTE = 'monripayments/redirect/success';
+    private const SUCCESS_CODE = 'success';
 
-    const CANCEL_ROUTE = 'monripayments/redirect/cancel';
-    const CANCEL_CODE = 'cancel';
+    private const CANCEL_ROUTE = 'monripayments/redirect/cancel';
+    private const CANCEL_CODE = 'cancel';
 
-    const CALLBACK_ROUTE = 'monripayments/gateway/callback';
-    const CALLBACK_CODE = 'callback';
+    private const CALLBACK_ROUTE = 'monripayments/gateway/callback';
+    private const CALLBACK_CODE = 'callback';
 
+    /**
+     * @var string[]
+     */
     protected $_routes = [
         self::SUCCESS_CODE  => self::SUCCESS_ROUTE,
         self::CANCEL_CODE   => self::CANCEL_ROUTE,
@@ -42,6 +45,14 @@ class UrlInfo extends Field
      */
     private $request;
 
+    /**
+     * UrlInfo constructor.
+     *
+     * @param Context $context
+     * @param Url $frontendUrlBuilder
+     * @param Http $request
+     * @param array $data
+     */
     public function __construct(
         Context $context,
         Url $frontendUrlBuilder,
@@ -55,6 +66,8 @@ class UrlInfo extends Field
     }
 
     /**
+     * Get custom html
+     *
      * @param AbstractElement $element
      * @return string
      *
@@ -74,6 +87,11 @@ class UrlInfo extends Field
         return $html;
     }
 
+    /**
+     * Generate urls
+     *
+     * @return array
+     */
     private function generateUrls()
     {
         $storeId = (int) $this->request->getParam('store', 0);
@@ -90,6 +108,12 @@ class UrlInfo extends Field
         return $urls;
     }
 
+    /**
+     * Resolve url text
+     *
+     * @param string $code
+     * @return \Magento\Framework\Phrase|string
+     */
     private function getUrlText($code)
     {
         switch ($code) {

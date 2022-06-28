@@ -14,10 +14,33 @@ use Magento\Sales\Api\Data\OrderPaymentInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\Order\Payment\Transaction;
+use Magento\Sales\Model\Order\Payment\TransactionFactory;
+use Magento\Sales\Model\ResourceModel\Order\Payment\Transaction as TransactionResource;
 use Monri\Payments\Gateway\Exception\TransactionAlreadyProcessedException;
+use Monri\Payments\Gateway\Helper\RawDetailsFormatter;
 
 class PurchaseHandler extends AbstractTransactionHandler
 {
+    /**
+     * @var RawDetailsFormatter
+     */
+    private $rawDetailsFormatter;
+
+    /**
+     * PurchaseHandler constructor.
+     *
+     * @param TransactionFactory $transactionFactory
+     * @param TransactionResource $transactionResource
+     * @param RawDetailsFormatter $rawDetailsFormatter
+     */
+    public function __construct(
+        TransactionFactory $transactionFactory,
+        TransactionResource $transactionResource,
+        RawDetailsFormatter $rawDetailsFormatter
+    ) {
+        parent::__construct($transactionFactory, $transactionResource);
+        $this->rawDetailsFormatter = $rawDetailsFormatter;
+    }
 
     /**
      * Processes a successful purchase transaction.
@@ -33,7 +56,7 @@ class PurchaseHandler extends AbstractTransactionHandler
         $payment->setTransactionId($this->getTransactionId($response));
         $payment->setTransactionAdditionalInfo(
             Transaction::RAW_DETAILS,
-            $response
+            $this->rawDetailsFormatter->format($response)
         );
 
         if (!$order->canInvoice() || $this->checkIfTransactionProcessed($payment)) {

@@ -38,6 +38,16 @@ class Cancel extends AbstractGatewayResponse
      */
     private $logger;
 
+    /**
+     * Cancel constructor.
+     *
+     * @param Context $context
+     * @param OrderRepository $orderRepository
+     * @param CommandManagerInterface $commandManager
+     * @param GetOrderIdByIncrement $getOrderIdByIncrement
+     * @param Session $checkoutSession
+     * @param Logger $logger
+     */
     public function __construct(
         Context $context,
         OrderRepository $orderRepository,
@@ -74,6 +84,7 @@ class Cancel extends AbstractGatewayResponse
             );
 
             $gatewayResponse = $this->getRequest()->getParams();
+            $log['payload'] = $gatewayResponse;
 
             if ($gatewayResponse['order_number'] !== $order->getIncrementId()) {
                 $log['errors'][] = 'Order number from session not matching the one in gateway response.';

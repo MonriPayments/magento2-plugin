@@ -14,30 +14,28 @@ use Magento\Payment\Gateway\Validator\AbstractValidator;
 use Magento\Payment\Gateway\Validator\ResultInterface;
 use Magento\Payment\Gateway\Validator\ResultInterfaceFactory;
 use Magento\Sales\Model\Order\Payment;
-use Monri\Payments\Gateway\Config;
 use Monri\Payments\Gateway\Helper\SecurityReader;
 use Monri\Payments\Model\Crypto\Digest;
 
 class DigestValidator extends AbstractValidator
 {
     /**
-     * @var Config
-     */
-    private $config;
-
-    /**
      * @var Digest
      */
     private $digest;
 
+    /**
+     * DigestValidator constructor.
+     *
+     * @param ResultInterfaceFactory $resultFactory
+     * @param Digest $digest
+     */
     public function __construct(
         ResultInterfaceFactory $resultFactory,
-        Config $config,
         Digest $digest
     ) {
         parent::__construct($resultFactory);
 
-        $this->config = $config;
         $this->digest = $digest;
     }
 

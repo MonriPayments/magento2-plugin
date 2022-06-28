@@ -15,7 +15,7 @@ Purchase,Naplata
 "The payment has been accepted: %1","Plaćanje prihvaćeno: %1"
 "The payment has been accepted.","Plaćanje prihvaćeno."
 "There has been an issue processing your payment.","Greška prilikom obrade vaše uplate."
-"Order: #%1","Narudžba: #%1"
+"Order %1","Narudžba %1"
 "The currency selected is not supported by Monri Payments.","Odabrana valuta nije podržana od strane Monrija."
 "Request has an invalid signature.","Zahtjev ima neispravan potpis."
 "Place Order","Naruči"
