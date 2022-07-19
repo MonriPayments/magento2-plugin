@@ -225,6 +225,7 @@
     <type name="Monri\Payments\Controller\Gateway\Callback">
         <arguments>
             <argument name="commandManager" xsi:type="object">MonriPaymentsCommandManager</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
         </arguments>
     </type>
     <!-- END Controllers -->
