@@ -21,6 +21,7 @@ use Magento\Payment\Gateway\Command\CommandManagerInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\Logger;
 use Magento\Sales\Model\OrderRepository;
+use Monri\Payments\Block\Adminhtml\Config\Merchant\UrlInfo;
 use Monri\Payments\Controller\AbstractGatewayResponse;
 use Monri\Payments\Gateway\Exception\TransactionAlreadyProcessedException;
 use Monri\Payments\Model\GetOrderIdByIncrement;
@@ -75,6 +76,13 @@ class Success extends AbstractGatewayResponse
                 $this->checkoutSession->getData('last_order_id')
             );
 
+            if ($order->getStoreId() != $this->storeManager->getStore()->getId()) {
+                return $resultRedirect->setPath(
+                    UrlInfo::CANCEL_ROUTE,
+                    ['_scope' => $order->getStoreId(), '_current' => true]
+                );
+            }
+
             /** @var InfoInterface $payment */
             $payment = $order->getPayment();
 
@@ -100,18 +108,18 @@ class Success extends AbstractGatewayResponse
             $log['success'] = false;
             $this->messageManager->addNoticeMessage(__('Order not found.'));
 
-            return $resultRedirect->setPath('checkout/cart', isset($order) ? ['_scope' => $order->getStoreId()] : []);
+            return $resultRedirect->setPath('checkout/cart');
         } catch (Exception $e) {
             $log['errors'][] = 'Unexpected exception caught: ' . $e->getMessage();
             $log['success'] = false;
             $this->messageManager->addNoticeMessage(__('Error processing payment, please try again later.'));
 
-            return $resultRedirect->setPath('checkout/cart', isset($order) ? ['_scope' => $order->getStoreId()] : []);
+            return $resultRedirect->setPath('checkout/cart');
         } finally {
             $this->logger->debug($log);
         }
 
-        return $resultRedirect->setPath('checkout/onepage/success', isset($order) ? ['_scope' => $order->getStoreId()] : []);
+        return $resultRedirect->setPath('checkout/onepage/success');
     }
 
     /**
