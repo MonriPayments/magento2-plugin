@@ -100,18 +100,18 @@ class Success extends AbstractGatewayResponse
             $log['success'] = false;
             $this->messageManager->addNoticeMessage(__('Order not found.'));
 
-            return $resultRedirect->setPath('checkout/cart');
+            return $resultRedirect->setPath('checkout/cart', isset($order) ? ['_scope' => $order->getStoreId()] : []);
         } catch (Exception $e) {
             $log['errors'][] = 'Unexpected exception caught: ' . $e->getMessage();
             $log['success'] = false;
             $this->messageManager->addNoticeMessage(__('Error processing payment, please try again later.'));
 
-            return $resultRedirect->setPath('checkout/cart');
+            return $resultRedirect->setPath('checkout/cart', isset($order) ? ['_scope' => $order->getStoreId()] : []);
         } finally {
             $this->logger->debug($log);
         }
 
-        return $resultRedirect->setPath('checkout/onepage/success');
+        return $resultRedirect->setPath('checkout/onepage/success', isset($order) ? ['_scope' => $order->getStoreId()] : []);
     }
 
     /**

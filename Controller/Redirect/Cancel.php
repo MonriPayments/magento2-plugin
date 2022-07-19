@@ -107,6 +107,6 @@ class Cancel extends AbstractGatewayResponse
             $this->logger->debug($log);
         }
 
-        return $resultRedirect->setPath('checkout/cart');
+        return $resultRedirect->setPath('checkout/cart', isset($order) ? ['_scope' => $order->getStoreId()] : []);
     }
 }
