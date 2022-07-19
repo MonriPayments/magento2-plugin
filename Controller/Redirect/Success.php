@@ -21,6 +21,7 @@ use Magento\Payment\Gateway\Command\CommandManagerInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\Logger;
 use Magento\Sales\Model\OrderRepository;
+use Magento\Store\Model\StoreManagerInterface;
 use Monri\Payments\Block\Adminhtml\Config\Merchant\UrlInfo;
 use Monri\Payments\Controller\AbstractGatewayResponse;
 use Monri\Payments\Gateway\Exception\TransactionAlreadyProcessedException;
@@ -41,18 +42,25 @@ class Success extends AbstractGatewayResponse
      */
     private $logger;
 
+    /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
     public function __construct(
         Context $context,
         OrderRepository $orderRepository,
         CommandManagerInterface $commandManager,
         GetOrderIdByIncrement $getOrderIdByIncrement,
         Session $checkoutSession,
-        Logger $logger
+        Logger $logger,
+        StoreManagerInterface $storeManager
     ) {
         parent::__construct($context, $orderRepository, $commandManager, $getOrderIdByIncrement);
 
         $this->checkoutSession = $checkoutSession;
         $this->logger = $logger;
+        $this->storeManager = $storeManager;
     }
 
     /**
