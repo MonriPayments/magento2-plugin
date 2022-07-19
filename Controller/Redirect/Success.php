@@ -86,7 +86,7 @@ class Success extends AbstractGatewayResponse
 
             if ($order->getStoreId() != $this->storeManager->getStore()->getId()) {
                 return $resultRedirect->setPath(
-                    UrlInfo::CANCEL_ROUTE,
+                    UrlInfo::SUCCESS_ROUTE,
                     ['_scope' => $order->getStoreId(), '_current' => true]
                 );
             }
@@ -136,7 +136,10 @@ class Success extends AbstractGatewayResponse
     protected function getDigestData()
     {
         $digest = $this->getRequest()->getParam('digest');
-        $url = $this->_url->getCurrentUrl();
+        //$url = $this->_url->getCurrentUrl();
+
+        // always calculate digest by main store url and use that one in Monri admin
+        $url = $this->storeManager->getDefaultStoreView()->getBaseUrl();
 
         $data = str_replace('&digest=' . $digest, '', $url);
 
