@@ -76,7 +76,10 @@ class UrlInfo extends Field
 
     private function generateUrls()
     {
-        $storeId = (int) $this->request->getParam('store', 0);
+        //$storeId = (int) $this->request->getParam('store', 0);
+        $storeId = $this->_storeManager->getDefaultStoreView() ?
+            $this->_storeManager->getDefaultStoreView()->getId() :
+            0;
 
         $urls = [];
 
