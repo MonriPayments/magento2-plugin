@@ -139,7 +139,10 @@ class Success extends AbstractGatewayResponse
         //$url = $this->_url->getCurrentUrl();
 
         // always calculate digest by main store url and use that one in Monri admin
-        $url = $this->storeManager->getDefaultStoreView()->getBaseUrl();
+        $url = $this->storeManager->getDefaultStoreView()->getUrl(
+            UrlInfo::SUCCESS_ROUTE,
+            ['_current' => true]
+        );
 
         $data = str_replace('&digest=' . $digest, '', $url);
 
