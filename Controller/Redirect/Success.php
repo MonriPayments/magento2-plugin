@@ -94,9 +94,6 @@ class Success extends AbstractGatewayResponse
                 $this->checkoutSession->getData('last_order_id')
             );
 
-            $gatewayResponse = $this->getRequest()->getParams();
-            $log['payload'] = $gatewayResponse;
-
             if ($order->getStoreId() != $this->storeManager->getStore()->getId()) {
                 return $resultRedirect->setPath(
                     'monripayments/redirect/success',
@@ -107,6 +104,8 @@ class Success extends AbstractGatewayResponse
             /** @var InfoInterface $payment */
             $payment = $order->getPayment();
 
+            $gatewayResponse = $this->getRequest()->getParams();
+            $log['payload'] = $gatewayResponse;
             $gatewayResponse['status'] = 'approved';
 
             $digestData = $this->getDigestData();
