@@ -22,7 +22,6 @@ use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\Logger;
 use Magento\Sales\Model\OrderRepository;
 use Magento\Store\Model\StoreManagerInterface;
-use Monri\Payments\Block\Adminhtml\Config\Merchant\UrlInfo;
 use Monri\Payments\Controller\AbstractGatewayResponse;
 use Monri\Payments\Model\GetOrderIdByIncrement;
 
@@ -54,6 +53,7 @@ class Cancel extends AbstractGatewayResponse
      * @param GetOrderIdByIncrement $getOrderIdByIncrement
      * @param Session $checkoutSession
      * @param Logger $logger
+     * @param StoreManagerInterface $storeManager
      */
     public function __construct(
         Context $context,
@@ -92,15 +92,15 @@ class Cancel extends AbstractGatewayResponse
                 $this->checkoutSession->getData('last_order_id')
             );
 
+            $gatewayResponse = $this->getRequest()->getParams();
+            $log['payload'] = $gatewayResponse;
+
             if ($order->getStoreId() != $this->storeManager->getStore()->getId()) {
                 return $resultRedirect->setPath(
-                    UrlInfo::CANCEL_ROUTE,
+                    'monripayments/redirect/cancel',
                     ['_scope' => $order->getStoreId(), '_current' => true]
                 );
             }
-
-            $gatewayResponse = $this->getRequest()->getParams();
-            $log['payload'] = $gatewayResponse;
 
             if ($gatewayResponse['order_number'] !== $order->getIncrementId()) {
                 $log['errors'][] = 'Order number from session not matching the one in gateway response.';
