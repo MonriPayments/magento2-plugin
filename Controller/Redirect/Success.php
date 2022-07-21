@@ -21,6 +21,8 @@ use Magento\Payment\Gateway\Command\CommandManagerInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\Logger;
 use Magento\Sales\Model\OrderRepository;
+use Magento\Store\Model\StoreManagerInterface;
+use Monri\Payments\Block\Adminhtml\Config\Merchant\UrlInfo;
 use Monri\Payments\Controller\AbstractGatewayResponse;
 use Monri\Payments\Gateway\Exception\TransactionAlreadyProcessedException;
 use Monri\Payments\Model\GetOrderIdByIncrement;
@@ -41,6 +43,11 @@ class Success extends AbstractGatewayResponse
     private $logger;
 
     /**
+     * @var StoreManagerInterface
+     */
+    private $storeManager;
+
+    /**
      * Success constructor.
      *
      * @param Context $context
@@ -56,12 +63,14 @@ class Success extends AbstractGatewayResponse
         CommandManagerInterface $commandManager,
         GetOrderIdByIncrement $getOrderIdByIncrement,
         Session $checkoutSession,
-        Logger $logger
+        Logger $logger,
+        StoreManagerInterface $storeManager
     ) {
         parent::__construct($context, $orderRepository, $commandManager, $getOrderIdByIncrement);
 
         $this->checkoutSession = $checkoutSession;
         $this->logger = $logger;
+        $this->storeManager = $storeManager;
     }
 
     /**
@@ -84,6 +93,13 @@ class Success extends AbstractGatewayResponse
             $order = $this->getOrderById(
                 $this->checkoutSession->getData('last_order_id')
             );
+
+            if ($order->getStoreId() != $this->storeManager->getStore()->getId()) {
+                return $resultRedirect->setPath(
+                    UrlInfo::SUCCESS_ROUTE,
+                    ['_scope' => $order->getStoreId(), '_current' => true]
+                );
+            }
 
             /** @var InfoInterface $payment */
             $payment = $order->getPayment();
@@ -133,7 +149,13 @@ class Success extends AbstractGatewayResponse
     protected function getDigestData()
     {
         $digest = $this->getRequest()->getParam('digest');
-        $url = $this->_url->getCurrentUrl();
+        //$url = $this->_url->getCurrentUrl();
+
+        // always calculate digest by main store url and use that one in Monri admin
+        $url = $this->storeManager->getDefaultStoreView()->getUrl(
+            UrlInfo::SUCCESS_ROUTE,
+            ['_current' => true]
+        );
 
         $data = str_replace('&digest=' . $digest, '', $url);
 
