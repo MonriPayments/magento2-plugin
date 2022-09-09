@@ -96,6 +96,10 @@ class Callback extends AbstractGatewayResponse
 
             $orderNumber = $gatewayResponse['order_number'];
 
+            if (strpos($orderNumber, '-') !== false) {
+                $orderNumber = strstr($orderNumber, '-', true);
+            }
+
             $order = $this->getOrderByIncrementId($orderNumber);
 
             /** @var InfoInterface $payment */
