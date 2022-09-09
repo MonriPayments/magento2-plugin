@@ -65,7 +65,7 @@ class Digest
         $clientKey = $this->config->getClientKey($storeId);
         $data = "${$clientKey}${$orderNumber}";
 
-        return hash('sha1', $data);
+        return hash(self::DIGEST_ALGO_1, $data);
     }
 
     /**
