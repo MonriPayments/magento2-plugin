@@ -1,5 +1,5 @@
 ### 1.1.1
-- Components reading correct config value
+- Bugfix for Components using the wrong configuration
 
 ### 1.1.0
 - Monri Components implementation
