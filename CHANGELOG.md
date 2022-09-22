@@ -1,3 +1,6 @@
+### 1.1.1
+- Bugfix for Components using the wrong configuration
+
 ### 1.1.0
 - Monri Components implementation
 - PHP 7.1 minimum requirement (forced by Magento Marketplace)

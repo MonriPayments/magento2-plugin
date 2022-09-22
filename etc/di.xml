@@ -343,6 +343,11 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="MonriComponentsDigest" type="Monri\Payments\Model\Crypto\Digest">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
+        </arguments>
+    </virtualType>
 
     <virtualType name="MonriComponentsCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
@@ -392,6 +397,12 @@
         <arguments>
             <argument name="commandManager" xsi:type="object">MonriComponentsCommandManager</argument>
             <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Monri\Payments\Gateway\Request\Components\OrderUpdateBuilder">
+        <arguments>
+            <argument name="digest" xsi:type="object">MonriComponentsDigest</argument>
         </arguments>
     </type>
 

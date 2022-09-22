@@ -8,8 +8,7 @@ use Magento\Payment\Gateway\Request\BuilderInterface;
 use Magento\Sales\Model\Order\Payment;
 use Monri\Payments\Gateway\Config\Components as ComponentsConfig;
 use Monri\Payments\Helper\Formatter;
-use Monri\Payments\Model\Crypto\Digest;
-use Monri\Payments\Gateway\Request\Components\OrderDetailsBuilder;
+use Monri\Payments\Model\Crypto\Digest as ComponentsDigest;
 
 class OrderUpdateBuilder implements BuilderInterface
 {
@@ -31,7 +30,7 @@ class OrderUpdateBuilder implements BuilderInterface
     private $formatter;
 
     /**
-     * @var Digest
+     * @var ComponentsDigest
      */
     private $digest;
 
@@ -44,12 +43,12 @@ class OrderUpdateBuilder implements BuilderInterface
      * OrderUpdateBuilder constructor.
      *
      * @param Formatter $formatter
-     * @param Digest $digest
+     * @param ComponentsDigest $digest
      * @param ComponentsConfig $config
      */
     public function __construct(
         Formatter $formatter,
-        Digest $digest,
+        ComponentsDigest $digest,
         ComponentsConfig $config
     ) {
         $this->formatter = $formatter;
@@ -87,7 +86,7 @@ class OrderUpdateBuilder implements BuilderInterface
             $currencyCode,
             $gatewayAmount,
             $order->getStoreId(),
-            Digest::DIGEST_ALGO_1
+            ComponentsDigest::DIGEST_ALGO_1
         );
 
         return [
