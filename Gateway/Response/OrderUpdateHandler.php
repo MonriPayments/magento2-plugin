@@ -25,6 +25,7 @@ use Magento\Sales\Model\Order\Payment;
 use Magento\Sales\Model\OrderRepository;
 use Monri\Payments\Gateway\Config;
 use Monri\Payments\Gateway\Exception\TransactionAlreadyProcessedException;
+use Monri\Payments\Lock\Order\LockInterface;
 
 /**
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
@@ -52,6 +53,11 @@ class OrderUpdateHandler implements HandlerInterface
     private $logger;
 
     /**
+     * @var LockInterface
+     */
+    private $locker;
+
+    /**
      * @var HandlerInterface[]
      */
     private $transactionHandlers;
@@ -69,21 +75,25 @@ class OrderUpdateHandler implements HandlerInterface
      * @param TMapFactory $TMapFactory
      * @param array $transactionHandlers
      * @param HandlerInterface $unsuccessfulTransactionHandler
+     * @param LockInterface $locker
      * @param Config $config
      */
     public function __construct(
-        OrderRepository $orderRepository,
-        OrderSender $orderSender,
-        Logger $logger,
-        TMapFactory $TMapFactory,
-        array $transactionHandlers,
+        OrderRepository  $orderRepository,
+        OrderSender      $orderSender,
+        Logger           $logger,
+        TMapFactory      $TMapFactory,
+        array            $transactionHandlers,
         HandlerInterface $unsuccessfulTransactionHandler,
-        Config $config
-    ) {
+        LockInterface    $locker,
+        Config           $config
+    )
+    {
         $this->orderRepository = $orderRepository;
         $this->orderSender = $orderSender;
         $this->config = $config;
         $this->logger = $logger;
+        $this->locker = $locker;
 
         $this->transactionHandlers = $TMapFactory->create([
             'type' => HandlerInterface::class,
@@ -127,6 +137,16 @@ class OrderUpdateHandler implements HandlerInterface
         /** @var Order $order */
         $order = $payment->getOrder();
 
+        if ($this->locker->isLocked($order->getId())) {
+            $this->logger->debug([
+                'message' => __("Order is already being processed. Order ID: " . $order->getId()),
+                'log_origin' => __METHOD__
+            ]);
+            return;
+        }
+
+        $this->locker->lock($order->getId());
+
         if (!isset($response['transaction_type'])) {
             $response['transaction_type'] = $this->getTransactionTypeFromPayment($payment, $order);
         }
@@ -137,20 +157,24 @@ class OrderUpdateHandler implements HandlerInterface
             } else {
                 $this->processUnsuccessfulGatewayResponse($handlingSubject, $response);
             }
+
+            $this->orderRepository->save($order);
+
+            if (!$order->getEmailSent()) {
+                $log['email_sent'] = true;
+                $this->orderSender->send($order);
+            }
+
+            $this->logger->debug($log);
+
         } catch (TransactionAlreadyProcessedException $e) {
             throw $e;
         } catch (Exception $e) {
             throw new CommandException(__('Failed to process transaction: %1', $e->getMessage()));
+        } finally {
+            $this->locker->unlock($order->getId());
         }
 
-        $this->orderRepository->save($order);
-
-        if (!$order->getEmailSent()) {
-            $log['email_sent'] = true;
-            $this->orderSender->send($order);
-        }
-
-        $this->logger->debug($log);
     }
 
     /**
@@ -162,7 +186,8 @@ class OrderUpdateHandler implements HandlerInterface
     protected function processSuccessfulGatewayResponse(
         array $handlingSubject,
         array $response
-    ) {
+    )
+    {
         $transactionType = isset($response['transaction_type']) ? $response['transaction_type'] : null;
 
         if (isset($this->transactionHandlers[$transactionType])) {
@@ -179,7 +204,8 @@ class OrderUpdateHandler implements HandlerInterface
     protected function processUnsuccessfulGatewayResponse(
         array $handlingSubject,
         array $response
-    ) {
+    )
+    {
         $this->unsuccessfulTransactionHandler->handle($handlingSubject, $response);
     }
 
