@@ -139,10 +139,11 @@ class OrderUpdateHandler implements HandlerInterface
 
         if ($this->locker->isLocked($order->getId())) {
             $this->logger->debug([
-                'message' => __("Order is already being processed. Order ID: " . $order->getId()),
+                'message' => __('Order is currently being processed (lock). Order ID: %1', $order->getId()),
                 'log_origin' => __METHOD__
             ]);
-            return;
+
+            throw new TransactionAlreadyProcessedException(__('Order lock. Order ID: %1', $order->getId()));
         }
 
         $this->locker->lock($order->getId());
@@ -157,7 +158,15 @@ class OrderUpdateHandler implements HandlerInterface
             } else {
                 $this->processUnsuccessfulGatewayResponse($handlingSubject, $response);
             }
+        } catch (TransactionAlreadyProcessedException $e) {
+            $this->locker->unlock($order->getId());
+            throw $e;
+        } catch (Exception $e) {
+            $this->locker->unlock($order->getId());
+            throw new CommandException(__('Failed to process transaction: %1', $e->getMessage()));
+        }
 
+        try {
             $this->orderRepository->save($order);
 
             if (!$order->getEmailSent()) {
@@ -166,15 +175,9 @@ class OrderUpdateHandler implements HandlerInterface
             }
 
             $this->logger->debug($log);
-
-        } catch (TransactionAlreadyProcessedException $e) {
-            throw $e;
-        } catch (Exception $e) {
-            throw new CommandException(__('Failed to process transaction: %1', $e->getMessage()));
         } finally {
             $this->locker->unlock($order->getId());
         }
-
     }
 
     /**
