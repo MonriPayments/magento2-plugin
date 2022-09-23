@@ -86,12 +86,14 @@
                     <label>Sort Order</label>
                     <frontend_class>validate-number</frontend_class>
                 </field>
+                <!--
                 <field id="urls" translate="label comment" sortOrder="130"
                        showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Gateway Configuration Information</label>
                     <comment><![CDATA[Enter this into your Monri Administration dashboard.]]></comment>
                     <frontend_model>Monri\Payments\Block\Adminhtml\Config\Merchant\UrlInfo</frontend_model>
                 </field>
+                -->
             </group>
             <group id="monri_components" translate="label" type="text"
                    sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">

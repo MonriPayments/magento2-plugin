@@ -9,6 +9,7 @@
 
 namespace Monri\Payments\Gateway\Request\Redirect;
 
+use Magento\Framework\UrlInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Monri\Payments\Gateway\Config;
@@ -29,6 +30,12 @@ class ProcessingDataBuilder implements BuilderInterface
 
     public const MOTO_FIELD = 'moto';
 
+    public const SUCCESS_URL_FIELD = 'success_url_override';
+
+    public const CANCEL_URL_FIELD = 'cancel_url_override';
+
+    public const CALLBACK_URL_FIELD = 'callback_url_override';
+
     /**
      * @var Formatter
      */
@@ -44,20 +51,28 @@ class ProcessingDataBuilder implements BuilderInterface
     private $config;
 
     /**
+     * @var UrlInterface
+     */
+    private $urlBuilder;
+
+    /**
      * ProcessingDataBuilder constructor.
      *
      * @param Formatter $formatter
      * @param Digest $digest
      * @param Config $config
+     * @param UrlInterface $urlBuilder
      */
     public function __construct(
         Formatter $formatter,
         Digest $digest,
-        Config $config
+        Config $config,
+        UrlInterface $urlBuilder
     ) {
         $this->formatter = $formatter;
         $this->digest = $digest;
         $this->config = $config;
+        $this->urlBuilder = $urlBuilder;
     }
 
     /**
@@ -99,6 +114,18 @@ class ProcessingDataBuilder implements BuilderInterface
             self::AUTHENTICITY_TOKEN_FIELD => $authToken,
             self::DIGEST_FIELD => $digest,
             self::MOTO_FIELD => $isMoto,
+            self::SUCCESS_URL_FIELD => $this->urlBuilder->getUrl(
+                'monripayments/redirect/success',
+                ['_secure' => true]
+            ),
+            self::CANCEL_URL_FIELD => $this->urlBuilder->getUrl(
+                'monripayments/redirect/cancel',
+                ['_secure' => true]
+            ),
+            self::CALLBACK_URL_FIELD => $this->urlBuilder->getUrl(
+                'monripayments/gateway/callback',
+                ['_secure' => true]
+            )
         ];
 
         if ($installments !== Config::INSTALLMENTS_DISABLED) {
