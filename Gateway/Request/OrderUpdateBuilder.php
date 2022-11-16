@@ -80,12 +80,12 @@ class OrderUpdateBuilder implements BuilderInterface
             $amount = SubjectReader::readAmount($buildSubject);
         } catch (InvalidArgumentException $e) {
             // Assume entire amount if no amount is set.
-            $amount = $payment->getAmountOrdered();
+            $amount = $payment->getBaseAmountOrdered();
         }
 
         $gatewayAmount = $this->formatter->formatPrice($amount);
         $orderNumber = $order->getIncrementId();
-        $currencyCode = $order->getOrderCurrencyCode();
+        $currencyCode = $order->getBaseCurrencyCode();
         $authenticityToken = $this->config->getClientAuthenticityToken($order->getStoreId());
 
         $digest = $this->digest->build(
