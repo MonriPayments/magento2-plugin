@@ -19,6 +19,7 @@ use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\Logger;
+use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
 use Magento\Sales\Model\Order\Payment;
@@ -61,6 +62,7 @@ class OrderUpdateHandler implements HandlerInterface
      * @var HandlerInterface[]
      */
     private $transactionHandlers;
+
     /**
      * @var HandlerInterface
      */
@@ -79,16 +81,15 @@ class OrderUpdateHandler implements HandlerInterface
      * @param Config $config
      */
     public function __construct(
-        OrderRepository  $orderRepository,
-        OrderSender      $orderSender,
-        Logger           $logger,
-        TMapFactory      $TMapFactory,
-        array            $transactionHandlers,
+        OrderRepository $orderRepository,
+        OrderSender $orderSender,
+        Logger $logger,
+        TMapFactory $TMapFactory,
+        array $transactionHandlers,
         HandlerInterface $unsuccessfulTransactionHandler,
-        LockInterface    $locker,
-        Config           $config
-    )
-    {
+        Config $config,
+        LockInterface $locker
+    ) {
         $this->orderRepository = $orderRepository;
         $this->orderSender = $orderSender;
         $this->config = $config;
@@ -137,15 +138,7 @@ class OrderUpdateHandler implements HandlerInterface
         /** @var Order $order */
         $order = $payment->getOrder();
 
-        if ($this->locker->isLocked($order->getId())) {
-            $this->logger->debug([
-                'message' => __('Order is currently being processed (lock). Order ID: %1', $order->getId()),
-                'log_origin' => __METHOD__
-            ]);
-
-            throw new TransactionAlreadyProcessedException(__('Order lock. Order ID: %1', $order->getId()));
-        }
-
+        $this->ensureNotLocked($order);
         $this->locker->lock($order->getId());
 
         if (!isset($response['transaction_type'])) {
@@ -153,31 +146,46 @@ class OrderUpdateHandler implements HandlerInterface
         }
 
         try {
+            $this->processResponse($handlingSubject, $response, $order);
+
+            if (!$order->getEmailSent()) {
+                $log['email_sent'] = true;
+                $this->orderSender->send($order);
+            }
+        } finally {
+            $this->locker->unlock($order->getId());
+            $this->logger->debug($log);
+        }
+    }
+
+    /**
+     * Processes the response
+     *
+     * @throws NoSuchEntityException
+     * @throws TransactionAlreadyProcessedException
+     * @throws AlreadyExistsException
+     * @throws CommandException
+     * @throws InputException
+     */
+    protected function processResponse(
+        array $handlingSubject,
+        array $response,
+        OrderInterface $order
+    ): void {
+        try {
             if ($this->isSuccessfulResponse($response)) {
                 $this->processSuccessfulGatewayResponse($handlingSubject, $response);
             } else {
                 $this->processUnsuccessfulGatewayResponse($handlingSubject, $response);
             }
         } catch (TransactionAlreadyProcessedException $e) {
-            $this->locker->unlock($order->getId());
+            // pass through TransactionAlreadyProcessedException
             throw $e;
         } catch (Exception $e) {
-            $this->locker->unlock($order->getId());
             throw new CommandException(__('Failed to process transaction: %1', $e->getMessage()));
         }
 
-        try {
-            $this->orderRepository->save($order);
-
-            if (!$order->getEmailSent()) {
-                $log['email_sent'] = true;
-                $this->orderSender->send($order);
-            }
-
-            $this->logger->debug($log);
-        } finally {
-            $this->locker->unlock($order->getId());
-        }
+        $this->orderRepository->save($order);
     }
 
     /**
@@ -189,8 +197,7 @@ class OrderUpdateHandler implements HandlerInterface
     protected function processSuccessfulGatewayResponse(
         array $handlingSubject,
         array $response
-    )
-    {
+    ) {
         $transactionType = isset($response['transaction_type']) ? $response['transaction_type'] : null;
 
         if (isset($this->transactionHandlers[$transactionType])) {
@@ -207,8 +214,7 @@ class OrderUpdateHandler implements HandlerInterface
     protected function processUnsuccessfulGatewayResponse(
         array $handlingSubject,
         array $response
-    )
-    {
+    ) {
         $this->unsuccessfulTransactionHandler->handle($handlingSubject, $response);
     }
 
@@ -241,5 +247,25 @@ class OrderUpdateHandler implements HandlerInterface
         }
 
         return $transactionType;
+    }
+
+    /**
+     * Throws TransactionAlreadyProcessedException on locked order
+     *
+     * @param OrderInterface $order
+     * @throws TransactionAlreadyProcessedException
+     * @return void
+     */
+    protected function ensureNotLocked(OrderInterface $order): void
+    {
+        $orderId = $order->getId();
+        if (!$this->locker->isLocked($orderId)) {
+            $this->logger->debug([
+                'message' => __('Order is currently being processed (lock). Order ID: %1', $orderId),
+                'log_origin' => __METHOD__
+            ]);
+
+            throw new TransactionAlreadyProcessedException(__('Order lock. Order ID: %1', $orderId));
+        }
     }
 }
