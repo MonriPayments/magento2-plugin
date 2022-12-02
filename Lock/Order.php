@@ -20,7 +20,7 @@ class Order implements LockInterface
     /**
      * Cache timeout
      */
-    private const LOCK_TIMEOUT = 3600;
+    private const LOCK_TIMEOUT = 60;
 
     /**
      * Order Locker constructor.

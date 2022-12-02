@@ -259,7 +259,7 @@ class OrderUpdateHandler implements HandlerInterface
     protected function ensureNotLocked(OrderInterface $order): void
     {
         $orderId = $order->getId();
-        if (!$this->locker->isLocked($orderId)) {
+        if ($this->locker->isLocked($orderId)) {
             $this->logger->debug([
                 'message' => __('Order is currently being processed (lock). Order ID: %1', $orderId),
                 'log_origin' => __METHOD__
