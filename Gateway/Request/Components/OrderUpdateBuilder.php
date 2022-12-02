@@ -86,7 +86,7 @@ class OrderUpdateBuilder implements BuilderInterface
             $currencyCode,
             $gatewayAmount,
             $order->getStoreId(),
-            Digest::DIGEST_ALGO_1
+            ComponentsDigest::DIGEST_ALGO_1
         );
 
         return [
