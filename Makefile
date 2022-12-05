@@ -6,3 +6,6 @@ EXCLUDE_FILES = $(shell cat .pkgignore | tr '\n' ' ')
 
 package:
 	(rm $(FILE_PATH) || true) && zip -r $(FILE_PATH) ./ -x $(EXCLUDE_FILES)
+
+update-version:
+	sh ./update_version.sh
