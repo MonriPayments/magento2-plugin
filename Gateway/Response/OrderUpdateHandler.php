@@ -148,7 +148,7 @@ class OrderUpdateHandler implements HandlerInterface
         try {
             $this->processResponse($handlingSubject, $response, $order);
 
-            if (!$order->getEmailSent()) {
+            if (!$order->getEmailSent() && $this->isSuccessfulResponse($response)) {
                 $log['email_sent'] = true;
                 $this->orderSender->send($order);
             }
