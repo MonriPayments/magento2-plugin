@@ -77,8 +77,8 @@ class OrderUpdateHandler implements HandlerInterface
      * @param TMapFactory $TMapFactory
      * @param array $transactionHandlers
      * @param HandlerInterface $unsuccessfulTransactionHandler
-     * @param LockInterface $locker
      * @param Config $config
+     * @param LockInterface $locker
      */
     public function __construct(
         OrderRepository $orderRepository,
@@ -161,11 +161,15 @@ class OrderUpdateHandler implements HandlerInterface
     /**
      * Processes the response
      *
-     * @throws NoSuchEntityException
-     * @throws TransactionAlreadyProcessedException
+     * @param array $handlingSubject
+     * @param array $response
+     * @param OrderInterface $order
+     * @return void
      * @throws AlreadyExistsException
      * @throws CommandException
      * @throws InputException
+     * @throws NoSuchEntityException
+     * @throws TransactionAlreadyProcessedException
      */
     protected function processResponse(
         array $handlingSubject,
