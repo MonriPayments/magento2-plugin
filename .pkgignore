@@ -9,3 +9,4 @@ dist/
 .pkgignore
 README.md
 CHANGELOG.md
+update_version.sh

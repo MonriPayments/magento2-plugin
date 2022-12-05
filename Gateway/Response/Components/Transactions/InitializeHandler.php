@@ -34,6 +34,7 @@ class InitializeHandler implements HandlerInterface
      * InitializeHandler constructor.
      *
      * @param ComponentsConfig $config
+     * @param RawDetailsFormatter $rawDetailsFormatter
      */
     public function __construct(
         ComponentsConfig $config,

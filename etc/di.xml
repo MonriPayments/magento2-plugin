@@ -420,6 +420,15 @@
     </virtualType>
     <!-- END base component command -->
 
+    <!-- Monri lock manager start-->
+    <preference for="Monri\Payments\Lock\Order\LockInterface" type="Monri\Payments\Lock\Order"/>
+    <type name="Monri\Payments\Lock\Order">
+        <arguments>
+            <argument name="cache" xsi:type="object">Magento\Framework\App\Cache\Type\Config</argument>
+        </arguments>
+    </type>
+    <!-- Monri lock manager end-->
+
     <virtualType name="MonriComponentsOrderUpdateHandler" type="Monri\Payments\Gateway\Response\OrderUpdateHandler">
         <arguments>
             <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
