@@ -1,3 +1,11 @@
+### 1.2.0
+- Feature: Dynamically set callback, success and cancel URLs
+  - Removed information panel showing which URLs to set in Monri dashboard
+  - URLs set in Monri dashboard are now ignored
+- Bugfix incorrect currency being used for order total
+- Bugfix for order emails being sent at incorrect time
+- Added support for locking orders in order to prevent race conditions during redirect
+
 ### 1.1.1
 - Bugfix for Components using the wrong configuration
 
