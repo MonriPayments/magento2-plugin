@@ -55,8 +55,8 @@ class Formatter
             }
         }
 
-        if (strlen($text) > $maxLength) {
-            $text = substr($text, 0, $maxLength);
+        if (mb_strlen($text) > $maxLength) {
+            $text = mb_substr($text, 0, $maxLength);
         }
 
         return $text;

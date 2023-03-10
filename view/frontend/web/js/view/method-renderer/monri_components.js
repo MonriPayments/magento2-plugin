@@ -231,7 +231,7 @@ define(
 
                 return {
                     address: street,
-                    fullName: address.firstname + ' ' + address.lastname,
+                    fullName: (address.firstname + ' ' + address.lastname).substring(0,30),
                     city: address.city,
                     zip: address.postcode,
                     phone: address.telephone,
