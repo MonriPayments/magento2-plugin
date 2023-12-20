@@ -1,3 +1,6 @@
+### 1.2.1
+- bump version because of Adobe Marketplace marketing review, no code changes
+
 ### 1.2.0
 - Feature: Dynamically set callback, success and cancel URLs
   - Removed information panel showing which URLs to set in Monri dashboard
