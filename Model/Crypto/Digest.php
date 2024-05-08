@@ -63,7 +63,7 @@ class Digest
     public function buildSimple($orderNumber, $storeId = null)
     {
         $clientKey = $this->config->getClientKey($storeId);
-        $data = "${$clientKey}${$orderNumber}";
+        $data = "{${$clientKey}}{${$orderNumber}}";
 
         return hash(self::DIGEST_ALGO_1, $data);
     }

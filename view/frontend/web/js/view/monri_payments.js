@@ -23,7 +23,6 @@ define(
                 component: 'Monri_Payments/js/view/method-renderer/monri_payments'
             }
         );
-
         return Component.extend({});
     }
 );

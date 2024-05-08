@@ -61,6 +61,30 @@
                 <can_capture_partial>1</can_capture_partial>
                 <!-- /Internal config -->
             </monri_components>
+
+            <monri_wspay>
+                <!-- user defined defaults -->
+                <active>0</active>
+                <title>WSPay Payment Gateway</title>
+                <secret_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
+                <language>hr</language>
+                <payment_action>authorize_capture</payment_action>
+                <!--order_status>pending_payment</order_status-->
+                <test_mode>0</test_mode>
+                <debug>0</debug>
+                <allowspecific>0</allowspecific>
+
+                <!-- internals -->
+                <model>WSPayFacade</model>
+                <can_initialize>1</can_initialize>
+                <can_authorize>0</can_authorize>
+                <can_capture>0</can_capture>
+                <can_order>0</can_order>
+                <can_void>0</can_void>
+                <can_use_checkout>1</can_use_checkout>
+                <is_gateway>1</is_gateway>
+
+            </monri_wspay>
         </payment>
     </default>
 </config>
