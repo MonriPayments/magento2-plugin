@@ -63,9 +63,9 @@ class FormDataBuilder extends AbstractDataBuilder
 
             self::FIELD_SIGNATURE => $this->generateSignature($orderId, $formattedAmount),
 
-            self::FIELD_RETURN_URL => $this->urlBuilder->getUrl('monri_payments/wspay/success'),
-            self::FIELD_CANCEL_URL => $this->urlBuilder->getUrl('monri_payments/wspay/cancel'),
-            self::FIELD_RETURN_ERROR_URL => $this->urlBuilder->getUrl('monri_payments/wspay/cancel', ['error' => '1']),
+            self::FIELD_RETURN_URL => $this->urlBuilder->getUrl('monripayments/wspay/success'),
+            self::FIELD_CANCEL_URL => $this->urlBuilder->getUrl('monripayments/wspay/cancel'),
+            self::FIELD_RETURN_ERROR_URL => $this->urlBuilder->getUrl('monripayments/wspay/cancel', ['error' => '1']),
 
             self::FIELD_CUSTOMER_NAME => $this->prepareString($billingAddress->getFirstname()),
             self::FIELD_CUSTOMER_SURNAME => $this->prepareString($billingAddress->getLastname()),

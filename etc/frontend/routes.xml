@@ -10,7 +10,7 @@
 
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:App/etc/routes.xsd">
     <router id="standard">
-        <route id="monri_payments" frontName="monri_payments">
+        <route id="monripayments" frontName="monripayments">
             <module name="Monri_Payments"/>
         </route>
     </router>

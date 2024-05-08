@@ -64,7 +64,7 @@ class ConfigProvider implements ConfigProviderInterface
         return [
             'payment' => [
                 self::CODE => [
-                    'buildFormDataUrl' => $this->urlBuilder->getUrl('monri_payments/wspay/buildFormData'),
+                    'buildFormDataUrl' => $this->urlBuilder->getUrl('monripayments/wspay/buildFormData'),
                     'description' => $this->getDescription()
                 ]
             ]
