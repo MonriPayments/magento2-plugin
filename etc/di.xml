@@ -328,9 +328,16 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="WSPayLogger" type="Magento\Payment\Model\Method\Logger">
+    <virtualType name="WSPayLogger" type="MonriPaymentsLogger">
         <arguments>
             <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\WSPay</argument>
+        </arguments>
+    </virtualType>
+
+
+    <virtualType name="MonriComponentsLogger" type="MonriPaymentsLogger">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
         </arguments>
     </virtualType>
     <!-- END Logger -->
@@ -437,11 +444,6 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="MonriComponentsLogger" type="MonriPaymentsLogger">
-        <arguments>
-            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
-        </arguments>
-    </virtualType>
 
     <virtualType name="MonriComponentsCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>

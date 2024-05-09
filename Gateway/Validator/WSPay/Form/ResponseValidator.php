@@ -52,7 +52,6 @@ class ResponseValidator extends AbstractValidator
             }
         }
 
-
         $shopID = $this->config->getValue('shop_id');
         $secretKey = $this->config->getValue('secret_key');
         $signature =
@@ -69,5 +68,4 @@ class ResponseValidator extends AbstractValidator
 
         return $this->createResult(true);
     }
-
 }

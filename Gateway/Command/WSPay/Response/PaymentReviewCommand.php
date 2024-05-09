@@ -39,6 +39,9 @@ class PaymentReviewCommand implements CommandInterface
      */
     private $logger;
 
+    /**
+     * @var Session
+     */
     private Session $checkoutSession;
 
     /**
@@ -73,6 +76,7 @@ class PaymentReviewCommand implements CommandInterface
     }
 
     /**
+     * Check if response is valid. If there are no problems we send an email and update the order
      *
      * @param array $commandSubject
      * @return void
@@ -119,6 +123,8 @@ class PaymentReviewCommand implements CommandInterface
     }
 
     /**
+     * Get order by increment id
+     *
      * @param string $orderIncrementId
      * @return bool|OrderInterface
      */

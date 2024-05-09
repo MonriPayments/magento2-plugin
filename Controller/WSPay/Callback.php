@@ -65,8 +65,6 @@ class Callback extends Action implements HttpPostActionInterface, CsrfAwareActio
 
     /**
      * Payment callback action
-     *
-     * @inheritDoc
      */
     public function execute()
     {
@@ -100,6 +98,7 @@ class Callback extends Action implements HttpPostActionInterface, CsrfAwareActio
 
     /**
      * 404 page
+     *
      * @return ResultInterface
      */
     private function forwardNoRoute(): ResultInterface

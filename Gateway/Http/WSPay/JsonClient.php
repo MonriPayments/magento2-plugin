@@ -2,6 +2,7 @@
 
 namespace Monri\Payments\Gateway\Http\WSPay;
 
+use HttpException;
 use Magento\Framework\HTTP\ClientInterfaceFactory;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Payment\Gateway\Http\ClientException;
@@ -88,7 +89,7 @@ class JsonClient implements ClientInterface
             }
 
             if ($client->getStatus() < 200 || $client->getStatus() >= 300) {
-                throw new \Exception('Invalid response status.');
+                throw new HttpException('Invalid response status.');
             }
 
             $response = $client->getBody();

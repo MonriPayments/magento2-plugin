@@ -29,7 +29,7 @@ class CcTypeMapper
     /**
      * Coverts WSPay cc type from response to Magento cc type id
      *
-     * @param $type
+     * @param string $type
      * @param string|null $partner
      * @return string
      */

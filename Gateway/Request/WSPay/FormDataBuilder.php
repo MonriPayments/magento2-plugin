@@ -77,7 +77,6 @@ class FormDataBuilder extends AbstractDataBuilder
             self::FIELD_CUSTOMER_EMAIL => $this->prepareString($billingAddress->getEmail())
         ];
 
-
         return [
             'action' => $this->config->getFormEndpoint((int)$order->getStoreId()),
             'fields' => $data

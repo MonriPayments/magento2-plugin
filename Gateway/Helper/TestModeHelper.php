@@ -7,6 +7,8 @@ class TestModeHelper
     private const TEST_SUFFIX = '-test';
 
     /**
+     * Generate a random test order id
+     *
      * @param string $orderId
      * @return string
      */
@@ -16,6 +18,8 @@ class TestModeHelper
     }
 
     /**
+     * Find the first occurrence of test order id
+     *
      * @param string $testOrderId
      * @return string
      */

@@ -75,12 +75,7 @@ class CaptureHandler implements HandlerInterface
             );
         }
 
-        //$payment->setCcOwner($response['CustomerFirstname'] . ' ' . $response['CustomerSurname']);
-        //$payment->setCcApproval($response['ApprovalCode']);
-        //$payment->setCcExpMonth('05')->setCcLast4('0005')->setCcType('AE')->setCcExpYear('2016');
-
         $payment->setTransactionId($response['WsPayOrderId']);
-        //$payment->setIsTransactionClosed(true);
         /** @noinspection PhpParamsInspection */
         $payment->setTransactionAdditionalInfo(
             Transaction::RAW_DETAILS,

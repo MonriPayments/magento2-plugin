@@ -16,7 +16,7 @@ define(
 
         return Component.extend({
             defaults: {
-                template: 'Monri_Payments/WSPay_form'
+                template: 'Monri_Payments/wspay_form'
             },
             redirectAfterPlaceOrder: false,
 
@@ -33,13 +33,6 @@ define(
                 return 'monri_wspay';
             },
 
-            /**
-             * @return {Object}
-             */
-            getDataXX: function () {
-                var data = this._super();
-                return data;
-            },
 
             /**
              * @return {Object}

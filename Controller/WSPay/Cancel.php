@@ -61,7 +61,7 @@ class Cancel extends Action implements HttpGetActionInterface
     /**
      * Payment cancel action
      *
-     * @inheritDoc
+     * @return ResultInterface
      */
     public function execute(): ResultInterface
     {

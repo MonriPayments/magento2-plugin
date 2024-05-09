@@ -17,7 +17,12 @@ class CheckIfTransactionExists
      * @var TransactionResource
      */
     private $transactionLoader;
-
+    /**
+     * CheckIfTransactionExists constructor.
+     *
+     * @param TransactionFactory $transactionFactory ,
+     * @param TransactionResource $transactionLoader
+     */
     public function __construct(
         TransactionFactory $transactionFactory,
         TransactionResource $transactionLoader

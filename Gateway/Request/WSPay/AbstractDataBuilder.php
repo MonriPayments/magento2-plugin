@@ -55,7 +55,7 @@ abstract class AbstractDataBuilder implements BuilderInterface
     /**
      * Trim and respect length
      *
-     * @param $string
+     * @param string $string
      * @param bool|int $length
      * @return string
      */

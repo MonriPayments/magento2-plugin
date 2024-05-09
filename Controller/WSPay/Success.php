@@ -43,7 +43,7 @@ class Success extends Action implements HttpGetActionInterface
     /**
      * Payment success action
      *
-     * @inheritDoc
+     * @return ResultInterface
      */
     public function execute(): ResultInterface
     {

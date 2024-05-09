@@ -57,6 +57,8 @@ class CallbackCommand extends ResponseCommand
     }
 
     /**
+     *  Get callback action name
+     *
      * @param array $response
      * @return string
      */

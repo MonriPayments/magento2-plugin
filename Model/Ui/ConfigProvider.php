@@ -11,16 +11,16 @@ use Magento\Store\Model\Store;
 use Magento\Store\Model\StoreManagerInterface;
 
 /**
- * Class ConfigProvider
+ * Class ConfigProvider for WSPay
  */
 class ConfigProvider implements ConfigProviderInterface
 {
     /**
      * Payment identifier
      */
-    const CODE = 'monri_wspay';
+    private const CODE = 'monri_wspay';
 
-    const DESCRIPTION_PATH = 'payment/monri_wspay/description';
+    private const DESCRIPTION_PATH = 'payment/monri_wspay/description';
 
     /**
      * @var UrlInterface
@@ -72,6 +72,8 @@ class ConfigProvider implements ConfigProviderInterface
     }
 
     /**
+     * Retrieve WSPay description from admin panel
+     *
      * @return mixed
      */
     public function getDescription(): mixed

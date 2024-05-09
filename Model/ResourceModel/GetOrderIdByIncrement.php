@@ -24,6 +24,8 @@ class GetOrderIdByIncrement
     }
 
     /**
+     *  Get order by increment id
+     *
      * @param string $incrementId
      * @return int
      */
