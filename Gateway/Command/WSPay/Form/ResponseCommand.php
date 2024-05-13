@@ -3,7 +3,7 @@
 namespace Monri\Payments\Gateway\Command\WSPay\Form;
 
 use Monri\Payments\Gateway\Helper\TestModeHelper;
-use Monri\Payments\Model\ResourceModel\GetOrderIdByIncrement;
+use Monri\Payments\Model\GetOrderIdByIncrement;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Gateway\CommandInterface;

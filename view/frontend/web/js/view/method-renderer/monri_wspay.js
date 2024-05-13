@@ -8,10 +8,11 @@ define(
         'mage/template',
         'Magento_Checkout/js/model/error-processor',
         'Magento_Checkout/js/model/full-screen-loader',
-        'Magento_Customer/js/customer-data'
+        'Magento_Customer/js/customer-data',
+        'mage/url'
     ],
     function (Component, $, _,
-              mageTemplate, errorProcessor, fullScreenLoader, customerData) {
+              mageTemplate, errorProcessor, fullScreenLoader, customerData, urlBuilder) {
         'use strict';
 
         return Component.extend({
@@ -26,35 +27,15 @@ define(
                 return this;
             },
 
-            /**
-             * @return {String}
-             */
             getCode: function() {
                 return 'monri_wspay';
             },
 
-
-            /**
-             * @return {Object}
-             */
-            getData: function () {
-                var data = {
-                    'method': this.getCode(),
-                    'additional_data': {}
-                };
-                return data;
-            },
-
-
-
-            getDescription: function () {
-                return window.checkoutConfig.payment[this.getCode()].description;
-            },
-
             afterPlaceOrder: function() {
                 fullScreenLoader.startLoader();
+                var url = urlBuilder.build('monripayments/wspay/buildFormData');
 
-                $.get(window.checkoutConfig.payment[this.getCode()].buildFormDataUrl)
+                $.get(url)
                     .done(function (response) {
                         customerData.invalidate(['cart', 'checkout-data']);
                         this.buildForm(response).submit();
