@@ -21,7 +21,7 @@ class WSPay extends \Magento\Payment\Gateway\Config\Config
      * @param string $methodCode
      * @param string $pathPattern
      */
-    public function __construct(
+    public function __construct( // @codingStandardsIgnoreLine
         ScopeConfigInterface $scopeConfig,
         $methodCode = self::CODE,
         $pathPattern = self::DEFAULT_PATH_PATTERN
