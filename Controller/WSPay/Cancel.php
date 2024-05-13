@@ -67,7 +67,6 @@ class Cancel extends Action implements HttpGetActionInterface
     {
         try {
             // execute response cancel command
-            //@todo: remove?
             if ($this->getRequest()->getParam('ErrorCodes') === 'E00012') {
                 $this->paymentReviewCommand->execute([
                     'response' => $this->getRequest()->getParams()
