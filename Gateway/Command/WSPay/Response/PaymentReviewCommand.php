@@ -2,11 +2,9 @@
 
 namespace Monri\Payments\Gateway\Command\WSPay\Response;
 
-use Monri\Payments\Gateway\Helper\CcTypeMapper;
 use Monri\Payments\Gateway\Helper\TestModeHelper;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Api\SearchCriteriaBuilder;
-use Magento\Framework\Exception\NoSuchEntityException;
 use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Gateway\CommandInterface;
 use Magento\Payment\Gateway\ConfigInterface;
@@ -106,12 +104,6 @@ class PaymentReviewCommand implements CommandInterface
 
         $order->setStatus(Order::STATE_PAYMENT_REVIEW);
 
-        $ccType = $response['PaymentType'] ?? ($response['CreditCardName'] ?? '');
-        if ($ccType) {
-            $order->getPayment()->setCcType(
-                CcTypeMapper::getCcTypeId($ccType, $response['Partner'] ?? null)
-            );
-        }
 
         // send new order email
         if (!$order->getEmailSent()) {

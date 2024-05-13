@@ -2,7 +2,7 @@
 
 namespace Monri\Payments\Gateway\Request\WSPay;
 
-use Monri\Payments\Gateway\Config\WSPayConfigInterface;
+use Monri\Payments\Gateway\Config\WSPay as WSPayConfig;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 
 abstract class AbstractDataBuilder implements BuilderInterface
@@ -37,17 +37,17 @@ abstract class AbstractDataBuilder implements BuilderInterface
     public const FIELD_IS_TOKEN_REQUEST = 'IsTokenRequest';
 
     /**
-     * @var WSPayConfigInterface
+     * @var WSPayConfig
      */
     protected $config;
 
     /**
      * FormDataBuilder constructor.
      *
-     * @param WSPayConfigInterface $config
+     * @param WSPayConfig $config
      */
     public function __construct(
-        WSPayConfigInterface $config
+        WSPayConfig $config
     ) {
         $this->config = $config;
     }

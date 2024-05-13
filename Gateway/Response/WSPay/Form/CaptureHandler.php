@@ -2,7 +2,6 @@
 
 namespace Monri\Payments\Gateway\Response\WSPay\Form;
 
-use Monri\Payments\Gateway\Helper\CcTypeMapper;
 use Monri\Payments\Model\ResourceModel\CheckIfTransactionExists;
 use Monri\Payments\Gateway\Config\WSPay;
 use Magento\Payment\Gateway\Helper\SubjectReader;
@@ -66,14 +65,6 @@ class CaptureHandler implements HandlerInterface
         $payment = $paymentDO->getPayment();
         /** @var \Magento\Sales\Model\Order $order */
         $order = $payment->getOrder();
-
-        //@todo: need to change?
-        $ccType = $response['PaymentType'] ?? ($response['CreditCardName'] ?? '');
-        if ($ccType) {
-            $payment->setCcType(
-                CcTypeMapper::getCcTypeId($ccType, $response['Partner'] ?? null)
-            );
-        }
 
         $payment->setTransactionId($response['WsPayOrderId']);
         /** @noinspection PhpParamsInspection */
