@@ -104,7 +104,6 @@ class PaymentReviewCommand implements CommandInterface
 
         $order->setStatus(Order::STATE_PAYMENT_REVIEW);
 
-
         // send new order email
         if (!$order->getEmailSent()) {
             $this->orderSender->send($order);
