@@ -44,13 +44,13 @@ class OrderRefundBuilder extends AbstractDataBuilder
         $paymentDO = SubjectReader::readPayment($buildSubject);
         $order = $paymentDO->getOrder();
         $payment = $paymentDO->getPayment();
-
-        $configStoreId = $this->config->getValue('shop_id');
+        $storeId = $order->getStoreId();
+        $configStoreId = $this->config->getValue('shop_id', $storeId);
         $formattedAmount = number_format($order->getGrandTotalAmount(), 2, ',', '');
         $STAN = $payment->getAdditionalInformation('STAN');
         $approvalCode = $payment->getAdditionalInformation('ApprovalCode');
         $WsPayOrderId = $payment->getRefundTransactionId();
-        $signature = $this->generateRefundSignature($STAN, $approvalCode, $WsPayOrderId, $formattedAmount);
+        $signature = $this->generateAPISignature($STAN, $approvalCode, $WsPayOrderId, $formattedAmount, $storeId);
 
         $data = [
             self::FIELD_VERSION => self::VERSION,
@@ -60,7 +60,8 @@ class OrderRefundBuilder extends AbstractDataBuilder
             self::FIELD_STAN => $STAN,
             self::FIELD_AMOUNT => str_replace(',', '', $formattedAmount),
 
-            self::FIELD_SIGNATURE => $signature
+            self::FIELD_SIGNATURE => $signature,
+            '__store' => $storeId,
         ];
 
         return $data;

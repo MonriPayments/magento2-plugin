@@ -97,12 +97,13 @@ abstract class AbstractDataBuilder implements BuilderInterface
      * @param string $approvalCode
      * @param string $WsPayOrderId
      * @param string $formattedAmount
+     * @param int $storeId
      * @return string
      */
-    protected function generateRefundSignature($STAN, $approvalCode, $WsPayOrderId, $formattedAmount): string
+    protected function generateAPISignature($STAN, $approvalCode, $WsPayOrderId, $formattedAmount, $storeId): string
     {
-        $shopId = $this->config->getValue('shop_id');
-        $secretKey = $this->config->getValue('secret_key');
+        $shopId = $this->config->getValue('shop_id', $storeId);
+        $secretKey = $this->config->getValue('secret_key', $storeId);
         $cleanTotalAmount = str_replace(',', '', $formattedAmount);
         $signature =
             $shopId . $WsPayOrderId .

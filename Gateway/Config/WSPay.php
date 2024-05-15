@@ -39,14 +39,6 @@ class WSPay extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
-     * @inheritDoc
-     */
-    public function getApiEndpoint(string $api, ?int $storeId = null): string
-    {
-        $endpoint = $this->getValue('test_mode', $storeId) ? self::TEST_API_ENDPOINT : self::API_ENDPOINT;
-        return sprintf($endpoint, $api);
-    }
-    /**
      * Returns the transaction management URL for a given resource object and action.
      *
      * @param string $resource
@@ -55,28 +47,8 @@ class WSPay extends \Magento\Payment\Gateway\Config\Config
      */
     public function getGatewayTransactionManagementURL($resource, $storeId): string
     {
-        return $this->getGatewayResourceURL(sprintf('/%s', $resource), $storeId);
-    }
-    /**
-     * Returns the gateway URL for a given resource and store ID.
-     *
-     * @param string $resource
-     * @param null|int $storeId
-     * @return string
-     */
-    public function getGatewayResourceURL($resource, $storeId = null)
-    {
-        return sprintf($this->getGatewayBaseURL($storeId), $resource);
-    }
-    /**
-     * Returns the base gateway URL for a given store ID.
-     *
-     * @param null|int $storeId
-     * @return string
-     */
-    public function getGatewayBaseURL($storeId = null)
-    {
-        return $this->getIsTestMode($storeId) ? self::TEST_API_ENDPOINT : self::API_ENDPOINT;
+        $endpoint = $this->getIsTestMode($storeId) ? self::TEST_API_ENDPOINT : self::API_ENDPOINT;
+        return sprintf($endpoint, $resource) ;
     }
 
     /**
