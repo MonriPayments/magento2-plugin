@@ -66,6 +66,8 @@ class CaptureHandler implements HandlerInterface
         /** @var \Magento\Sales\Model\Order $order */
         $order = $payment->getOrder();
 
+        $payment->setAdditionalInformation('STAN', $response['STAN']);
+        $payment->setAdditionalInformation('ApprovalCode', $response['ApprovalCode']);
         $payment->setTransactionId($response['WsPayOrderId']);
         /** @noinspection PhpParamsInspection */
         $payment->setTransactionAdditionalInfo(

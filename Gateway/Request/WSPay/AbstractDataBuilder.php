@@ -90,4 +90,28 @@ abstract class AbstractDataBuilder implements BuilderInterface
         $signature = hash('sha512', $signature);
         return $signature;
     }
+    /**
+     * Generate refund signature algo
+     *
+     * @param string $STAN
+     * @param string $approvalCode
+     * @param string $WsPayOrderId
+     * @param string $formattedAmount
+     * @return string
+     */
+    protected function generateRefundSignature($STAN, $approvalCode, $WsPayOrderId, $formattedAmount): string
+    {
+        $shopId = $this->config->getValue('shop_id');
+        $secretKey = $this->config->getValue('secret_key');
+        $cleanTotalAmount = str_replace(',', '', $formattedAmount);
+        $signature =
+            $shopId . $WsPayOrderId .
+            $secretKey . $STAN .
+            $secretKey . $approvalCode .
+            $secretKey . $cleanTotalAmount .
+            $secretKey . $WsPayOrderId;
+
+        $signature = hash('sha512', $signature);
+        return $signature;
+    }
 }

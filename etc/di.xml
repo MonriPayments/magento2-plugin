@@ -322,6 +322,14 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="WSPayVirtualLogger" type="Magento\Framework\Logger\Monolog">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="debug" xsi:type="object">MonriPaymentsVirtualDebugHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="MonriPaymentsVirtualDebugHandler" type="Magento\Framework\Logger\Handler\Base">
         <arguments>
             <argument name="fileName" xsi:type="string">/var/log/monri_payments.log</argument>
@@ -588,6 +596,19 @@
         </arguments>
     </virtualType>
 
+    <!-- Base Transaction Management Command -->
+    <virtualType name="WSPayBaseTransactionCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\FormDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">Monri\Payments\Gateway\Http\WSPay\OrderUpdateTransferFactory</argument>
+            <argument name="client" xsi:type="object">Monri\Payments\Gateway\Http\WSPay\JsonClient</argument>
+            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\OrderUpdateHandler</argument>
+            <argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\WSPay\TransferResponseValidator</argument>
+            <argument name="logger" xsi:type="object">WSPayVirtualLogger</argument>
+            <argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsWithRawMapper</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="WSPayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
         <arguments>
             <argument name="handlers" xsi:type="array">
@@ -604,6 +625,8 @@
                 <item name="form_response_success" xsi:type="string">WSPayFormSuccessCommand</item>
                 <item name="form_response_payment_review" xsi:type="string">WSPayFormPaymentReviewCommand</item>
                 <item name="callback" xsi:type="string">WSPayCallbackCommand</item>
+                <item name="refund" xsi:type="string">WSPayRefundCommand</item>
+                <item name="capture" xsi:type="string">WSPayCaptureCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -624,5 +647,30 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="WSPayRefundFactory" type="Monri\Payments\Gateway\Http\WSPay\OrderUpdateTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\WSPay</argument>
+            <argument name="resource" xsi:type="string">refund</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WSPayRefundCommand" type="WSPayBaseTransactionCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderRefundBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">WSPayRefundFactory</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WSPayCaptureCommand" type="WSPayBaseTransactionCommand">
+        <arguments>
+            <argument name="transferFactory" xsi:type="object">WSPayCaptureFactory</argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="WSPayCaptureFactory" type="Monri\Payments\Gateway\Http\OrderUpdateTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\WSPay</argument>
+            <argument name="resource" xsi:type="string">completion</argument>
+        </arguments>
+    </virtualType>
 
 </config>
