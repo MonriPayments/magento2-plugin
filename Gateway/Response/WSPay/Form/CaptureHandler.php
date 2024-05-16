@@ -68,17 +68,19 @@ class CaptureHandler implements HandlerInterface
 
         $payment->setAdditionalInformation('STAN', $response['STAN']);
         $payment->setAdditionalInformation('ApprovalCode', $response['ApprovalCode']);
+        $payment->setAdditionalInformation('originalTransactionId', $response['WsPayOrderId']);
         $payment->setTransactionId($response['WsPayOrderId']);
         /** @noinspection PhpParamsInspection */
         $payment->setTransactionAdditionalInfo(
             Transaction::RAW_DETAILS,
             $response
         );
-
         if (!$order->canInvoice() || $this->checkIfTransactionExists->execute($payment)) {
             // No action to take, order can't be invoiced or authorized or transaction is already processed
             return;
         }
+        //@todo: find what is closing the transaction instead of manually reverting the value
+        $payment->setIsTransactionClosed(0);
 
         switch ($this->config->getValue('payment_action', $order->getStoreId())) {
             case MethodInterface::ACTION_AUTHORIZE:
@@ -88,7 +90,7 @@ class CaptureHandler implements HandlerInterface
                 break;
             case MethodInterface::ACTION_AUTHORIZE_CAPTURE:
                 $order->setState(Order::STATE_PROCESSING);
-                $payment->registerCaptureNotification($order->getBaseGrandTotal(), true);
+                $payment->capture();
                 break;
         }
 

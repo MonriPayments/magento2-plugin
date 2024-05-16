@@ -7,7 +7,7 @@ use Monri\Payments\Gateway\Helper\TestModeHelper;
 use Magento\Framework\UrlInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 
-class OrderRefundBuilder extends AbstractDataBuilder
+class OrderApiBuilder extends AbstractDataBuilder
 {
     public const FIELD_ORDER_ID = 'WsPayOrderId';
     public const FIELD_APPROVAL_CODE = 'ApprovalCode';
@@ -49,7 +49,7 @@ class OrderRefundBuilder extends AbstractDataBuilder
         $formattedAmount = number_format($order->getGrandTotalAmount(), 2, ',', '');
         $STAN = $payment->getAdditionalInformation('STAN');
         $approvalCode = $payment->getAdditionalInformation('ApprovalCode');
-        $WsPayOrderId = $payment->getRefundTransactionId();
+        $WsPayOrderId = $payment->getAdditionalInformation('originalTransactionId');
         $signature = $this->generateAPISignature($STAN, $approvalCode, $WsPayOrderId, $formattedAmount, $storeId);
 
         $data = [

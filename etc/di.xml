@@ -627,6 +627,7 @@
                 <item name="callback" xsi:type="string">WSPayCallbackCommand</item>
                 <item name="refund" xsi:type="string">WSPayRefundCommand</item>
                 <item name="capture" xsi:type="string">WSPayCaptureCommand</item>
+                <item name="void" xsi:type="string">WSPayVoidCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -656,20 +657,38 @@
 
     <virtualType name="WSPayRefundCommand" type="WSPayBaseTransactionCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderRefundBuilder</argument>
+            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderApiBuilder</argument>
             <argument name="transferFactory" xsi:type="object">WSPayRefundFactory</argument>
+        </arguments>
+    </virtualType>
+
+
+    <virtualType name="WSPayCaptureFactory" type="Monri\Payments\Gateway\Http\WSPay\OrderUpdateTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\WSPay</argument>
+            <argument name="resource" xsi:type="string">completion</argument>
         </arguments>
     </virtualType>
 
     <virtualType name="WSPayCaptureCommand" type="WSPayBaseTransactionCommand">
         <arguments>
+            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderApiBuilder</argument>
             <argument name="transferFactory" xsi:type="object">WSPayCaptureFactory</argument>
         </arguments>
     </virtualType>
-    <virtualType name="WSPayCaptureFactory" type="Monri\Payments\Gateway\Http\OrderUpdateTransferFactory">
+
+
+    <virtualType name="WSPayVoidFactory" type="Monri\Payments\Gateway\Http\WSPay\OrderUpdateTransferFactory">
         <arguments>
             <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\WSPay</argument>
-            <argument name="resource" xsi:type="string">completion</argument>
+            <argument name="resource" xsi:type="string">void</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WSPayVoidCommand" type="WSPayBaseTransactionCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderApiBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">WSPayVoidFactory</argument>
         </arguments>
     </virtualType>
 
