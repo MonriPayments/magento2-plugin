@@ -1,6 +1,7 @@
 ### 1.3.0
 - Monri WSPay implementation
-- Monri WSPay transaction APIs implementation for refund, capture
+- Monri WSPay transaction APIs for refund, capture from administration
+- Monri WSPay callback
 - Bugfix Components reading wrong debug configuration
 - Bugfix Components checkout issues with HR symbols
 
