@@ -1,3 +1,14 @@
+### 1.3.0
+- Monri WSPay implementation
+- Monri WSPay transaction APIs for refund, capture from administration
+- Monri WSPay callback
+- Bugfix Components reading wrong debug configuration
+- Bugfix Components checkout issues with HR symbols
+
+### 1.2.1
+- bump version because of Adobe Marketplace review
+- fix PHP 8.2 deprecation errors
+
 ### 1.2.0
 - Feature: Dynamically set callback, success and cancel URLs
   - Removed information panel showing which URLs to set in Monri dashboard

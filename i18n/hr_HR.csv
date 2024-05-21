@@ -32,3 +32,9 @@ Installments,Rate
 "Obtain this value from your Monri Administration dashboard.","Ovu vrijednost možete provjeriti u svom Monri administracijskom sučelju."
 "The language that will be used when a customer is redirected to Monri.","Jezik koji će biti korišten na Monri strani."
 "Enter this into your Monri Administration dashboard.","Unesite ove podatke u vaše Monri administracijsko sučelje."
+"Payment has been canceled.",Plaćanje je otkazano.
+"Payment was not successful.",Plaćanje je neuspješno.
+"Order does not exist.",Narudžba ne postoji.
+"Gateway response is not valid.",Odgovor modula plaćanja nije valjan.
+"Save for later use.",Sačuvaj za kasniju upotrebu.
+"You will be redirected to the WSPay website when you place an order.","Nakon završetka narudžbe biti ćeš preusmjeren na stranice WSPay-a."

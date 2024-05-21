@@ -19,4 +19,10 @@
             </argument>
         </arguments>
     </type>
+
+    <type name="Monri\Payments\Controller\WSPay\Callback">
+        <arguments>
+            <argument name="paymentLogger" xsi:type="object">WSPayLogger</argument>
+        </arguments>
+    </type>
 </config>

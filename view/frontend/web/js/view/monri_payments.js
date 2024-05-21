@@ -4,7 +4,7 @@
  * (c) Monri Payments d.o.o.
  *
  * @author Favicode <contact@favicode.net>
- * @version 1.2.0
+ * @version 1.3.0
  */
 
 define(
@@ -23,7 +23,6 @@ define(
                 component: 'Monri_Payments/js/view/method-renderer/monri_payments'
             }
         );
-
         return Component.extend({});
     }
 );
