@@ -1,5 +1,11 @@
-/*browser:true*/
-/*global define*/
+/**
+ * This file is part of the Monri Payments module
+ *
+ * (c) Monri Payments d.o.o.
+ *
+ * @author Favicode <contact@favicode.net>
+ */
+
 define(
     [
         'Magento_Checkout/js/view/payment/default',

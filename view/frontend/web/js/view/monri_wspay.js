@@ -1,3 +1,12 @@
+/**
+ * This file is part of the Monri Payments module
+ *
+ * (c) Monri Payments d.o.o.
+ *
+ * @author Favicode <contact@favicode.net>
+ * @version 1.2.0
+ */
+
 define([
     'uiComponent',
     'Magento_Checkout/js/model/payment/renderer-list'
