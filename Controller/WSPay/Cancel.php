@@ -2,7 +2,6 @@
 
 namespace Monri\Payments\Controller\WSPay;
 
-use Monri\Payments\Gateway\Helper\TestModeHelper;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;

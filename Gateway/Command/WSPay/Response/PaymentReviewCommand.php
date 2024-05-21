@@ -2,6 +2,7 @@
 
 namespace Monri\Payments\Gateway\Command\WSPay\Response;
 
+use Magento\Framework\Exception\LocalizedException;
 use Monri\Payments\Gateway\Helper\TestModeHelper;
 use Magento\Checkout\Model\Session;
 use Magento\Framework\Api\SearchCriteriaBuilder;
@@ -14,6 +15,7 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
+use Monri\Payments\Model\GetOrderIdByIncrement;
 
 class PaymentReviewCommand implements CommandInterface
 {
@@ -46,6 +48,7 @@ class PaymentReviewCommand implements CommandInterface
      * @var SearchCriteriaBuilder
      */
     private SearchCriteriaBuilder $searchCriteriaBuilder;
+    private GetOrderIdByIncrement $getOrderIdByIncrement;
 
     /**
      * SuccessCommand constructor.
@@ -59,6 +62,7 @@ class PaymentReviewCommand implements CommandInterface
      */
     public function __construct(
         ConfigInterface $config,
+        GetOrderIdByIncrement $getOrderIdByIncrement,
         OrderRepositoryInterface $orderRepository,
         OrderSender $orderSender,
         SearchCriteriaBuilder $searchCriteriaBuilder,
@@ -67,6 +71,7 @@ class PaymentReviewCommand implements CommandInterface
     ) {
         $this->config = $config;
         $this->orderRepository = $orderRepository;
+        $this->getOrderIdByIncrement = $getOrderIdByIncrement;
         $this->orderSender = $orderSender;
         $this->logger = $logger;
         $this->checkoutSession = $checkoutSession;
@@ -114,28 +119,29 @@ class PaymentReviewCommand implements CommandInterface
     }
 
     /**
-     * Get order by increment id
+     * Resolve and load order by increment_id
      *
      * @param string $orderIncrementId
-     * @return bool|OrderInterface
+     * @return OrderInterface|null
      */
-    private function getOrder(string $orderIncrementId): bool|OrderInterface
+    protected function getOrder(string $orderIncrementId): ?OrderInterface
     {
         if ($this->config->getValue('test_mode')) {
             $orderIncrementId = TestModeHelper::resolveRealOrderId($orderIncrementId);
         }
 
-        $searchCriteria = $this->searchCriteriaBuilder
-            ->addFilter('increment_id', $orderIncrementId)
-            ->create();
+        $orderId = $this->getOrderIdByIncrement->execute($orderIncrementId);
 
-        $result = $this->orderRepository->getList($searchCriteria);
-
-        if ($result->getTotalCount() < 1) {
-            return false;
+        if (!$orderId) {
+            return null;
         }
 
-        $orders = $result->getItems();
-        return array_shift($orders);
+        try {
+            $order = $this->orderRepository->get($orderId);
+        } catch (LocalizedException $e) {
+            return null;
+        }
+
+        return $order;
     }
 }
