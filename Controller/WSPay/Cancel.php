@@ -66,7 +66,7 @@ class Cancel extends Action implements HttpGetActionInterface
     public function execute(): ResultInterface
     {
         try {
-            // execute response cancel command
+            // ignore WSPay E00012 cancel trigger
             if ($this->getRequest()->getParam('ErrorCodes') === 'E00012') {
                 $this->paymentReviewCommand->execute([
                     'response' => $this->getRequest()->getParams()

@@ -67,9 +67,7 @@ class BuildFormData extends Action
         /** @var \Magento\Framework\Controller\Result\Json $resultJson */
         $resultJson = $this->resultFactory->create(ResultFactory::TYPE_JSON);
 
-        //$orderId = $this->session->getData('last_order_id');
         $orderId = $this->session->getLastOrderId();
-        //$orderId = 4;
 
         try {
             $order = $this->orderRepository->get((int)$orderId);

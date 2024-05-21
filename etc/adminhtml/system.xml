@@ -157,8 +157,8 @@
                     <frontend_class>validate-number</frontend_class>
                 </field>
             </group>
-            <group id="monri_wspay" translate="label" type="text" sortOrder="0" showInDefault="1" showInWebsite="1" showInStore="1">
-                <label>WSPay</label>
+            <group id="monri_wspay" translate="label" type="text" sortOrder="7" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Monri WSPay</label>
                 <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
@@ -182,8 +182,6 @@
                     <label>Payment Action</label>
                     <source_model>Monri\Payments\Model\Adminhtml\Source\PaymentAction</source_model>
                 </field>
-
-
                 <field id="test_mode" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Test mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>

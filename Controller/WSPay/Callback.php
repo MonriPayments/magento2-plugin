@@ -11,7 +11,6 @@ use Magento\Framework\App\Request\InvalidRequestException;
 use Magento\Framework\App\RequestInterface;
 use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Controller\ResultInterface;
-use Magento\Framework\HTTP\ZendClient;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Model\Method\Logger;
@@ -71,7 +70,7 @@ class Callback extends Action implements HttpPostActionInterface, CsrfAwareActio
         /** @var $request \Magento\Framework\App\Request\Http */
         $request = $this->getRequest();
 
-        if ($request->getMethod() !== ZendClient::POST) {
+        if ($request->getMethod() !== 'POST') {
             return $this->forwardNoRoute();
         }
 

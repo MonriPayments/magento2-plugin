@@ -107,7 +107,6 @@ class ResponseCommand implements CommandInterface
     {
         $response = SubjectReader::readResponse($commandSubject);
 
-        // log here?
         $this->logger->debug([$this->commandName => $response]);
 
         // validate wspay response
