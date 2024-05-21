@@ -3,7 +3,6 @@
 namespace Monri\Payments\Gateway\Request\WSPay;
 
 use Monri\Payments\Gateway\Config\WSPay;
-use Monri\Payments\Gateway\Helper\TestModeHelper;
 use Magento\Framework\UrlInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 
@@ -45,7 +44,7 @@ class OrderApiBuilder extends AbstractDataBuilder
         $order = $paymentDO->getOrder();
         $payment = $paymentDO->getPayment();
         $storeId = $order->getStoreId();
-        $configStoreId = $this->config->getValue('shop_id', $storeId);
+        $shopId = $this->config->getValue('shop_id', $storeId);
         $formattedAmount = number_format($order->getGrandTotalAmount(), 2, ',', '');
         $STAN = $payment->getAdditionalInformation('STAN');
         $approvalCode = $payment->getAdditionalInformation('ApprovalCode');
@@ -55,7 +54,7 @@ class OrderApiBuilder extends AbstractDataBuilder
         $data = [
             self::FIELD_VERSION => self::VERSION,
             self::FIELD_ORDER_ID => $WsPayOrderId,
-            self::FIELD_SHOP_ID => $configStoreId,
+            self::FIELD_SHOP_ID => $shopId,
             self::FIELD_APPROVAL_CODE => $approvalCode,
             self::FIELD_STAN => $STAN,
             self::FIELD_AMOUNT => str_replace(',', '', $formattedAmount),

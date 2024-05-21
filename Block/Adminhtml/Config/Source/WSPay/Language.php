@@ -1,6 +1,6 @@
 <?php
 
-namespace Monri\Payments\Model\Adminhtml\Source;
+namespace Monri\Payments\Block\Adminhtml\Config\Source\WSPay;
 
 use Magento\Framework\Data\OptionSourceInterface;
 

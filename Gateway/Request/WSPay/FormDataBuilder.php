@@ -42,7 +42,7 @@ class FormDataBuilder extends AbstractDataBuilder
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
         $order = $paymentDO->getOrder();
-        $payment = $paymentDO->getPayment();
+
         $billingAddress = $order->getBillingAddress();
 
         $orderId = $order->getOrderIncrementId();
@@ -50,13 +50,13 @@ class FormDataBuilder extends AbstractDataBuilder
             $orderId = TestModeHelper::generateTestOrderId($orderId);
         }
 
-        $configStoreId = $this->config->getValue('shop_id');
+        $shopId = $this->config->getValue('shop_id');
         $formattedAmount = number_format($order->getGrandTotalAmount(), 2, ',', '');
 
         $data = [
             self::FIELD_VERSION => self::VERSION,
 
-            self::FIELD_SHOP_ID => $configStoreId,
+            self::FIELD_SHOP_ID => $shopId,
             self::FIELD_ORDER_ID => $orderId,
             self::FIELD_LANGUAGE => $this->config->getValue('language'),
             self::FIELD_AMOUNT => $formattedAmount,

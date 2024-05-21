@@ -176,11 +176,11 @@
                 </field>
                 <field id="language" translate="label" type="select" sortOrder="45" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Language</label>
-                    <source_model>Monri\Payments\Model\Adminhtml\Source\Language</source_model>
+                    <source_model>Monri\Payments\Block\Adminhtml\Config\Source\WSPay\Language</source_model>
                 </field>
                 <field id="payment_action" translate="label" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Payment Action</label>
-                    <source_model>Monri\Payments\Model\Adminhtml\Source\PaymentAction</source_model>
+                    <source_model>Monri\Payments\Block\Adminhtml\Config\Source\PaymentAction</source_model>
                 </field>
                 <field id="test_mode" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Test mode</label>
