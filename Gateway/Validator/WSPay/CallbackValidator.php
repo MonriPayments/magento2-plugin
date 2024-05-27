@@ -11,7 +11,7 @@ use Magento\Payment\Gateway\Validator\ResultInterface;
 class CallbackValidator extends AbstractValidator
 {
     /**
-     * @var Config
+     * @var WSPay
      */
     private $config;
 
@@ -30,11 +30,11 @@ class CallbackValidator extends AbstractValidator
      * CallbackValidator constructor.
      *
      * @param ResultInterfaceFactory $resultFactory
-     * @param Config $config
+     * @param WSPay $config
      */
     public function __construct(
         ResultInterfaceFactory $resultFactory,
-        Config $config
+        WSPay $config
     ) {
         parent::__construct($resultFactory);
         $this->config = $config;
