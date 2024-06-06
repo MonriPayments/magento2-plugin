@@ -18,7 +18,7 @@ class WSPay extends \Magento\Payment\Gateway\Config\Config
     /**
      * @var string[]
      */
-    protected $_availableCurrencies = [
+    public const AVAILABLE_CURRENCIES = [
         'USD',
         'EUR',
         'BAM',
@@ -90,6 +90,6 @@ class WSPay extends \Magento\Payment\Gateway\Config\Config
      */
     public function getAvailableCurrencyCodes()
     {
-        return $this->_availableCurrencies;
+        return self::AVAILABLE_CURRENCIES;
     }
 }
