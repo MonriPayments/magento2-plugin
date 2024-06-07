@@ -1,3 +1,7 @@
+### 1.3.1
+- Bugfix Magento 2.4.7 won't redirect due to missing CSP rules
+- currency validator for WSPay 
+
 ### 1.3.0
 - Monri WSPay implementation
 - Monri WSPay transaction APIs for refund, capture from administration
