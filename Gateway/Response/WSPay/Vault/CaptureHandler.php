@@ -11,6 +11,9 @@ use Magento\Sales\Model\Order\Payment\Transaction;
 
 class CaptureHandler implements HandlerInterface
 {
+    /**
+     * @var OrderSender $orderSender
+     */
     private OrderSender $orderSender;
 
     /**
@@ -24,6 +27,7 @@ class CaptureHandler implements HandlerInterface
 
     /**
      * @inheritDoc
+     *
      * @todo: Use this as separate handler for both form and vault (PaymentCaptureHandler vs OrderCaptureHandler)
      */
     public function handle(array $handlingSubject, array $response): void
@@ -38,7 +42,6 @@ class CaptureHandler implements HandlerInterface
             Transaction::RAW_DETAILS,
             $response
         );
-
 
         if (!$payment->getOrder()->getEmailSent()) {
             $this->orderSender->send($payment->getOrder());

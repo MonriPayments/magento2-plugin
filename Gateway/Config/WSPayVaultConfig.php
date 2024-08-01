@@ -10,7 +10,6 @@ class WSPayVaultConfig extends \Magento\Payment\Gateway\Config\Config implements
 
     public const CODE = 'monri_wspay_vault';
 
-
     private const VAULT_SETTINGS = ['shop_id', 'secret_key', 'active', 'instant_purchase'];
 
     /**

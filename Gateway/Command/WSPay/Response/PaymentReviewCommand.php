@@ -48,12 +48,17 @@ class PaymentReviewCommand implements CommandInterface
      * @var SearchCriteriaBuilder
      */
     private SearchCriteriaBuilder $searchCriteriaBuilder;
+
+    /**
+     * @var GetOrderIdByIncrement
+     */
     private GetOrderIdByIncrement $getOrderIdByIncrement;
 
     /**
      * SuccessCommand constructor.
      *
      * @param ConfigInterface $config
+     * @param GetOrderIdByIncrement $getOrderIdByIncrement
      * @param OrderRepositoryInterface $orderRepository
      * @param OrderSender $orderSender
      * @param SearchCriteriaBuilder $searchCriteriaBuilder

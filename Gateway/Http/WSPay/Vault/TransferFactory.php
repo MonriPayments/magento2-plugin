@@ -2,9 +2,11 @@
 
 namespace Monri\Payments\Gateway\Http\WSPay\Vault;
 
+use Magento\Payment\Gateway\Http\Transfer;
 use Magento\Payment\Gateway\Http\TransferBuilder;
 use Magento\Payment\Gateway\Http\TransferFactoryInterface;
 use Favicode\WSPay\Gateway\VaultConfig;
+use Magento\Payment\Gateway\Http\TransferInterface;
 
 class TransferFactory implements TransferFactoryInterface
 {
@@ -31,6 +33,14 @@ class TransferFactory implements TransferFactoryInterface
         $this->transferBuilder = $transferBuilder;
         $this->config = $config;
     }
+
+    /**
+     * Builds vault transfer object
+     *
+     * @param array $request
+     *
+     * @return Transfer|TransferInterface
+     */
     public function create(array $request)
     {
         $storeId = isset($request['__store']) ? (int)$request['__store'] : null;

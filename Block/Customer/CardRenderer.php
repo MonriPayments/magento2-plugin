@@ -20,6 +20,8 @@ class CardRenderer extends AbstractCardRenderer
     }
 
     /**
+     * Get the last 4 digits of masked CC
+     *
      * @return string
      */
     public function getNumberLast4Digits(): string
@@ -28,6 +30,8 @@ class CardRenderer extends AbstractCardRenderer
     }
 
     /**
+     * Get token expiration date
+     *
      * @return string
      */
     public function getExpDate(): string
@@ -36,6 +40,8 @@ class CardRenderer extends AbstractCardRenderer
     }
 
     /**
+     * Get icon url
+     *
      * @return string
      */
     public function getIconUrl(): string
@@ -44,6 +50,8 @@ class CardRenderer extends AbstractCardRenderer
     }
 
     /**
+     * Get icon height
+     *
      * @return int
      */
     public function getIconHeight(): int
@@ -52,6 +60,8 @@ class CardRenderer extends AbstractCardRenderer
     }
 
     /**
+     * Get icon width
+     *
      * @return int
      */
     public function getIconWidth(): int

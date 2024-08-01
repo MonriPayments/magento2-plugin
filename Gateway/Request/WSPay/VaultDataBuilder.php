@@ -47,6 +47,7 @@ class VaultDataBuilder extends AbstractDataBuilder
 
     /**
      * @inheritDoc
+     *
      * @throws CommandException
      */
     public function build(array $buildSubject): array
@@ -61,7 +62,6 @@ class VaultDataBuilder extends AbstractDataBuilder
         if ($this->config->getValue('test_mode')) {
             $orderId = TestModeHelper::generateTestOrderId($orderId);
         }
-
 
         $formattedAmount = number_format($order->getGrandTotalAmount(), 2, '', '');
 

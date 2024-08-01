@@ -14,10 +14,9 @@ use Magento\Sales\Model\Order\Payment;
 use Magento\Vault\Api\Data\PaymentTokenFactoryInterface;
 use Magento\Sales\Api\OrderPaymentRepositoryInterface;
 
-
 class VaultPaymentTokenHandler implements HandlerInterface
 {
-    const PAYMENT_METHOD_CODE = 'monri_wspay';
+    private const PAYMENT_METHOD_CODE = 'monri_wspay';
     /**
      * @var PaymentTokenFactoryInterface
      */
@@ -32,10 +31,14 @@ class VaultPaymentTokenHandler implements HandlerInterface
      * @var Json
      */
     private $json;
-
+    /**
+     * @var PaymentTokenRepositoryInterface
+     */
     private $paymentTokenRepository;
+    /**
+     * @var OrderPaymentRepositoryInterface
+     */
     private $orderPaymentRepository;
-
 
     /**
      * VaultPaymentTokenHandler constructor.
@@ -43,6 +46,8 @@ class VaultPaymentTokenHandler implements HandlerInterface
      * @param PaymentTokenFactoryInterface $paymentTokenFactory
      * @param OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory
      * @param Json $json
+     * @param PaymentTokenRepositoryInterface $paymentTokenRepository
+     * @param OrderPaymentRepositoryInterface $orderPaymentRepository
      */
     public function __construct(
         PaymentTokenFactoryInterface $paymentTokenFactory,
@@ -89,14 +94,14 @@ class VaultPaymentTokenHandler implements HandlerInterface
 
         // @todo: fix
         $paymentToken->setCustomerId($payment->getOrder()->getCustomerId());
-        $paymentToken->setPublicHash(hash('sha256',$payment->getOrder()->getCustomerId() . $paymentToken->getTokenDetails()));
+        $paymentToken->setPublicHash(
+            hash('sha256', $payment->getOrder()->getCustomerId() . $paymentToken->getTokenDetails())
+        );
         $paymentToken->setPaymentMethodCode(VaultPaymentTokenHandler::PAYMENT_METHOD_CODE);
         $extensionAttributes = $this->getExtensionAttributes($payment);
         $extensionAttributes->setVaultPaymentToken($paymentToken);
         $this->orderPaymentRepository->save($payment);
         $this->paymentTokenRepository->save($paymentToken);
-
-
     }
 
     /**

@@ -9,17 +9,14 @@ use Magento\Framework\UrlInterface;
 use Magento\Store\Model\ScopeInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
-/**
- * Class ConfigProvider
- */
 class ConfigProvider implements ConfigProviderInterface
 {
     /**
      * Payment identifier
      */
-    const CODE = 'monri_wspay';
+    private const CODE = 'monri_wspay';
 
-    const DESCRIPTION_PATH = 'payment/monri_wspay/description';
+    private const DESCRIPTION_PATH = 'payment/monri_wspay/description';
 
     /**
      * @var UrlInterface
@@ -72,6 +69,8 @@ class ConfigProvider implements ConfigProviderInterface
     }
 
     /**
+     * Retrieve description
+     *
      * @return mixed
      */
     public function getDescription(): mixed
