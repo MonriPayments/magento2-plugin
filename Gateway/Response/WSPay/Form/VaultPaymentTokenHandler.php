@@ -92,16 +92,8 @@ class VaultPaymentTokenHandler implements HandlerInterface
             'expirationDate' => $response['TokenExp']
         ]));
 
-        // @todo: fix
-        $paymentToken->setCustomerId($payment->getOrder()->getCustomerId());
-        $paymentToken->setPublicHash(
-            hash('sha256', $payment->getOrder()->getCustomerId() . $paymentToken->getTokenDetails())
-        );
-        $paymentToken->setPaymentMethodCode(VaultPaymentTokenHandler::PAYMENT_METHOD_CODE);
         $extensionAttributes = $this->getExtensionAttributes($payment);
         $extensionAttributes->setVaultPaymentToken($paymentToken);
-        $this->orderPaymentRepository->save($payment);
-        $this->paymentTokenRepository->save($paymentToken);
     }
 
     /**

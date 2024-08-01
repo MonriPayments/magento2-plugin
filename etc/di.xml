@@ -250,8 +250,8 @@
     <virtualType name="WSPayFormCaptureWithVaultHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
         <arguments>
             <argument name="handlers" xsi:type="array">
-                <item name="capture" xsi:type="string">Monri\Payments\Gateway\Response\WSPay\Form\CaptureHandler</item>
                 <item name="vault" xsi:type="string">Monri\Payments\Gateway\Response\WSPay\Form\VaultPaymentTokenHandler</item>
+                <item name="capture" xsi:type="string">Monri\Payments\Gateway\Response\WSPay\Form\CaptureHandler</item>
             </argument>
         </arguments>
     </virtualType>
