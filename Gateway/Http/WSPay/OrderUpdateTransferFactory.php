@@ -62,7 +62,7 @@ class OrderUpdateTransferFactory implements TransferFactoryInterface
             unset($request['__store']);
         }
 
-        $uri = $this->config->getGatewayTransactionManagementURL($this->resource, $storeId);
+        $uri = $this->config->getApiEndpoint($this->resource, $storeId);
 
         return $this->transferBuilder
                 ->setUri($uri)

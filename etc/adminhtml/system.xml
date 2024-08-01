@@ -185,6 +185,29 @@
                     <source_model>Monri\Payments\Block\Adminhtml\Config\Source\PaymentAction</source_model>
                     <comment><![CDATA[Needs to be set to action arranged with WSPay for gateway to function properly.]]></comment>
                 </field>
+
+                <field id="vault_active" translate="label" type="select" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable Tokenization for Card Payments</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>payment/monri_wspay_vault/active</config_path>
+                </field>
+
+                <field id="vault_shop_id" translate="label" type="text" sortOrder="54" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Tokenization Shop ID</label>
+                    <config_path>payment/monri_wspay_vault/shop_id</config_path>
+                    <depends>
+                        <field id="vault_active">1</field>
+                    </depends>
+                </field>
+                <field id="vault_secret_key" translate="label" type="obscure" sortOrder="56" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Tokenization Secret key</label>
+                    <config_path>payment/monri_wspay_vault/secret_key</config_path>
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <depends>
+                        <field id="vault_active">1</field>
+                    </depends>
+                </field>
+
                 <field id="test_mode" translate="label" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Test mode</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
