@@ -2,7 +2,7 @@
 
 namespace Monri\Payments\Gateway\Request\WSPay;
 
-use Favicode\WSPay\Gateway\VaultConfig;
+use Monri\Payments\Gateway\Config\WSPayVaultConfig;
 use Monri\Payments\Gateway\Config\WSPay;
 use Magento\Framework\UrlInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
@@ -20,7 +20,7 @@ class OrderApiBuilder extends AbstractDataBuilder
     private $urlBuilder;
 
     /**
-     * @var VaultConfig
+     * @var WSPayVaultConfig
      */
     private $vaultConfig;
 
@@ -29,12 +29,12 @@ class OrderApiBuilder extends AbstractDataBuilder
      *
      * @param WSPay $config
      * @param UrlInterface $urlBuilder
-     * @param VaultConfig $vaultConfig
+     * @param WSPayVaultConfig $vaultConfig
      */
     public function __construct(
         WSPay $config,
         UrlInterface $urlBuilder,
-        VaultConfig $vaultConfig
+        WSPayVaultConfig $vaultConfig
     ) {
         parent::__construct($config);
         $this->urlBuilder = $urlBuilder;
