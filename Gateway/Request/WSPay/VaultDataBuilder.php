@@ -75,6 +75,7 @@ class VaultDataBuilder extends AbstractDataBuilder
         //@todo: replace with serializer
         $tokenDetails = $this->jsonSerializer->unserialize($paymentToken->getTokenDetails());
         $shopId = $this->config->getValue('shop_id', $order->getStoreId());
+        $secretKey = $this->config->getValue('secret_key', $order->getStoreId());
 
         return [
             self::FIELD_VERSION => self::VERSION,
@@ -99,7 +100,7 @@ class VaultDataBuilder extends AbstractDataBuilder
             self::FIELD_CUSTOMER_EMAIL => $this->prepareString($billingAddress->getEmail()),
 
             self::FIELD_LANGUAGE => $this->config->getValue('language'),
-            self::FIELD_SIGNATURE => $this->generateSignature($orderId, $formattedAmount),
+            self::FIELD_SIGNATURE => $this->generateSignature($orderId, $formattedAmount, $shopId, $secretKey),
 
         ];
     }

@@ -53,6 +53,7 @@ class FormDataBuilder extends AbstractDataBuilder
         }
 
         $shopId = $this->config->getValue('shop_id');
+        $secretKey = $this->config->getValue('secret_key');
         $formattedAmount = number_format($order->getGrandTotalAmount(), 2, ',', '');
 
         $data = [
@@ -63,7 +64,7 @@ class FormDataBuilder extends AbstractDataBuilder
             self::FIELD_LANGUAGE => $this->config->getValue('language'),
             self::FIELD_AMOUNT => $formattedAmount,
 
-            self::FIELD_SIGNATURE => $this->generateSignature($orderId, $formattedAmount),
+            self::FIELD_SIGNATURE => $this->generateSignature($orderId, $formattedAmount, $shopId, $secretKey),
 
             self::FIELD_RETURN_URL => $this->urlBuilder->getUrl('monripayments/wspay/success'),
             self::FIELD_CANCEL_URL => $this->urlBuilder->getUrl('monripayments/wspay/cancel'),

@@ -42,6 +42,7 @@ class CaptureHandler implements HandlerInterface
             Transaction::RAW_DETAILS,
             $response
         );
+        $payment->setTransactionAdditionalInfo('paidUsingToken', true);
 
         if (!$payment->getOrder()->getEmailSent()) {
             $this->orderSender->send($payment->getOrder());

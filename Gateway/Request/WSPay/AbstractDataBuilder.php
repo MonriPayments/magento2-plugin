@@ -2,7 +2,6 @@
 
 namespace Monri\Payments\Gateway\Request\WSPay;
 
-use Monri\Payments\Gateway\Config\WSPay as WSPayConfig;
 use Magento\Payment\Gateway\Request\BuilderInterface;
 use Monri\Payments\Gateway\Config\WSPayConfigInterface;
 
@@ -75,12 +74,13 @@ abstract class AbstractDataBuilder implements BuilderInterface
      *
      * @param string $shoppingCartId
      * @param string $formattedAmount
+     * @param string $shopId
+     * @param string $secretKey
+     *
      * @return string
      */
-    protected function generateSignature(string $shoppingCartId, string $formattedAmount): string
+    protected function generateSignature($shoppingCartId, $formattedAmount, $shopId, $secretKey): string
     {
-        $shopId = $this->config->getValue('shop_id');
-        $secretKey = $this->config->getValue('secret_key');
 
         $cleanTotalAmount = str_replace(',', '', $formattedAmount);
         $signature =
@@ -91,6 +91,7 @@ abstract class AbstractDataBuilder implements BuilderInterface
         $signature = hash('sha512', $signature);
         return $signature;
     }
+
     /**
      * Generate refund signature algo
      *
@@ -98,13 +99,19 @@ abstract class AbstractDataBuilder implements BuilderInterface
      * @param string $approvalCode
      * @param string $WsPayOrderId
      * @param string $formattedAmount
-     * @param int $storeId
+     * @param string $shopId
+     * @param string $secretKey
+     *
      * @return string
      */
-    protected function generateAPISignature($STAN, $approvalCode, $WsPayOrderId, $formattedAmount, $storeId): string
-    {
-        $shopId = $this->config->getValue('shop_id', $storeId);
-        $secretKey = $this->config->getValue('secret_key', $storeId);
+    protected function generateAPISignature(
+        $STAN,
+        $approvalCode,
+        $WsPayOrderId,
+        $formattedAmount,
+        $shopId,
+        $secretKey
+    ): string {
         $cleanTotalAmount = str_replace(',', '', $formattedAmount);
         $signature =
             $shopId . $WsPayOrderId .
