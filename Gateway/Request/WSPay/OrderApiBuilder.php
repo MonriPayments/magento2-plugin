@@ -53,14 +53,10 @@ class OrderApiBuilder extends AbstractDataBuilder
         $order = $paymentDO->getOrder();
         $payment = $paymentDO->getPayment();
         $storeId = $order->getStoreId();
-        if ($payment->getAdditionalInformation('paidUsingToken') === true) {
-            $shopId = $this->vaultConfig->getValue('shop_id', $storeId);
-            $secretKey = $this->vaultConfig->getValue('secret_key', $storeId);
-        } else {
-            $shopId = $this->config->getValue('shop_id', $storeId);
-            $secretKey = $this->config->getValue('secret_key', $storeId);
-        }
-
+        $shopId = $payment->getAdditionalInformation('paidUsingToken') ?
+            $this->vaultConfig->getValue('shop_id', $storeId) : $this->config->getValue('shop_id', $storeId);
+        $secretKey = $payment->getAdditionalInformation('paidUsingToken') ?
+            $this->vaultConfig->getValue('secret_key', $storeId) : $this->config->getValue('secret_key', $storeId);
         $formattedAmount = number_format($order->getGrandTotalAmount(), 2, ',', '');
         $STAN = $payment->getAdditionalInformation('STAN');
         $approvalCode = $payment->getAdditionalInformation('ApprovalCode');
