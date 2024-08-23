@@ -18,7 +18,7 @@ use Magento\Sales\Model\Order\Payment\TransactionFactory;
 use Magento\Sales\Model\ResourceModel\Order\Payment\Transaction as TransactionResource;
 use Magento\Sales\Model\Order\Payment;
 
-class UnsuccessfulHandler
+class UnsuccessfulHandler extends AbstractTransactionHandler
 {
     /**
      * @var OrderManagementInterface
@@ -58,16 +58,12 @@ class UnsuccessfulHandler
      */
     protected function handleTransaction(OrderPaymentInterface $payment, OrderInterface $order, array $response)
     {
-        if (!in_array($response['transaction_type'], ['authorize', 'purchase'])) {
-            return;
-        }
-
         try {
-            if (isset($response['response_code'])) {
+            if (isset($response['ActionSuccess'])) {
                 /** @var Payment $payment */
                 $payment->setAdditionalInformation(
                     'gateway_response_code',
-                    $response['response_code']
+                    $response['ActionSuccess']
                 );
             }
         } catch (LocalizedException $e) {

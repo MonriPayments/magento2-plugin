@@ -90,19 +90,6 @@ abstract class AbstractTransactionHandler implements HandlerInterface
         return (bool) $transaction->getId();
     }
 
-    /**
-     * Resolve transaction id from response
-     *
-     * @param array $response
-     * @return string
-     */
-    protected function getTransactionId(array $response)
-    {
-        $orderNumber = $response['order_number'];
-        $approvalCode = $response['approval_code'];
-
-        return "{$orderNumber}-{$approvalCode}";
-    }
 
     /**
      * Processes a transaction.

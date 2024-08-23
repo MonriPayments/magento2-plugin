@@ -36,6 +36,10 @@ class CaptureHandler implements HandlerInterface
         /** @var Payment $orderPayment */
         $payment = $paymentDO->getPayment();
 
+        $payment->setAdditionalInformation('STAN', $response['STAN']);
+        $payment->setAdditionalInformation('ApprovalCode', $response['ApprovalCode']);
+        $payment->setAdditionalInformation('originalTransactionId', $response['WsPayOrderId']);
+        $payment->setAdditionalInformation('paidUsingToken', true);
         $payment->setTransactionId($response['WsPayOrderId']);
         /** @noinspection PhpParamsInspection */
         $payment->setTransactionAdditionalInfo(

@@ -235,6 +235,13 @@
         </arguments>
     </type>
 
+    <type name="Monri\Payments\Gateway\Response\WSPay\WSPayOrderUpdateHandler">
+        <arguments>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+            <argument name="unsuccessfulTransactionHandler" xsi:type="object">Monri\Payments\Gateway\Response\Transactions\UnsuccessfulHandler</argument>
+        </arguments>
+    </type>
+
     <type name="Monri\Payments\Gateway\Response\Transactions\UnsuccessfulHandler">
         <arguments>
             <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
@@ -600,10 +607,10 @@
     <!-- Base Transaction Management Command -->
     <virtualType name="WSPayBaseTransactionCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\FormDataBuilder</argument>
+            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderApiBuilder</argument>
             <argument name="transferFactory" xsi:type="object">Monri\Payments\Gateway\Http\WSPay\OrderUpdateTransferFactory</argument>
             <argument name="client" xsi:type="object">Monri\Payments\Gateway\Http\WSPay\JsonClient</argument>
-            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\OrderUpdateHandler</argument>
+            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\WSPay\WSPayOrderUpdateHandler</argument>
             <argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\WSPay\TransferResponseValidator</argument>
             <argument name="logger" xsi:type="object">WSPayVirtualLogger</argument>
             <argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsWithRawMapper</argument>
@@ -685,7 +692,6 @@
 
     <virtualType name="WSPayRefundCommand" type="WSPayBaseTransactionCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderApiBuilder</argument>
             <argument name="transferFactory" xsi:type="object">WSPayRefundFactory</argument>
         </arguments>
     </virtualType>
@@ -700,7 +706,6 @@
 
     <virtualType name="WSPayCaptureCommand" type="WSPayBaseTransactionCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderApiBuilder</argument>
             <argument name="transferFactory" xsi:type="object">WSPayCaptureFactory</argument>
         </arguments>
     </virtualType>
@@ -715,7 +720,6 @@
 
     <virtualType name="WSPayVoidCommand" type="WSPayBaseTransactionCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderApiBuilder</argument>
             <argument name="transferFactory" xsi:type="object">WSPayVoidFactory</argument>
         </arguments>
     </virtualType>
