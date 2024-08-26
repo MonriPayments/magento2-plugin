@@ -52,8 +52,9 @@ class FormDataBuilder extends AbstractDataBuilder
             $orderId = TestModeHelper::generateTestOrderId($orderId);
         }
 
-        $shopId = $this->config->getValue('shop_id');
-        $secretKey = $this->config->getValue('secret_key');
+        $storeId = $order->getStoreId();
+        $shopId = $this->config->getValue('shop_id', $storeId);
+        $secretKey = $this->config->getValue('secret_key', $storeId);
         $formattedAmount = number_format($order->getGrandTotalAmount(), 2, ',', '');
 
         $data = [
@@ -86,7 +87,7 @@ class FormDataBuilder extends AbstractDataBuilder
         }
 
         return [
-            'action' => $this->config->getFormEndpoint((int)$order->getStoreId()),
+            'action' => $this->config->getFormEndpoint($storeId),
             'fields' => $data
         ];
     }
