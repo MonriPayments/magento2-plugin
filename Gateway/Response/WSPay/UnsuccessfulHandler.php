@@ -59,11 +59,11 @@ class UnsuccessfulHandler extends AbstractTransactionHandler
     protected function handleTransaction(OrderPaymentInterface $payment, OrderInterface $order, array $response)
     {
         try {
-            if (isset($response['ActionSuccess'])) {
+            if (isset($response['ErrorCodes'])) {
                 /** @var Payment $payment */
                 $payment->setAdditionalInformation(
                     'gateway_response_code',
-                    $response['ActionSuccess']
+                    $response['ErrorCodes']
                 );
             }
         } catch (LocalizedException $e) {
