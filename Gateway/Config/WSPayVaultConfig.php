@@ -57,8 +57,8 @@ class WSPayVaultConfig extends \Magento\Payment\Gateway\Config\Config implements
     /**
      * @inheritDoc
      */
-    public function getApiEndpoint(string $api, ?int $storeId = null): string
+    public function getApiEndpoint(string $resource, ?int $storeId = null): string
     {
-        return $this->vaultProviderConfig->getApiEndpoint($api, $storeId);
+        return $this->vaultProviderConfig->getApiEndpoint($resource, $storeId);
     }
 }

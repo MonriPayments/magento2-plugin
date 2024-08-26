@@ -21,9 +21,9 @@ interface WSPayConfigInterface extends \Magento\Payment\Gateway\ConfigInterface
     /**
      * Resolve API endpoint
      *
-     * @param string $api
+     * @param string $resource
      * @param int|null $storeId
      * @return string
      */
-    public function getApiEndpoint(string $api, ?int $storeId): string;
+    public function getApiEndpoint(string $resource, ?int $storeId): string;
 }

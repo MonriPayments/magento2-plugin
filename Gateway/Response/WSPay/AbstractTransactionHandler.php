@@ -67,31 +67,6 @@ abstract class AbstractTransactionHandler implements HandlerInterface
     }
 
     /**
-     * Check if transaction already exists
-     *
-     * @param Payment $payment
-     * @return bool
-     */
-    protected function checkIfTransactionProcessed(Payment $payment)
-    {
-        $transactionTxnId = $payment->getTransactionId();
-        $paymentId = $payment->getId();
-        $orderId = $payment->getOrder()->getId();
-
-        /** @var Transaction $transaction */
-        $transaction = $this->transactionFactory->create();
-        $this->transactionResource->loadObjectByTxnId(
-            $transaction,
-            $orderId,
-            $paymentId,
-            $transactionTxnId
-        );
-
-        return (bool) $transaction->getId();
-    }
-
-
-    /**
      * Processes a transaction.
      *
      * @param OrderPaymentInterface $payment

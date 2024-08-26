@@ -37,15 +37,15 @@ class WSPay extends \Magento\Payment\Gateway\Config\Config implements WSPayConfi
     /**
      * Returns the API endpoint for a given resource object and action.
      *
-     * @param string $api
+     * @param string $resource
      * @param int|null $storeId
      *
      * @return string
      */
-    public function getApiEndpoint(string $api, ?int $storeId): string
+    public function getApiEndpoint(string $resource, ?int $storeId): string
     {
         $endpoint = $this->getIsTestMode($storeId) ? self::TEST_API_ENDPOINT : self::API_ENDPOINT;
-        return sprintf($endpoint, $api) ;
+        return sprintf($endpoint, $resource) ;
     }
 
     /**

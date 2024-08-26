@@ -91,7 +91,6 @@ abstract class AbstractDataBuilder implements BuilderInterface
         $signature = hash('sha512', $signature);
         return $signature;
     }
-
     /**
      * Generate refund signature algo
      *
