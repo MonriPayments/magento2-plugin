@@ -11,7 +11,7 @@ Our goal is to be compatible with the following Magento 2 versions:
 ## How to contribute
 
 ### Community
-Feel free to open an Issue or Pull request on Github and it will be reviewied.
+Feel free to open an Issue or Pull request on Github and it will be reviewed.
 
 ### Updating the version
 When updating the project, you must make changes to the following files:
