@@ -1,3 +1,6 @@
+### 1.4.0
+- Monri WSPay tokenization
+
 ### 1.3.1
 - Bugfix Magento 2.4.7 won't redirect due to missing CSP rules
 - currency validator for WSPay 
