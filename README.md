@@ -1,7 +1,7 @@
 # Monri Payments
-Module for Magento 2
+Module for Magento 2, now Adobe Commerce
 
-https://marketplace.magento.com/monripayments-magento2.html
+https://commercemarketplace.adobe.com/monripayments-magento2.html
 
 ## Compatibility
 Our goal is to be compatible with the following Magento 2 versions:
@@ -10,7 +10,10 @@ Our goal is to be compatible with the following Magento 2 versions:
 
 ## How to contribute
 
-### Updating the project
+### Community
+Feel free to open an Issue or Pull request on Github and it will be reviewed.
+
+### Updating the version
 When updating the project, you must make changes to the following files:
 * composer.json
 * etc/adminhtml/system.xml
