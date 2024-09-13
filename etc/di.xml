@@ -677,7 +677,7 @@
     <virtualType name="WSPayValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
         <arguments>
             <argument name="validators" xsi:type="array">
-                <item name="currency" xsi:type="string">Monri\Payments\Gateway\Validator\CurrencyValidator</item>
+                <item name="currency" xsi:type="string">Monri\Payments\Gateway\Validator\WSPay\CurrencyValidator</item>
                 <item name="country" xsi:type="string">WSPayCountryValidator</item>
             </argument>
         </arguments>

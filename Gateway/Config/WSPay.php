@@ -12,6 +12,30 @@ class WSPay extends \Magento\Payment\Gateway\Config\Config implements WSPayConfi
     public const TEST_MODE = 'test_mode';
 
     /**
+     * @var string[]
+     */
+    public const AVAILABLE_CURRENCIES = [
+        'USD',
+        'EUR',
+        'BAM',
+        'CAD',
+        'RSD',
+        'GBP',
+        'AUD',
+        'HUF',
+        'CZK',
+        'ZAR',
+        'BGN',
+        'RON',
+        'CHF',
+        'SEK',
+        'PLN',
+        'NOK',
+        'DKK',
+        'MKD'
+    ];
+
+    /**
      * Config constructor.
      *
      * @param ScopeConfigInterface $scopeConfig
@@ -58,5 +82,15 @@ class WSPay extends \Magento\Payment\Gateway\Config\Config implements WSPayConfi
     public function getIsTestMode($storeId = null): bool
     {
         return (bool) $this->getValue(self::TEST_MODE, $storeId);
+    }
+
+    /**
+     * Returns the available currency codes
+     *
+     * @return array
+     */
+    public function getAvailableCurrencyCodes()
+    {
+        return self::AVAILABLE_CURRENCIES;
     }
 }
