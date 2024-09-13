@@ -13,5 +13,16 @@
                 <value id="monri-components-script-prod" type="host">https://ipg.monri.com/</value>
             </values>
         </policy>
+        <policy id="style-src">
+            <values>
+                <value id="monri-components-script-test" type="host">https://ipgtest.monri.com/</value>
+                <value id="monri-components-script-prod" type="host">https://ipg.monri.com/</value>
+            </values>
+        </policy>
+        <policy id="img-src">
+            <values>
+                <value id="wspay_logo" type="host">https://www.wspay.info/layout/logo.png</value>
+            </values>
+        </policy>
     </policies>
 </csp_whitelist>

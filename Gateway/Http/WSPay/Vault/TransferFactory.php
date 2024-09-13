@@ -5,7 +5,7 @@ namespace Monri\Payments\Gateway\Http\WSPay\Vault;
 use Magento\Payment\Gateway\Http\Transfer;
 use Magento\Payment\Gateway\Http\TransferBuilder;
 use Magento\Payment\Gateway\Http\TransferFactoryInterface;
-use Favicode\WSPay\Gateway\VaultConfig;
+use Monri\Payments\Gateway\Config\WSPayVaultConfig as VaultConfig;
 use Magento\Payment\Gateway\Http\TransferInterface;
 
 class TransferFactory implements TransferFactoryInterface
