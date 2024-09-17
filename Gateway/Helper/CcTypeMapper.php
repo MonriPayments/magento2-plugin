@@ -29,11 +29,11 @@ class CcTypeMapper
     /**
      * Coverts WSPay cc type from response to Magento cc type id
      *
-     * @param $type
+     * @param string $type
      * @param string|null $partner
      * @return string
      */
-    public static function getCcTypeId($type, $partner = null)
+    public function getCcTypeId($type, $partner = null)
     {
         $type = strtoupper($type);
         return self::CC_TYPE_MAP[$type] ?? self::CC_TYPE_OTHER;
@@ -45,7 +45,7 @@ class CcTypeMapper
      * @param string $typeId
      * @return string
      */
-    public static function getCcTypeName(string $typeId): string
+    public function getCcTypeName(string $typeId): string
     {
         return self::CC_TYPE_NAME_MAP[strtoupper($typeId)] ?? $typeId;
     }

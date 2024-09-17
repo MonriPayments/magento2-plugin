@@ -39,6 +39,10 @@ class VaultPaymentTokenHandler implements HandlerInterface
      * @var OrderPaymentRepositoryInterface
      */
     private $orderPaymentRepository;
+    /**
+     * @var CcTypeMapper
+     */
+    private $ccTypeMapper;
 
     /**
      * VaultPaymentTokenHandler constructor.
@@ -48,19 +52,22 @@ class VaultPaymentTokenHandler implements HandlerInterface
      * @param Json $json
      * @param PaymentTokenRepositoryInterface $paymentTokenRepository
      * @param OrderPaymentRepositoryInterface $orderPaymentRepository
+     * @param CcTypeMapper $ccTypeMapper
      */
     public function __construct(
         PaymentTokenFactoryInterface $paymentTokenFactory,
         OrderPaymentExtensionInterfaceFactory $paymentExtensionFactory,
         Json $json,
         PaymentTokenRepositoryInterface $paymentTokenRepository,
-        OrderPaymentRepositoryInterface $orderPaymentRepository
+        OrderPaymentRepositoryInterface $orderPaymentRepository,
+        CcTypeMapper $ccTypeMapper
     ) {
         $this->paymentTokenFactory = $paymentTokenFactory;
         $this->paymentExtensionFactory = $paymentExtensionFactory;
         $this->json = $json;
         $this->paymentTokenRepository = $paymentTokenRepository;
         $this->orderPaymentRepository = $orderPaymentRepository;
+        $this->ccTypeMapper = $ccTypeMapper;
     }
 
     /**
@@ -87,7 +94,7 @@ class VaultPaymentTokenHandler implements HandlerInterface
         $ccType = $response['PaymentType'] ?? ($response['CreditCardName'] ?? '');
 
         $paymentToken->setTokenDetails($this->json->serialize([
-            'type' => CcTypeMapper::getCcTypeId($ccType),
+            'type' => $this->ccTypeMapper->getCcTypeId($ccType),
             'maskedCC' => $response['TokenNumber'],
             'expirationDate' => $response['TokenExp']
         ]));
