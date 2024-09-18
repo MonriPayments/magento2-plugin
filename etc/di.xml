@@ -174,7 +174,7 @@
     <virtualType name="WSPayFormSuccessCommand" type="Monri\Payments\Gateway\Command\WSPay\Form\ResponseCommand">
         <arguments>
             <argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\WSPay\Form\ResponseValidator</argument>
-            <argument name="handler" xsi:type="object">WSPayFormCaptureHandler</argument>
+            <argument name="handler" xsi:type="object">WSPayFormCaptureWithVaultHandler</argument>
             <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\WSPay</argument>
             <argument name="logger" xsi:type="object">WSPayLogger</argument>
             <argument name="commandName" xsi:type="string">form_response_success</argument>
@@ -194,7 +194,7 @@
     <virtualType name="WSPayCallbackCommand" type="Monri\Payments\Gateway\Command\WSPay\CallbackCommand">
         <arguments>
             <argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\WSPay\CallbackValidator</argument>
-            <argument name="handler" xsi:type="object">WSPayFormCaptureHandler</argument>
+            <argument name="handler" xsi:type="object">WSPayFormCaptureWithVaultHandler</argument>
             <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\WSPay</argument>
             <argument name="logger" xsi:type="object">WSPayLogger</argument>
         </arguments>
@@ -235,6 +235,13 @@
         </arguments>
     </type>
 
+    <type name="Monri\Payments\Gateway\Response\WSPay\WSPayOrderUpdateHandler">
+        <arguments>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+            <argument name="unsuccessfulTransactionHandler" xsi:type="object">Monri\Payments\Gateway\Response\Transactions\UnsuccessfulHandler</argument>
+        </arguments>
+    </type>
+
     <type name="Monri\Payments\Gateway\Response\Transactions\UnsuccessfulHandler">
         <arguments>
             <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
@@ -247,9 +254,10 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="WSPayFormCaptureHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+    <virtualType name="WSPayFormCaptureWithVaultHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
         <arguments>
             <argument name="handlers" xsi:type="array">
+                <item name="vault" xsi:type="string">Monri\Payments\Gateway\Response\WSPay\Form\VaultPaymentTokenHandler</item>
                 <item name="capture" xsi:type="string">Monri\Payments\Gateway\Response\WSPay\Form\CaptureHandler</item>
             </argument>
         </arguments>
@@ -599,10 +607,10 @@
     <!-- Base Transaction Management Command -->
     <virtualType name="WSPayBaseTransactionCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\FormDataBuilder</argument>
+            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderApiBuilder</argument>
             <argument name="transferFactory" xsi:type="object">Monri\Payments\Gateway\Http\WSPay\OrderUpdateTransferFactory</argument>
             <argument name="client" xsi:type="object">Monri\Payments\Gateway\Http\WSPay\JsonClient</argument>
-            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\OrderUpdateHandler</argument>
+            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\WSPay\WSPayOrderUpdateHandler</argument>
             <argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\WSPay\TransferResponseValidator</argument>
             <argument name="logger" xsi:type="object">WSPayVirtualLogger</argument>
             <argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsWithRawMapper</argument>
@@ -617,6 +625,31 @@
         </arguments>
     </virtualType>
 
+    <!-- WSPay Vault configuration -->
+
+    <virtualType name="WSPayVaultPaymentValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">WSPayVaultPaymentValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WSPayVaultPaymentValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">Monri\Payments\Gateway\Config\WSPayVaultConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="WSPayVaultFacade" type="Monri\Payments\Model\Method\WSPay\Vault">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\WSPayVaultConfig</argument>
+            <argument name="valueHandlerPool" xsi:type="object">WSPayVaultPaymentValueHandlerPool</argument>
+            <argument name="vaultProvider" xsi:type="object">WSPayFacade</argument>
+            <argument name="code" xsi:type="const">Monri\Payments\Gateway\Config\WSPayVaultConfig::CODE</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="WSPayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
             <argument name="commands" xsi:type="array">
@@ -628,6 +661,8 @@
                 <item name="refund" xsi:type="string">WSPayRefundCommand</item>
                 <item name="capture" xsi:type="string">WSPayCaptureCommand</item>
                 <item name="void" xsi:type="string">WSPayVoidCommand</item>
+                <item name="vault_authorize" xsi:type="string">WSPayVaultAuthorizeCommand</item>
+                <item name="vault_sale" xsi:type="string">WSPayVaultAuthorizeCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -657,7 +692,6 @@
 
     <virtualType name="WSPayRefundCommand" type="WSPayBaseTransactionCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderApiBuilder</argument>
             <argument name="transferFactory" xsi:type="object">WSPayRefundFactory</argument>
         </arguments>
     </virtualType>
@@ -672,7 +706,6 @@
 
     <virtualType name="WSPayCaptureCommand" type="WSPayBaseTransactionCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderApiBuilder</argument>
             <argument name="transferFactory" xsi:type="object">WSPayCaptureFactory</argument>
         </arguments>
     </virtualType>
@@ -687,9 +720,40 @@
 
     <virtualType name="WSPayVoidCommand" type="WSPayBaseTransactionCommand">
         <arguments>
-            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\OrderApiBuilder</argument>
             <argument name="transferFactory" xsi:type="object">WSPayVoidFactory</argument>
         </arguments>
     </virtualType>
 
+    <virtualType name="WSPayVaultAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\WSPay\VaultDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">Monri\Payments\Gateway\Http\WSPay\Vault\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Monri\Payments\Gateway\Http\WSPay\JsonClient</argument>
+            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\WSPay\Vault\CaptureHandler</argument>
+            <argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\WSPay\Vault\ResponseValidator</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Command managers section for Vault -->
+    <virtualType name="WSPayCommandManager" type="Magento\Payment\Gateway\Command\CommandManager">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">WSPayCommandPool</argument>
+        </arguments>
+    </virtualType>
+    <type name="Magento\Payment\Gateway\Command\CommandManagerPool">
+        <arguments>
+            <argument name="executors" xsi:type="array">
+                <item name="monri_wspay" xsi:type="string">WSPayCommandManager</item>
+            </argument>
+        </arguments>
+    </type>
+    <!-- END command managers section for Vault -->
+
+    <type name="Magento\Vault\Model\Ui\TokensConfigProvider">
+        <arguments>
+            <argument name="tokenUiComponentProviders" xsi:type="array">
+                <item name="monri_wspay" xsi:type="object">Monri\Payments\Model\Ui\WSPay\TokenUiComponentProvider</item>
+            </argument>
+        </arguments>
+    </type>
 </config>

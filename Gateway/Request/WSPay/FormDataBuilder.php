@@ -6,6 +6,7 @@ use Monri\Payments\Gateway\Config\WSPay;
 use Monri\Payments\Gateway\Helper\TestModeHelper;
 use Magento\Framework\UrlInterface;
 use Magento\Payment\Gateway\Helper\SubjectReader;
+use Magento\Vault\Model\Ui\VaultConfigProvider;
 
 class FormDataBuilder extends AbstractDataBuilder
 {
@@ -41,6 +42,7 @@ class FormDataBuilder extends AbstractDataBuilder
     public function build(array $buildSubject): array
     {
         $paymentDO = SubjectReader::readPayment($buildSubject);
+        $payment = $paymentDO->getPayment();
         $order = $paymentDO->getOrder();
 
         $billingAddress = $order->getBillingAddress();
@@ -50,7 +52,9 @@ class FormDataBuilder extends AbstractDataBuilder
             $orderId = TestModeHelper::generateTestOrderId($orderId);
         }
 
-        $shopId = $this->config->getValue('shop_id');
+        $storeId = $order->getStoreId();
+        $shopId = $this->config->getValue('shop_id', $storeId);
+        $secretKey = $this->config->getValue('secret_key', $storeId);
         $formattedAmount = number_format($order->getGrandTotalAmount(), 2, ',', '');
 
         $data = [
@@ -61,7 +65,7 @@ class FormDataBuilder extends AbstractDataBuilder
             self::FIELD_LANGUAGE => $this->config->getValue('language'),
             self::FIELD_AMOUNT => $formattedAmount,
 
-            self::FIELD_SIGNATURE => $this->generateSignature($orderId, $formattedAmount),
+            self::FIELD_SIGNATURE => $this->generateSignature($orderId, $formattedAmount, $shopId, $secretKey),
 
             self::FIELD_RETURN_URL => $this->urlBuilder->getUrl('monripayments/wspay/success'),
             self::FIELD_CANCEL_URL => $this->urlBuilder->getUrl('monripayments/wspay/cancel'),
@@ -77,8 +81,13 @@ class FormDataBuilder extends AbstractDataBuilder
             self::FIELD_CUSTOMER_EMAIL => $this->prepareString($billingAddress->getEmail())
         ];
 
+        // save cc
+        if ($payment->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
+            $data[self::FIELD_IS_TOKEN_REQUEST] = '1';
+        }
+
         return [
-            'action' => $this->config->getFormEndpoint((int)$order->getStoreId()),
+            'action' => $this->config->getFormEndpoint($storeId),
             'fields' => $data
         ];
     }

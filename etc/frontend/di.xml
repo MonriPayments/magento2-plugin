@@ -16,6 +16,7 @@
         <arguments>
             <argument name="configProviders" xsi:type="array">
                 <item name="monri_components_checkout_config_provider" xsi:type="object">Monri\Payments\Model\CheckoutConfigProvider</item>
+                <item name="monri_wspay_config_provider" xsi:type="object">Monri\Payments\Model\Ui\WSPay\ConfigProvider</item>
             </argument>
         </arguments>
     </type>
@@ -23,6 +24,14 @@
     <type name="Monri\Payments\Controller\WSPay\Callback">
         <arguments>
             <argument name="paymentLogger" xsi:type="object">WSPayLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Magento\Vault\Model\Ui\TokensConfigProvider">
+        <arguments>
+            <argument name="tokenUiComponentProviders" xsi:type="array">
+                <item name="monri_wspay" xsi:type="object">Monri\Payments\Model\Ui\WSPay\TokenUiComponentProvider</item>
+            </argument>
         </arguments>
     </type>
 </config>

@@ -4,12 +4,8 @@ namespace Monri\Payments\Gateway\Config;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
 
-class WSPay extends \Magento\Payment\Gateway\Config\Config
+class WSPay extends \Magento\Payment\Gateway\Config\Config implements WSPayConfigInterface
 {
-    public const FORM_ENDPOINT = 'https://form.wspay.biz/authorization.aspx';
-    public const TEST_FORM_ENDPOINT = 'https://formtest.wspay.biz/authorization.aspx';
-    public const API_ENDPOINT = 'https://secure.wspay.biz/api/services/%s';
-    public const TEST_API_ENDPOINT = 'https://test.wspay.biz/api/services/%s';
 
     public const CODE = 'monri_wspay';
 
@@ -63,22 +59,27 @@ class WSPay extends \Magento\Payment\Gateway\Config\Config
     }
 
     /**
-     * Returns the transaction management URL for a given resource object and action.
+     * Returns the API endpoint for a given resource object and action.
      *
      * @param string $resource
-     * @param null|int $storeId
+     * @param int|null $storeId
+     *
      * @return string
      */
-    public function getGatewayTransactionManagementURL($resource, $storeId): string
+    public function getApiEndpoint(string $resource, ?int $storeId): string
     {
         $endpoint = $this->getIsTestMode($storeId) ? self::TEST_API_ENDPOINT : self::API_ENDPOINT;
         return sprintf($endpoint, $resource) ;
     }
 
     /**
-     * @inheritDoc
+     * Check if test mode
+     *
+     * @param int $storeId
+     *
+     * @return bool
      */
-    public function getIsTestMode($storeId = null)
+    public function getIsTestMode($storeId = null): bool
     {
         return (bool) $this->getValue(self::TEST_MODE, $storeId);
     }
