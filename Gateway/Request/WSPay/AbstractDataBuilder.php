@@ -55,12 +55,15 @@ abstract class AbstractDataBuilder implements BuilderInterface
     /**
      * Trim and respect length
      *
-     * @param string $string
+     * @param string|null $string
      * @param bool|int $length
      * @return string
      */
     protected function prepareString($string, $length = false): string
     {
+        if(!is_string($string)) {
+            return '';
+        }
         $string = trim($string);
         if ($length > 0) {
             $string = substr($string, 0, $length);
