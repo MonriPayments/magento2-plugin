@@ -61,7 +61,7 @@ abstract class AbstractDataBuilder implements BuilderInterface
      */
     protected function prepareString($string, $length = false): string
     {
-        if(!is_string($string)) {
+        if (!is_string($string)) {
             return '';
         }
         $string = trim($string);
