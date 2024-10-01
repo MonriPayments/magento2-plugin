@@ -90,7 +90,7 @@ class CaptureHandler implements HandlerInterface
                 break;
             case MethodInterface::ACTION_AUTHORIZE_CAPTURE:
                 $order->setState(Order::STATE_PROCESSING);
-                $payment->capture();
+                $payment->registerCaptureNotification($order->getBaseGrandTotal(), true);
                 break;
         }
 

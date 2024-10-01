@@ -19,5 +19,12 @@
                 <value id="monri-components-script-prod" type="host">https://ipg.monri.com/</value>
             </values>
         </policy>
+
+        <policy id="form-action">
+            <values>
+                <value id="monri-wspay-script-test" type="host">https://formtest.wspay.biz</value>
+                <value id="monri-wspay-script-prod" type="host">https://form.wspay.biz</value>
+            </values>
+        </policy>
     </policies>
 </csp_whitelist>
