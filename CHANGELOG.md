@@ -1,5 +1,7 @@
 ### 1.4.0
-- Monri WSPay tokenization
+- WSPay tokenization
+- WSPay capture improvements
+- Bugfix WSPay won't redirect in newer Magento due to missing CSP rules
 
 ### 1.3.1
 - Bugfix Magento 2.4.7 won't redirect due to missing CSP rules
