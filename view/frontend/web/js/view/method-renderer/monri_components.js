@@ -143,6 +143,7 @@ define(
 
                 this.monriCardInstance = components.create('card', {
                     style: style,
+                    showInstallmentsSelection:  monriConfig.allowInstallments
                 });
 
                 this.monriCardInstance.mount(this.monriCardContainerId);
@@ -175,6 +176,8 @@ define(
             },
 
             placeOrder: function (data, event) {
+                this.monriReady = false;
+
                 if (event) {
                     event.preventDefault();
                 }
@@ -183,7 +186,7 @@ define(
                     this.messageContainer.addErrorMessage({
                         message: $t('Sorry, timeout occured. Payment form will be reloaded.')
                     });
-
+                    this.monriReady = true;
                     this.monriCreatePayment();
                     return;
                 }
@@ -200,6 +203,7 @@ define(
                                 message: message
                             });
 
+                            this.monriReady = true;
                             return;
                         }
 

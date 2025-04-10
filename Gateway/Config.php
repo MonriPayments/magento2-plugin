@@ -40,6 +40,10 @@ class Config extends \Magento\Payment\Gateway\Config\Config
 
     public const ORDER_STATUS_ENDPOINT = 'orders/show';
 
+    public const ALLOW_INSTALLMENTS = 'allow_installments';
+
+    public const SUPPORTED_PAYMENT_METHODS = 'supported_payment_methods';
+
     /**
      * @var string[]
      */
@@ -184,5 +188,27 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getAvailableCurrencyCodes()
     {
         return $this->_availableCurrencies;
+    }
+
+    /**
+     * Returns the allow installments variable
+     *
+     * @param null|int $storeId
+     * @return bool
+     */
+    public function getAllowInstallments($storeId = null)
+    {
+        return $this->getValue(self::ALLOW_INSTALLMENTS, $storeId);
+    }
+
+    /**
+     * Returns additional payment methods
+     *
+     * @param null|int $storeId
+     * @return array
+     */
+    public function getSupportedPaymentMethods($storeId = null)
+    {
+        return $this->getValue(self::SUPPORTED_PAYMENT_METHODS, $storeId);
     }
 }

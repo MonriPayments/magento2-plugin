@@ -49,6 +49,7 @@ class CheckoutConfigProvider implements ConfigProviderInterface
                         'componentsJsUrl' => $this->config->getComponentsJsURL($quote->getStoreId()),
                         'authenticityToken' => $this->config->getClientAuthenticityToken($quote->getStoreId()),
                         'locale' => $this->config->getGatewayLanguage($quote->getStoreId()),
+                        'allowInstallments' => $this->config->getAllowInstallments($quote->getStoreId()),
                     ]
                 ]
             ];
