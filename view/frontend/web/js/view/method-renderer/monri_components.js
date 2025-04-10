@@ -143,7 +143,7 @@ define(
 
                 this.monriCardInstance = components.create('card', {
                     style: style,
-                    showInstallmentsSelection: Number(monriConfig.allowInstallments)
+                    showInstallmentsSelection: monriConfig.allowInstallments === '1'
                 });
 
                 this.monriCardInstance.mount(this.monriCardContainerId);
