@@ -1,3 +1,9 @@
+### 1.4.1
+- Added additional payment methods for Monri WebPay Redirect
+- Added option to allow installments for Monri components
+- Increased timeout time to 10 seconds for Monri APIs
+- Fixed issue on Monri Components where user could click Place Order button more than once
+
 ### 1.4.0
 - WSPay tokenization
 - WSPay capture improvements
