@@ -1,4 +1,4 @@
-### 1.4.1
+### 1.5.0
 - Added additional payment methods for Monri WebPay Redirect
 - Added option to allow installments for Monri components
 - Increased timeout time to 10 seconds for Monri APIs
