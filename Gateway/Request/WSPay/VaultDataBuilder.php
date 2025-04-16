@@ -55,6 +55,18 @@ class VaultDataBuilder extends AbstractDataBuilder
         $paymentDO = SubjectReader::readPayment($buildSubject);
         $payment = $paymentDO->getPayment();
         $order = $paymentDO->getOrder();
+
+        /*
+            Added in 2.4.8, because \PayPal\Braintree\Gateway\Data\Order\OrderAdapter puts themselves as preference for
+            \Magento\Payment\Gateway\Data\Order\OrderAdapter. It declares strict types, but getGrandTotalAmount returns
+            string instead of float, causing it to break execution.
+        */
+        try {
+            $orderAmount = $order->getGrandTotalAmount();
+        } catch (\TypeError $e) {
+            $orderObject = $payment->getOrder();
+            $orderAmount = $orderObject->getBaseGrandTotal();
+        }
         /** @var  \Magento\Payment\Gateway\Data\AddressAdapterInterface $billingAddress */
         $billingAddress = $order->getBillingAddress();
 
@@ -63,7 +75,7 @@ class VaultDataBuilder extends AbstractDataBuilder
             $orderId = TestModeHelper::generateTestOrderId($orderId);
         }
 
-        $formattedAmount = number_format($order->getGrandTotalAmount(), 2, '', '');
+        $formattedAmount = number_format($orderAmount, 2, '', '');
 
         $extensionAttributes = $payment->getExtensionAttributes();
         /** @var \Magento\Vault\Model\PaymentToken $paymentToken */

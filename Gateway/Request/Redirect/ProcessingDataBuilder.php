@@ -91,9 +91,23 @@ class ProcessingDataBuilder implements BuilderInterface
 
         $orderNumber = $order->getOrderIncrementId();
         $currencyCode = $order->getCurrencyCode();
-        $amount = $this->formatter->formatPrice(
-            $order->getGrandTotalAmount()
-        );
+
+        /*
+            Added in 2.4.8, because \PayPal\Braintree\Gateway\Data\Order\OrderAdapter puts themselves as preference for
+            \Magento\Payment\Gateway\Data\Order\OrderAdapter. It declares strict types, but getGrandTotalAmount returns
+            string instead of float, causing it to break execution.
+        */
+        try {
+            $amount = $this->formatter->formatPrice(
+                $order->getGrandTotalAmount()
+            );
+        } catch (\TypeError $e) {
+            $payment = $paymentDataObject->getPayment();
+            $orderObject = $payment->getOrder();
+            $amount = $this->formatter->formatPrice(
+                $orderObject->getBaseGrandTotal()
+            );
+        }
 
         $authToken = $this->config->getClientAuthenticityToken($order->getStoreId());
 
