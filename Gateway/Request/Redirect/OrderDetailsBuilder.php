@@ -105,7 +105,6 @@ class OrderDetailsBuilder implements BuilderInterface
             );
         }
 
-
         $currencyCode = $order->getCurrencyCode();
 
         return [
