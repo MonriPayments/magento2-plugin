@@ -58,7 +58,7 @@ class Client implements PaymentClientInterface
         ClientInterfaceFactory $httpClientFactory,
         SerializerInterface $serializer,
         Logger $logger,
-        $timeout = 5,
+        $timeout = 10,
         $requestType = 'application/xml'
     ) {
         $this->httpClientFactory = $httpClientFactory;

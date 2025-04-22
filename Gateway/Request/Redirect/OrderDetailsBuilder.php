@@ -88,9 +88,22 @@ class OrderDetailsBuilder implements BuilderInterface
 
         $orderInfo = $transportObject->getData('description');
 
-        $orderAmount = $this->formatter->formatPrice(
-            $order->getGrandTotalAmount()
-        );
+        /*
+            Added in 2.4.8, because \PayPal\Braintree\Gateway\Data\Order\OrderAdapter puts themselves as preference for
+            \Magento\Payment\Gateway\Data\Order\OrderAdapter. It declares strict types, but getGrandTotalAmount returns
+            string instead of float, causing it to break execution.
+        */
+        try {
+            $orderAmount = $this->formatter->formatPrice(
+                $order->getGrandTotalAmount()
+            );
+        } catch (\TypeError $e) {
+            $payment = $paymentDataObject->getPayment();
+            $orderObject = $payment->getOrder();
+            $orderAmount = $this->formatter->formatPrice(
+                $orderObject->getBaseGrandTotal()
+            );
+        }
 
         $currencyCode = $order->getCurrencyCode();
 

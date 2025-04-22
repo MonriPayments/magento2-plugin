@@ -36,6 +36,8 @@ class ProcessingDataBuilder implements BuilderInterface
 
     public const CALLBACK_URL_FIELD = 'callback_url_override';
 
+    public const SUPPORTED_PAYMENT_METHODS = 'supported_payment_methods';
+
     /**
      * @var Formatter
      */
@@ -89,9 +91,23 @@ class ProcessingDataBuilder implements BuilderInterface
 
         $orderNumber = $order->getOrderIncrementId();
         $currencyCode = $order->getCurrencyCode();
-        $amount = $this->formatter->formatPrice(
-            $order->getGrandTotalAmount()
-        );
+
+        /*
+            Added in 2.4.8, because \PayPal\Braintree\Gateway\Data\Order\OrderAdapter puts themselves as preference for
+            \Magento\Payment\Gateway\Data\Order\OrderAdapter. It declares strict types, but getGrandTotalAmount returns
+            string instead of float, causing it to break execution.
+        */
+        try {
+            $amount = $this->formatter->formatPrice(
+                $order->getGrandTotalAmount()
+            );
+        } catch (\TypeError $e) {
+            $payment = $paymentDataObject->getPayment();
+            $orderObject = $payment->getOrder();
+            $amount = $this->formatter->formatPrice(
+                $orderObject->getBaseGrandTotal()
+            );
+        }
 
         $authToken = $this->config->getClientAuthenticityToken($order->getStoreId());
 
@@ -105,6 +121,8 @@ class ProcessingDataBuilder implements BuilderInterface
         $languageCode = $this->config->getGatewayLanguage($order->getStoreId());
 
         $installments = $this->config->getInstallments($order->getStoreId());
+
+        $supportedPaymentMethods = $this->config->getSupportedPaymentMethods($order->getStoreId()) ?? 'card';
 
         $isMoto = false;
 
@@ -125,7 +143,8 @@ class ProcessingDataBuilder implements BuilderInterface
             self::CALLBACK_URL_FIELD => $this->urlBuilder->getUrl(
                 'monripayments/gateway/callback',
                 ['_secure' => true]
-            )
+            ),
+            self::SUPPORTED_PAYMENT_METHODS => $supportedPaymentMethods
         ];
 
         if ($installments !== Config::INSTALLMENTS_DISABLED) {
