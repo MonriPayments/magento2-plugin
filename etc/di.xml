@@ -77,7 +77,7 @@
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="create_request" xsi:type="string">MonriPaymentsCreateRequestCommand</item>
-                <item name="create_vault_request" xsi:type="string">MonriPaymentsCreateRequestCommand</item>
+                <item name="create_vault_request" xsi:type="string">MonriPaymentsCreateVaultRequestCommand</item>
                 <item name="initialize" xsi:type="string">Monri\Payments\Gateway\Command\InitializeCommand</item>
                 <item name="gateway_response" xsi:type="string">MonriPaymentsGatewayResponseCommand</item>
                 <item name="capture" xsi:type="string">MonriPaymentsCaptureCommand</item>
@@ -117,6 +117,22 @@
     <virtualType name="MonriPaymentsVaultAuthorizeCommand" type="Monri\Payments\Gateway\Command\Redirect\CreateRequestCommand">
         <arguments>
             <argument name="builder" xsi:type="object">Magento\Payment\Gateway\Request\BuilderComposite</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsCreateVaultRequestCommand" type="Monri\Payments\Gateway\Command\Redirect\CreateRequestCommand">
+        <arguments>
+            <argument name="builder" xsi:type="object">MonriPaymentsRedirectVaultRequest</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsRedirectVaultRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="customer" xsi:type="string">Monri\Payments\Gateway\Request\Redirect\CustomerInfoBuilder</item>
+                <item name="order" xsi:type="string">Monri\Payments\Gateway\Request\Redirect\OrderDetailsBuilder</item>
+                <item name="processing" xsi:type="string">Monri\Payments\Gateway\Request\Redirect\ProcessingVaultDataBuilder</item>
+            </argument>
         </arguments>
     </virtualType>
 

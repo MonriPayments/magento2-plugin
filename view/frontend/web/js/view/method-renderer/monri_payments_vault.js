@@ -17,7 +17,7 @@ define([
         getToken: function () {
             return this.publicHash;
         },
-        // This flag lets us fire afterPlaceOrder instead of redirecting to success page
+        // This flag lets us fire afterPlaceOrder instead of redirecting to success page!
         redirectAfterPlaceOrder: false,
 
         /**

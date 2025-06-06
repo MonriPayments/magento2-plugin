@@ -126,6 +126,13 @@ class VaultPaymentTokenHandler implements HandlerInterface
         return $extensionAttributes;
     }
 
+    /**
+     * Get the last 4 digits of masked pan
+     *
+     * @param string $maskedPan
+     *
+     * @return string
+     */
     private function getLast4($maskedPan)
     {
         return (strlen($maskedPan) >= 4) ? substr($maskedPan, -4) : '';

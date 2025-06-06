@@ -132,7 +132,6 @@ class ProcessingVaultDataBuilder implements BuilderInterface
             throw new CommandException(__('The Payment Token is not available to perform the request.'));
         }
 
-
         $payload =  [
             self::LANGUAGE_FIELD => $languageCode,
             self::TRANSACTION_TYPE_FIELD => $this->config->getTransactionType($order->getStoreId()),
@@ -151,7 +150,8 @@ class ProcessingVaultDataBuilder implements BuilderInterface
                 'monripayments/gateway/callback',
                 ['_secure' => true]
             ),
-            //todo: check if keks pay and paycek can be saved. If yes, do they need to be added in supported payment methods?
+            //todo: check if keks pay and paycek can be saved.
+            // If yes, do they need to be added in supported payment methods?
             self::SUPPORTED_PAYMENT_METHODS => $paymentToken->getGatewayToken()
         ];
 

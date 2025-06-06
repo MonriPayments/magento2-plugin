@@ -51,5 +51,4 @@ class VaultConfig extends \Magento\Payment\Gateway\Config\Config
             parent::getValue($field, $storeId) :
             $this->vaultProviderConfig->getValue($field, $storeId);
     }
-
 }
