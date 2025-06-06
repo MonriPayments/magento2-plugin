@@ -3,6 +3,7 @@
 namespace Monri\Payments\Block\Customer;
 
 use Monri\Payments\Gateway\Config\WSPay;
+use Monri\Payments\Gateway\Config as WebPay;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Vault\Block\AbstractCardRenderer;
 
@@ -16,7 +17,7 @@ class CardRenderer extends AbstractCardRenderer
      */
     public function canRender(PaymentTokenInterface $token): bool
     {
-        return $token->getPaymentMethodCode() === WSPay::CODE;
+        return $token->getPaymentMethodCode() === WSPay::CODE || $token->getPaymentMethodCode() === WebPay::CODE;
     }
 
     /**

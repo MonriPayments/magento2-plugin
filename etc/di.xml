@@ -77,14 +77,93 @@
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="create_request" xsi:type="string">MonriPaymentsCreateRequestCommand</item>
+                <item name="create_vault_request" xsi:type="string">MonriPaymentsCreateVaultRequestCommand</item>
                 <item name="initialize" xsi:type="string">Monri\Payments\Gateway\Command\InitializeCommand</item>
                 <item name="gateway_response" xsi:type="string">MonriPaymentsGatewayResponseCommand</item>
                 <item name="capture" xsi:type="string">MonriPaymentsCaptureCommand</item>
                 <item name="refund" xsi:type="string">MonriPaymentsRefundCommand</item>
                 <item name="void" xsi:type="string">MonriPaymentsVoidCommand</item>
+                <item name="vault_authorize" xsi:type="string">MonriPaymentsVaultAuthorizeCommand</item>
+                <item name="vault_sale" xsi:type="string">MonriPaymentsVaultAuthorizeCommand</item>
             </argument>
         </arguments>
     </virtualType>
+    <!-- Start Monri Payments Vault -->
+    <virtualType name="MonriPaymentsVaultPaymentValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">MonriPaymentsVaultPaymentValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsVaultPaymentValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">Monri\Payments\Gateway\VaultConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsVaultFacade" type="Monri\Payments\Model\Method\Redirect\Vault">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\VaultConfig</argument>
+            <argument name="valueHandlerPool" xsi:type="object">MonriPaymentsVaultPaymentValueHandlerPool</argument>
+            <argument name="vaultProvider" xsi:type="object">MonriPaymentsFacade</argument>
+            <argument name="code" xsi:type="const">Monri\Payments\Gateway\VaultConfig::CODE</argument>
+        </arguments>
+    </virtualType>
+    <!--    Normally, vault payment methods would make an API request to create a purchase. Monri webpay instead redirects us to payment form with-->
+    <!--    prefilled payment form. Since magento MUST call the vault_authorize command when paying using token we call this dummy command, -->
+    <!--    which does nothing-->
+    <virtualType name="MonriPaymentsVaultAuthorizeCommand" type="Monri\Payments\Gateway\Command\Redirect\CreateRequestCommand">
+        <arguments>
+            <argument name="builder" xsi:type="object">Magento\Payment\Gateway\Request\BuilderComposite</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsCreateVaultRequestCommand" type="Monri\Payments\Gateway\Command\Redirect\CreateRequestCommand">
+        <arguments>
+            <argument name="builder" xsi:type="object">MonriPaymentsRedirectVaultRequest</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsRedirectVaultRequest" type="Magento\Payment\Gateway\Request\BuilderComposite">
+        <arguments>
+            <argument name="builders" xsi:type="array">
+                <item name="customer" xsi:type="string">Monri\Payments\Gateway\Request\Redirect\CustomerInfoBuilder</item>
+                <item name="order" xsi:type="string">Monri\Payments\Gateway\Request\Redirect\OrderDetailsBuilder</item>
+                <item name="processing" xsi:type="string">Monri\Payments\Gateway\Request\Redirect\ProcessingVaultDataBuilder</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+
+    <virtualType name="MonriPaymentsFormPurchaseWithVaultHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="vault" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\VaultPaymentTokenHandler</item>
+                <item name="purchase" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\PurchaseHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriPaymentsFormAuthorizeWithVaultHandler" type="Magento\Payment\Gateway\Response\HandlerChain">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="vault" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\VaultPaymentTokenHandler</item>
+                <item name="authorize" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\AuthorizeHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Monri\Payments\Controller\Redirect\Form\VaultData">
+        <arguments>
+            <argument name="commandManager" xsi:type="object">MonriPaymentsCommandManager</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+
+
+    <!-- End Monri Payments Vault -->
 
     <type name="Monri\Payments\Gateway\Command\InitializeCommand">
         <arguments>
@@ -226,8 +305,8 @@
         <arguments>
             <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
             <argument name="transactionHandlers" xsi:type="array">
-                <item name="purchase" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\PurchaseHandler</item>
-                <item name="authorize" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\AuthorizeHandler</item>
+                <item name="purchase" xsi:type="string">MonriPaymentsFormPurchaseWithVaultHandler</item>
+                <item name="authorize" xsi:type="string">MonriPaymentsFormAuthorizeWithVaultHandler</item>
                 <item name="refund" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\RefundHandler</item>
                 <item name="capture" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\CaptureHandler</item>
             </argument>
@@ -744,6 +823,7 @@
         <arguments>
             <argument name="executors" xsi:type="array">
                 <item name="monri_wspay" xsi:type="string">WSPayCommandManager</item>
+                <item name="monri_payments" xsi:type="string">MonriPaymentsCommandManager</item>
             </argument>
         </arguments>
     </type>
@@ -753,6 +833,7 @@
         <arguments>
             <argument name="tokenUiComponentProviders" xsi:type="array">
                 <item name="monri_wspay" xsi:type="object">Monri\Payments\Model\Ui\WSPay\TokenUiComponentProvider</item>
+                <item name="monri_payments" xsi:type="object">Monri\Payments\Model\Ui\Redirect\TokenUiComponentProvider</item>
             </argument>
         </arguments>
     </type>
