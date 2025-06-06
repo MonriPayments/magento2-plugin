@@ -9,6 +9,7 @@
 define(
     [
         'Magento_Checkout/js/view/payment/default',
+        'Magento_Vault/js/view/payment/vault-enabler',
         'jquery',
         'underscore',
         'mage/template',
@@ -17,7 +18,7 @@ define(
         'Magento_Customer/js/customer-data',
         'mage/url'
     ],
-    function (Component, $, _, mageTemplate, errorProcessor, fullScreenLoader, customerData, urlBuilder) {
+    function (Component, VaultEnabler, $, _, mageTemplate, errorProcessor, fullScreenLoader, customerData, urlBuilder) {
         'use strict';
 
         return Component.extend({
@@ -26,8 +27,37 @@ define(
             },
             redirectAfterPlaceOrder: false,
 
-            getCode: function() {
-                return 'monri_payments';
+            initialize: function () {
+                this._super();
+
+                this.vaultEnabler = new VaultEnabler();
+                this.vaultEnabler.setPaymentCode(this.getVaultCode());
+                this.vaultEnabler.isActivePaymentTokenEnabler(false); //unchecked by default
+
+                return this;
+            },
+
+            getData: function () {
+                var data = {
+                    'method': this.getCode(),
+                    'additional_data': {}
+                };
+                this.vaultEnabler.visitAdditionalData(data);
+                return data;
+            },
+
+            /**
+             * @return {Boolean}
+             */
+            isVaultEnabled: function () {
+                return this.vaultEnabler.isVaultEnabled();
+            },
+
+            /**
+             * @return {String}
+             */
+            getVaultCode: function () {
+                return window.checkoutConfig.payment[this.getCode()].vaultCode;
             },
 
             afterPlaceOrder: function() {

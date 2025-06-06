@@ -1,8 +1,8 @@
 <?php
 
-namespace Monri\Payments\Model\Ui\WSPay;
+namespace Monri\Payments\Model\Ui\Redirect;
 
-use Monri\Payments\Gateway\Config\WSPayVaultConfig;
+use Monri\Payments\Gateway\VaultConfig;
 use Magento\Framework\Serialize\Serializer\Json;
 use Magento\Vault\Api\Data\PaymentTokenInterface;
 use Magento\Vault\Model\Ui\TokenUiComponentInterface;
@@ -47,11 +47,11 @@ class TokenUiComponentProvider implements TokenUiComponentProviderInterface
         $component = $this->componentFactory->create(
             [
                 'config' => [
-                    'code' => WSPayVaultConfig::CODE,
+                    'code' => VaultConfig::CODE,
                     TokenUiComponentProviderInterface::COMPONENT_DETAILS => $jsonDetails,
                     TokenUiComponentProviderInterface::COMPONENT_PUBLIC_HASH => $paymentToken->getPublicHash()
                 ],
-                'name' => 'Monri_Payments/js/view/method-renderer/monri_wspay_vault'
+                'name' => 'Monri_Payments/js/view/method-renderer/monri_payments_vault'
             ]
         );
 

@@ -92,6 +92,11 @@
                     <label>Sort Order</label>
                     <frontend_class>validate-number</frontend_class>
                 </field>
+                <field id="vault_active" translate="label" type="select" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable Tokenization for Card Payments</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>payment/monri_payments_vault/active</config_path>
+                </field>
             </group>
             <group id="monri_components" translate="label" type="text"
                    sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
