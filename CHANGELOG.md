@@ -1,3 +1,6 @@
+### 1.6.0
+- WebPay tokenization
+
 ### 1.5.0
 - Added additional payment methods for Monri WebPay Redirect
 - Added option to allow installments for Monri components
