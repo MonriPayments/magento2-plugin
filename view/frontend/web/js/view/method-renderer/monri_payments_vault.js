@@ -7,7 +7,8 @@ define([
     'Magento_Checkout/js/model/full-screen-loader',
     'mage/url',
     'Magento_Customer/js/customer-data',
-], function (VaultComponent, $, errorProcessor,fullScreenLoader, urlBuilder, customerData) {
+    'mage/translate'
+], function (VaultComponent, $, errorProcessor,fullScreenLoader, urlBuilder, customerData, $t) {
     'use strict';
 
     return VaultComponent.extend({
@@ -33,7 +34,9 @@ define([
          * @returns {String}
          */
         getExpirationDate: function () {
-            return this.details.expirationDate;
+            //todo: remove this once real expiration date is given
+            return $t('In beta, no accurate expiration date');
+            //return this.details.expirationDate;
         },
 
         /**
