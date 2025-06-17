@@ -50,9 +50,9 @@ class AuthorizeCommand implements CommandInterface
      */
     public function __construct(
         LoggerInterface $logger,
-        ValidatorInterface $validator = null,
-        HandlerInterface $handler = null,
-        ErrorMessageMapperInterface $errorMessageMapper = null
+        ?ValidatorInterface $validator = null,
+        ?HandlerInterface $handler = null,
+        ?ErrorMessageMapperInterface $errorMessageMapper = null
     ) {
         $this->validator = $validator;
         $this->handler = $handler;

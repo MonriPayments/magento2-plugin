@@ -55,7 +55,7 @@ class GatewayResponseCommand implements CommandInterface
         Command\Result\ArrayResultFactory $arrayResultFactory,
         HandlerInterface $orderUpdateHandler,
         ErrorMessageMapperInterface $errorMessageMapper,
-        ValidatorInterface $validator = null
+        ?ValidatorInterface $validator = null
     ) {
         $this->arrayResultFactory = $arrayResultFactory;
         $this->orderUpdateHandler = $orderUpdateHandler;
