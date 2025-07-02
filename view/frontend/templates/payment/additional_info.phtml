@@ -1,0 +1,26 @@
+<?php
+/** @var $block \Monri\Payments\Block\Customer\PaymentInfo */
+$info = $block->getAdditionalPaymentInfo();
+/** @var \Magento\Framework\Escaper $escaper */
+
+?>
+
+<?php if (!empty($info)): ?>
+    <div class="order-additional-info">
+        <h2><?= $escaper->escapeHtml(__('Transaction info')) ?></h2>
+        <ul>
+            <li><strong><?= $escaper->escapeHtml(__('Transaction ID')) ?>:</strong>
+                <?= $escaper->escapeHtml($info['WsPayOrderId'] ?? '') ?></li>
+            <li><strong><?= $escaper->escapeHtml(__('Approval code')) ?>:</strong>
+                <?= $escaper->escapeHtml($info['ApprovalCode'] ?? '') ?></li>
+            <li><strong><?= $escaper->escapeHtml(__('Credit card type')) ?>:</strong>
+                <?= $escaper->escapeHtml($info['PaymentType'] ?? '') ?></li>
+            <li><strong><?= $escaper->escapeHtml(__('Credit card number')) ?>:</strong>
+                <?= $escaper->escapeHtml($info['CreditCardNumber']) ?></li>
+            <li><strong><?= $escaper->escapeHtml(__('Payment plan')) ?>:</strong>
+                <?= $escaper->escapeHtml($info['PaymentPlan'] ?? '') ?></li>
+            <li><strong><?= $escaper->escapeHtml(__('Date/Time')) ?>:</strong>
+                <?= $escaper->escapeHtml($info['DateTime'] ?? '') ?></li>
+        </ul>
+    </div>
+<?php endif; ?>
