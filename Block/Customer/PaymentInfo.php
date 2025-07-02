@@ -31,14 +31,16 @@ class PaymentInfo extends Template
     public function getAdditionalPaymentInfo()
     {
         $order = $this->checkoutSession->getLastRealOrder();
-        $payment = $order->getPayment();
-        $additionalTransactionInfo = $this->config->getTransactionInfoInOrder($order->getStoreId());
-        $methodCode = $payment->getMethod();
-
-        if ($methodCode === 'monri_wspay' && $additionalTransactionInfo) {
-            return $order->getPayment()->getAdditionalInformation();
+        if (!$order) {
+            return [];
         }
 
-        return [];
+        $additionalTransactionInfo = $this->config->getTransactionInfoInOrder($order->getStoreId());
+        $payment = $order->getPayment();
+        if (!$payment || $payment->getMethod() !== 'monri_wspay' || !$additionalTransactionInfo) {
+            return [];
+        }
+
+        return $payment->getAdditionalInformation();
     }
 }
