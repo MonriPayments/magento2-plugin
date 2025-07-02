@@ -248,6 +248,11 @@
                     <label>Sort Order</label>
                     <frontend_class>validate-number</frontend_class>
                 </field>
+                <field id="transaction_info_in_order" translate="label" type="select" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Transaction info in order</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Show Monri transaction info on Thank You page. Required by some banks.]]></comment>
+                </field>
             </group>
         </section>
     </system>

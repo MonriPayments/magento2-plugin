@@ -38,3 +38,9 @@ Installments,Rate
 "Gateway response is not valid.",Odgovor modula plaćanja nije valjan.
 "Save for later use.",Sačuvaj za kasniju upotrebu.
 "You will be redirected to the WSPay website when you place an order.","Nakon završetka narudžbe biti ćeš preusmjeren na stranice WSPay-a."
+"Transaction ID","ID transakcije"
+"Approval code","Broj odobrenja"
+"Credit card type","Tip kreditne kartice"
+"Credit card number","Broj kreditne kartice"
+"Payment plan","Rate"
+"Date/Time","Datum/Vrijeme"
