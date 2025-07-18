@@ -1,6 +1,9 @@
 ### 1.6.0
 - WebPay tokenization
 
+### 1.5.1
+- Added compatiblity for PHP 8.4
+
 ### 1.5.0
 - Added additional payment methods for Monri WebPay Redirect
 - Added option to allow installments for Monri components
