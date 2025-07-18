@@ -57,11 +57,11 @@ class CaptureHandler implements HandlerInterface
         $additionalTransactionInfo = $this->config->getTransactionInfoInOrder($order->getStoreId());
 
         if ($additionalTransactionInfo) {
-            $payment->setAdditionalInformation('WsPayOrderId', $response['WsPayOrderId']);
-            $payment->setAdditionalInformation('PaymentType', $response['CreditCardName']);
-            $payment->setAdditionalInformation('CreditCardNumber', $response['MaskedPan']);
-            $payment->setAdditionalInformation('PaymentPlan', $response['PaymentPlan']);
-            $payment->setAdditionalInformation('DateTime', $response['TransactionDateTime']);
+            $payment->setAdditionalInformation('WsPayOrderId', $response['WsPayOrderId'] ?? '');
+            $payment->setAdditionalInformation('PaymentType', $response['CreditCardName'] ?? '');
+            $payment->setAdditionalInformation('CreditCardNumber', $response['MaskedPan'] ?? '');
+            $payment->setAdditionalInformation('PaymentPlan', $response['PaymentPlan'] ?? '');
+            $payment->setAdditionalInformation('DateTime', $response['TransactionDateTime'] ?? '');
         }
 
         /** @noinspection PhpParamsInspection */

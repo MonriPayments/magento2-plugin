@@ -15,7 +15,7 @@ class PaymentInfo extends Template
      * @param array $data
      */
     public function __construct(
-        private Template\Context $context,
+        Template\Context $context,
         private Session $checkoutSession,
         private WSPay $config,
         array $data = []
