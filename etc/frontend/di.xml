@@ -17,6 +17,7 @@
             <argument name="configProviders" xsi:type="array">
                 <item name="monri_components_checkout_config_provider" xsi:type="object">Monri\Payments\Model\CheckoutConfigProvider</item>
                 <item name="monri_wspay_config_provider" xsi:type="object">Monri\Payments\Model\Ui\WSPay\ConfigProvider</item>
+                <item name="monri_payments_config_provider" xsi:type="object">Monri\Payments\Model\Ui\Redirect\ConfigProvider</item>
             </argument>
         </arguments>
     </type>
@@ -31,6 +32,7 @@
         <arguments>
             <argument name="tokenUiComponentProviders" xsi:type="array">
                 <item name="monri_wspay" xsi:type="object">Monri\Payments\Model\Ui\WSPay\TokenUiComponentProvider</item>
+                <item name="monri_payments" xsi:type="object">Monri\Payments\Model\Ui\Redirect\TokenUiComponentProvider</item>
             </argument>
         </arguments>
     </type>

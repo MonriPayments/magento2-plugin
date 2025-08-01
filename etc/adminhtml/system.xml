@@ -19,7 +19,7 @@
                        showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment><![CDATA[Monri Payments Version - 1.5.1]]></comment>
+                    <comment><![CDATA[Monri Payments Version - 1.6.0]]></comment>
                 </field>
                 <field id="title" translate="label" type="text" sortOrder="10"
                        showInDefault="1" showInWebsite="1" showInStore="1">
@@ -92,6 +92,11 @@
                     <label>Sort Order</label>
                     <frontend_class>validate-number</frontend_class>
                 </field>
+                <field id="vault_active" translate="label" type="select" sortOrder="52" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Enable Tokenization for Card Payments</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <config_path>payment/monri_payments_vault/active</config_path>
+                </field>
             </group>
             <group id="monri_components" translate="label" type="text"
                    sortOrder="6" showInDefault="1" showInWebsite="1" showInStore="1">
@@ -100,7 +105,7 @@
                        showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment><![CDATA[Monri Payments Version - 1.5.1]]></comment>
+                    <comment><![CDATA[Monri Payments Version - 1.6.0]]></comment>
                 </field>
                 <field id="title" translate="label" type="text" sortOrder="10"
                        showInDefault="1" showInWebsite="1" showInStore="1">
@@ -173,7 +178,7 @@
                 <field id="active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Enabled</label>
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
-                    <comment><![CDATA[Monri Payments Version - 1.5.1]]></comment>
+                    <comment><![CDATA[Monri Payments Version - 1.6.0]]></comment>
                 </field>
                 <field id="title" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Title</label>
@@ -247,6 +252,11 @@
                 <field id="sort_order" translate="label" type="text" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Sort Order</label>
                     <frontend_class>validate-number</frontend_class>
+                </field>
+                <field id="transaction_info_in_order" translate="label" type="select" sortOrder="170" showInDefault="1" showInWebsite="1" showInStore="0">
+                    <label>Transaction info in order</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment><![CDATA[Show Monri transaction info on Thank You page. Required by some banks.]]></comment>
                 </field>
             </group>
         </section>

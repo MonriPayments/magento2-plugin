@@ -1,24 +1,20 @@
 <?php
-/**
- * This file is part of the Monri Payments module
- *
- * (c) Monri Payments d.o.o.
- *
- * @author Favicode <contact@favicode.net>
- */
 
 namespace Monri\Payments\Gateway\Request\Redirect;
 
 use Magento\Framework\UrlInterface;
+use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Request\BuilderInterface;
-use Magento\Vault\Model\Ui\VaultConfigProvider;
+use Magento\Sales\Model\Order\Payment;
+use Magento\Vault\Model\PaymentToken;
 use Monri\Payments\Gateway\Config;
 use Monri\Payments\Helper\Formatter;
 use Monri\Payments\Model\Crypto\Digest;
 
-class ProcessingDataBuilder implements BuilderInterface
+class ProcessingVaultDataBuilder implements BuilderInterface
 {
+
     public const LANGUAGE_FIELD = 'language';
 
     public const TRANSACTION_TYPE_FIELD = 'transaction_type';
@@ -91,6 +87,7 @@ class ProcessingDataBuilder implements BuilderInterface
         $paymentDataObject = SubjectReader::readPayment($buildSubject);
 
         $order = $paymentDataObject->getOrder();
+        /** @var Payment $payment */
         $payment = $paymentDataObject->getPayment();
 
         $orderNumber = $order->getOrderIncrementId();
@@ -126,9 +123,14 @@ class ProcessingDataBuilder implements BuilderInterface
 
         $installments = $this->config->getInstallments($order->getStoreId());
 
-        $supportedPaymentMethods = $this->config->getSupportedPaymentMethods($order->getStoreId()) ?? 'card';
-
         $isMoto = false;
+
+        $extensionAttributes = $payment->getExtensionAttributes();
+        /** @var PaymentToken $paymentToken */
+        $paymentToken = $extensionAttributes->getVaultPaymentToken();
+        if ($paymentToken === null) {
+            throw new CommandException(__('The Payment Token is not available to perform the request.'));
+        }
 
         $payload =  [
             self::LANGUAGE_FIELD => $languageCode,
@@ -148,15 +150,13 @@ class ProcessingDataBuilder implements BuilderInterface
                 'monripayments/gateway/callback',
                 ['_secure' => true]
             ),
-            self::SUPPORTED_PAYMENT_METHODS => $supportedPaymentMethods
+            //todo: check if keks pay and paycek can be saved.
+            // If yes, do they need to be added in supported payment methods?
+            self::SUPPORTED_PAYMENT_METHODS => $paymentToken->getGatewayToken()
         ];
 
         if ($installments !== Config::INSTALLMENTS_DISABLED) {
             $payload[self::NUMBER_OF_INSTALLMENTS_FIELD] = $installments;
-        }
-
-        if ($payment->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
-            $payload[self::TOKENIZE_PAN] = '1';
         }
 
         return $payload;

@@ -1,3 +1,7 @@
+### 1.6.0
+- WebPay tokenization (Beta)
+- Added option to see additional order information for Monri WSPay
+
 ### 1.5.1
 - Added compatiblity for PHP 8.4
 

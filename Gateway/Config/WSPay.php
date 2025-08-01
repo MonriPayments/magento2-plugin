@@ -35,6 +35,8 @@ class WSPay extends \Magento\Payment\Gateway\Config\Config implements WSPayConfi
         'MKD'
     ];
 
+    public const TRANSACTION_INFO_IN_ORDER = 'transaction_info_in_order';
+
     /**
      * Config constructor.
      *
@@ -82,6 +84,18 @@ class WSPay extends \Magento\Payment\Gateway\Config\Config implements WSPayConfi
     public function getIsTestMode($storeId = null): bool
     {
         return (bool) $this->getValue(self::TEST_MODE, $storeId);
+    }
+
+    /**
+     * Check if transaction info in order can be displayed
+     *
+     * @param int $storeId
+     *
+     * @return bool
+     */
+    public function getTransactionInfoInOrder($storeId = null): bool
+    {
+        return (bool) $this->getValue(self::TRANSACTION_INFO_IN_ORDER, $storeId);
     }
 
     /**
