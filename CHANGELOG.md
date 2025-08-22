@@ -1,3 +1,7 @@
+### 1.7.0
+- Improved Monri WebPay tokenization by using API for transaction creation.
+- Added "Instant Purchase" on the product page for customers with saved Monri WebPay tokens.
+
 ### 1.6.0
 - WebPay tokenization (Beta)
 - Added option to see additional order information for Monri WSPay
