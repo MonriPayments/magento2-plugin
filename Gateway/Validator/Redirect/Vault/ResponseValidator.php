@@ -16,7 +16,7 @@ class ResponseValidator extends AbstractValidator
         $response = SubjectReader::readResponse($validationSubject);
 
         if ($response['transaction']['response_code'] !== '0000' ||
-            $response['transaction']['response_message'] !== 'transaction approved') {
+            $response['transaction']['status'] !== 'approved') {
             return $this->createResult(false, [__('Transaction has been declined.')]);
         }
 
