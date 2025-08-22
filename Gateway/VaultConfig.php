@@ -14,7 +14,7 @@ use Magento\Framework\App\Config\ScopeConfigInterface;
 class VaultConfig extends \Magento\Payment\Gateway\Config\Config
 {
     public const CODE = 'monri_payments_vault';
-    private const VAULT_SETTINGS = ['shop_id', 'secret_key', 'active'];
+    private const VAULT_SETTINGS = ['shop_id', 'secret_key', 'active', 'instant_purchase'];
 
     public const LANGUAGE = 'language';
 

@@ -2,6 +2,9 @@
 
 namespace Monri\Payments\Model\Method\Redirect;
 
+use Magento\Payment\Model\MethodInterface;
+use Monri\Payments\Block\Adminhtml\Config\Source\TransactionTypes;
+
 class Vault extends \Magento\Vault\Model\Method\Vault
 {
     /**
@@ -28,5 +31,18 @@ class Vault extends \Magento\Vault\Model\Method\Vault
     public function canCapture()
     {
         return true;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getConfigPaymentAction()
+    {
+        $transactionType = $this->getConfigData('transaction_type');
+
+        if ($transactionType === TransactionTypes::ACTION_PURCHASE) {
+            return MethodInterface::ACTION_AUTHORIZE_CAPTURE;
+        }
+        return MethodInterface::ACTION_AUTHORIZE;
     }
 }

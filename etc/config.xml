@@ -42,7 +42,7 @@
                 <title>Stored Cards</title>
                 <secret_key backend_model="Magento\Config\Model\Config\Backend\Encrypted"/>
                 <instant_purchase>
-                    <supported>0</supported>
+                    <supported>1</supported>
                 </instant_purchase>
             </monri_payments_vault>
 

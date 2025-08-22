@@ -157,6 +157,7 @@ class ProcessingDataBuilder implements BuilderInterface
 
         if ($payment->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
             $payload[self::TOKENIZE_PAN] = '1';
+            $payload[self::MOTO_FIELD] = true;
         }
 
         return $payload;
