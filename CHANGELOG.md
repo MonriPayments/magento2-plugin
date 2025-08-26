@@ -2,6 +2,7 @@
 - Improved Monri WebPay tokenization by using API for transaction creation.
 - Added "Instant Purchase" on the product page for customers with saved Monri WebPay tokens.
 - Added option to disable installments for Monri WebPay.
+- Added real expiration date for Monri WebPay tokens.
 
 ### 1.6.0
 - WebPay tokenization (Beta)

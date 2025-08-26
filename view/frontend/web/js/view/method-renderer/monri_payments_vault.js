@@ -32,9 +32,7 @@ define([
          * @returns {String}
          */
         getExpirationDate: function () {
-            //todo: remove this once real expiration date is given
-            return $t('In beta, no accurate expiration date');
-            //return this.details.expirationDate;
+            return this.details.expirationDate;
         },
 
         /**
