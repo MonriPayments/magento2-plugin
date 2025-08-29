@@ -164,6 +164,12 @@
         </arguments>
     </type>
 
+    <type name="Monri\Payments\Gateway\Http\Redirect\JsonClient">
+        <arguments>
+            <argument name="paymentLogger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+
 
     <!-- End Monri Payments Vault -->
 
