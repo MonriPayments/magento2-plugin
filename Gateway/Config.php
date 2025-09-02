@@ -44,6 +44,8 @@ class Config extends \Magento\Payment\Gateway\Config\Config
 
     public const SUPPORTED_PAYMENT_METHODS = 'supported_payment_methods';
 
+    public const TRANSACTION_ENDPOINT = 'v2/transaction';
+
     /**
      * @var string[]
      */
@@ -210,5 +212,17 @@ class Config extends \Magento\Payment\Gateway\Config\Config
     public function getSupportedPaymentMethods($storeId = null)
     {
         return $this->getValue(self::SUPPORTED_PAYMENT_METHODS, $storeId);
+    }
+
+    /**
+     * Retrieves the transaction endpoint URL for a specified store ID.
+     *
+     * @param null|int $storeId The ID of the store, or null for the default store.
+     *
+     * @return string The transaction endpoint URL.
+     */
+    public function getTransactionEndpoint($storeId = null)
+    {
+        return $this->getGatewayResourceURL(self::TRANSACTION_ENDPOINT, $storeId);
     }
 }

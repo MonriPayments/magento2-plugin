@@ -25,7 +25,8 @@ class Installments implements OptionSourceInterface
     public function toOptionArray()
     {
         $installments = [
-            ['value' => 'disabled', 'label' => __('Undefined')]
+            ['value' => 'disabled', 'label' => __('Undefined')],
+            ['value' => 1, 'label' => __('1 (Force no installments)')]
         ];
 
         for ($i = self::MIN_INSTALLMENTS; $i <= self::MAX_INSTALLMENTS; $i++) {

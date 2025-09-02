@@ -11,6 +11,8 @@ use Magento\Vault\Model\PaymentToken;
 use Monri\Payments\Gateway\Config;
 use Monri\Payments\Helper\Formatter;
 use Monri\Payments\Model\Crypto\Digest;
+use Magento\Framework\Event\ManagerInterface;
+use Magento\Framework\DataObjectFactory;
 
 class ProcessingVaultDataBuilder implements BuilderInterface
 {
@@ -27,15 +29,33 @@ class ProcessingVaultDataBuilder implements BuilderInterface
 
     public const MOTO_FIELD = 'moto';
 
-    public const SUCCESS_URL_FIELD = 'success_url_override';
+    public const FULL_NAME_FIELD = 'ch_full_name';
 
-    public const CANCEL_URL_FIELD = 'cancel_url_override';
+    public const ADDRESS_FIELD = 'ch_address';
 
-    public const CALLBACK_URL_FIELD = 'callback_url_override';
+    public const CITY_FIELD = 'ch_city';
 
-    public const SUPPORTED_PAYMENT_METHODS = 'supported_payment_methods';
+    public const ZIP_FIELD = 'ch_zip';
 
-    public const TOKENIZE_PAN = 'tokenize_pan';
+    public const COUNTRY_FIELD = 'ch_country';
+
+    public const PHONE_FIELD = 'ch_phone';
+
+    public const EMAIL_FIELD = 'ch_email';
+
+    public const IP_FIELD = 'ip';
+
+    public const CURRENCY_FIELD = 'currency';
+
+    public const PAN_FIELD = 'pan_token';
+
+    public const AMOUNT_FIELD = 'amount';
+
+    public const ORDER_INFO_FIELD = 'order_info';
+
+    public const ORDER_NUMBER_FIELD = 'order_number';
+
+    public const TRANSACTION = 'transaction';
 
     /**
      * @var Formatter
@@ -57,30 +77,48 @@ class ProcessingVaultDataBuilder implements BuilderInterface
     private $urlBuilder;
 
     /**
+     * @var ManagerInterface
+     */
+    private $eventManager;
+
+    /**
+     * @var DataObjectFactory
+     */
+    private $dataObjectFactory;
+
+    /**
      * ProcessingDataBuilder constructor.
      *
      * @param Formatter $formatter
      * @param Digest $digest
      * @param Config $config
      * @param UrlInterface $urlBuilder
+     * @param ManagerInterface $eventManager
+     * @param DataObjectFactory $dataObjectFactory
      */
     public function __construct(
         Formatter $formatter,
         Digest $digest,
         Config $config,
-        UrlInterface $urlBuilder
+        UrlInterface $urlBuilder,
+        ManagerInterface $eventManager,
+        DataObjectFactory $dataObjectFactory
     ) {
         $this->formatter = $formatter;
         $this->digest = $digest;
         $this->config = $config;
         $this->urlBuilder = $urlBuilder;
+        $this->eventManager = $eventManager;
+        $this->dataObjectFactory = $dataObjectFactory;
     }
 
     /**
      * Builds the processing data
      *
      * @param array $buildSubject
+     *
      * @return array
+     * @throws CommandException
      */
     public function build(array $buildSubject)
     {
@@ -92,7 +130,7 @@ class ProcessingVaultDataBuilder implements BuilderInterface
 
         $orderNumber = $order->getOrderIncrementId();
         $currencyCode = $order->getCurrencyCode();
-
+        $ipAddress = $order->getRemoteIp();
         /*
             Added in 2.4.8, because \PayPal\Braintree\Gateway\Data\Order\OrderAdapter puts themselves as preference for
             \Magento\Payment\Gateway\Data\Order\OrderAdapter. It declares strict types, but getGrandTotalAmount returns
@@ -121,9 +159,9 @@ class ProcessingVaultDataBuilder implements BuilderInterface
 
         $languageCode = $this->config->getGatewayLanguage($order->getStoreId());
 
-        $installments = $this->config->getInstallments($order->getStoreId());
+        $isMoto = true;
 
-        $isMoto = false;
+        $billingAddress = $order->getBillingAddress();
 
         $extensionAttributes = $payment->getExtensionAttributes();
         /** @var PaymentToken $paymentToken */
@@ -132,32 +170,45 @@ class ProcessingVaultDataBuilder implements BuilderInterface
             throw new CommandException(__('The Payment Token is not available to perform the request.'));
         }
 
-        $payload =  [
-            self::LANGUAGE_FIELD => $languageCode,
-            self::TRANSACTION_TYPE_FIELD => $this->config->getTransactionType($order->getStoreId()),
-            self::AUTHENTICITY_TOKEN_FIELD => $authToken,
-            self::DIGEST_FIELD => $digest,
-            self::MOTO_FIELD => $isMoto,
-            self::SUCCESS_URL_FIELD => $this->urlBuilder->getUrl(
-                'monripayments/redirect/success',
-                ['_secure' => true]
-            ),
-            self::CANCEL_URL_FIELD => $this->urlBuilder->getUrl(
-                'monripayments/redirect/cancel',
-                ['_secure' => true]
-            ),
-            self::CALLBACK_URL_FIELD => $this->urlBuilder->getUrl(
-                'monripayments/gateway/callback',
-                ['_secure' => true]
-            ),
-            //todo: check if keks pay and paycek can be saved.
-            // If yes, do they need to be added in supported payment methods?
-            self::SUPPORTED_PAYMENT_METHODS => $paymentToken->getGatewayToken()
-        ];
+        $orderInfo = __('Order %1', $orderNumber)->render();
 
-        if ($installments !== Config::INSTALLMENTS_DISABLED) {
-            $payload[self::NUMBER_OF_INSTALLMENTS_FIELD] = $installments;
-        }
+        $transportObject = $this->dataObjectFactory->create([
+            'data' => [
+                'description' => $orderInfo
+            ]
+        ]);
+
+        // For custom order descriptions
+        $this->eventManager->dispatch('monri_payments_order_description_after', [
+            'order' => $order,
+            'payment' => $paymentDataObject->getPayment(),
+            'transportObject' => $transportObject
+        ]);
+
+        $orderInfo = $transportObject->getData('description');
+
+        $payload =  [
+            self::TRANSACTION => [
+                self::TRANSACTION_TYPE_FIELD => $this->config->getTransactionType($order->getStoreId()),
+                self::AMOUNT_FIELD => $amount,
+                self::IP_FIELD => $ipAddress,
+                self::ORDER_INFO_FIELD => $orderInfo,
+                self::ADDRESS_FIELD => $billingAddress->getStreetLine1(),
+                self::CITY_FIELD => $billingAddress->getCity(),
+                self::COUNTRY_FIELD => $billingAddress->getCountryId(),
+                self::EMAIL_FIELD => $billingAddress->getEmail(),
+                self::FULL_NAME_FIELD => $billingAddress->getFirstname() . ' ' . $billingAddress->getLastname(),
+                self::PHONE_FIELD => $billingAddress->getTelephone(),
+                self::ZIP_FIELD => $billingAddress->getPostcode(),
+                self::CURRENCY_FIELD => $currencyCode,
+                self::DIGEST_FIELD => $digest,
+                self::ORDER_NUMBER_FIELD => $orderNumber,
+                self::AUTHENTICITY_TOKEN_FIELD => $authToken,
+                self::LANGUAGE_FIELD => $languageCode,
+                self::PAN_FIELD => $paymentToken->getGatewayToken(),
+                self::MOTO_FIELD => $isMoto,
+            ]
+        ];
 
         return $payload;
     }

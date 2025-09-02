@@ -111,12 +111,14 @@
             <argument name="code" xsi:type="const">Monri\Payments\Gateway\VaultConfig::CODE</argument>
         </arguments>
     </virtualType>
-    <!--    Normally, vault payment methods would make an API request to create a purchase. Monri webpay instead redirects us to payment form with-->
-    <!--    prefilled payment form. Since magento MUST call the vault_authorize command when paying using token we call this dummy command, -->
-    <!--    which does nothing-->
-    <virtualType name="MonriPaymentsVaultAuthorizeCommand" type="Monri\Payments\Gateway\Command\Redirect\CreateRequestCommand">
+
+    <virtualType name="MonriPaymentsVaultAuthorizeCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
-            <argument name="builder" xsi:type="object">Magento\Payment\Gateway\Request\BuilderComposite</argument>
+            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\Redirect\ProcessingVaultDataBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">Monri\Payments\Gateway\Http\Redirect\Vault\TransferFactory</argument>
+            <argument name="client" xsi:type="object">Monri\Payments\Gateway\Http\Redirect\JsonClient</argument>
+            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\Redirect\Vault\CaptureHandler</argument>
+            <argument name="validator" xsi:type="object">Monri\Payments\Gateway\Validator\Redirect\Vault\ResponseValidator</argument>
         </arguments>
     </virtualType>
 
@@ -159,6 +161,12 @@
         <arguments>
             <argument name="commandManager" xsi:type="object">MonriPaymentsCommandManager</argument>
             <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Monri\Payments\Gateway\Http\Redirect\JsonClient">
+        <arguments>
+            <argument name="paymentLogger" xsi:type="object">MonriPaymentsLogger</argument>
         </arguments>
     </type>
 

@@ -152,11 +152,16 @@ class ProcessingDataBuilder implements BuilderInterface
         ];
 
         if ($installments !== Config::INSTALLMENTS_DISABLED) {
-            $payload[self::NUMBER_OF_INSTALLMENTS_FIELD] = $installments;
+            if ($installments === '1') {
+                $payload['installments_disabled'] = true;
+            } else {
+                $payload[self::NUMBER_OF_INSTALLMENTS_FIELD] = $installments;
+            }
         }
 
         if ($payment->getAdditionalInformation(VaultConfigProvider::IS_ACTIVE_CODE)) {
             $payload[self::TOKENIZE_PAN] = '1';
+            $payload[self::MOTO_FIELD] = true;
         }
 
         return $payload;

@@ -2,7 +2,6 @@
 
 namespace Monri\Payments\Gateway\Response\WSPay\Vault;
 
-use Monri\Payments\Gateway\Helper\CcTypeMapper;
 use Magento\Payment\Gateway\Helper\SubjectReader;
 use Magento\Payment\Gateway\Response\HandlerInterface;
 use Magento\Sales\Model\Order\Email\Sender\OrderSender;
@@ -70,9 +69,5 @@ class CaptureHandler implements HandlerInterface
             $response
         );
         $payment->setTransactionAdditionalInfo('paidUsingToken', true);
-
-        if (!$payment->getOrder()->getEmailSent()) {
-            $this->orderSender->send($payment->getOrder());
-        }
     }
 }
