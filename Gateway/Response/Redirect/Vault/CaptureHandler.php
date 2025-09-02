@@ -53,7 +53,6 @@ class CaptureHandler implements HandlerInterface
 
         $payment->setIsTransactionClosed(0);
         $payment->setTransactionId($this->getTransactionId($response));
-
     }
 
     /**

@@ -69,6 +69,5 @@ class CaptureHandler implements HandlerInterface
             $response
         );
         $payment->setTransactionAdditionalInfo('paidUsingToken', true);
-
     }
 }
