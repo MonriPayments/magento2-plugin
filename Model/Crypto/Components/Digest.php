@@ -9,7 +9,7 @@
 
 namespace Monri\Payments\Model\Crypto\Components;
 
-use Monri\Payments\Gateway\Config\Components as Config;
+use Monri\Payments\Gateway\Config;
 
 class Digest
 {

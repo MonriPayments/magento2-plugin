@@ -117,7 +117,9 @@ class Client implements PaymentClientInterface
             $log['errors'][] = 'Exception caught: ' . $e->getMessage();
             $log['success'] = false;
             $this->logger->debug($log);
-            throw $e;
+            throw new \Magento\Framework\Exception\LocalizedException(
+                __('Payment initialization failed. Please try again.')
+            );
         }
 
         $this->logger->debug($log);
