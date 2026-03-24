@@ -17,6 +17,8 @@ use Magento\Framework\Controller\ResultFactory;
 use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Framework\Exception\NotFoundException;
+use Magento\Payment\Gateway\Command\CommandException;
 use Magento\Payment\Gateway\Command\CommandManagerInterface;
 use Magento\Payment\Model\InfoInterface;
 use Magento\Payment\Model\Method\Logger;
@@ -92,13 +94,14 @@ class Success extends AbstractGatewayResponse
             $log['payload'] = $gatewayResponse;
             $gatewayResponse['status'] = 'approved';
 
-            $digestData = $this->getDigestData();
+            //Google pay has no digest in success url. Instead, we get order status using API and save it in payment
+            $this->commandManager->executeByCode('check_status', $payment);
 
-            $result = $this->processGatewayResponse($gatewayResponse, $payment, $digestData);
+            $result = $this->commandManager->executeByCode('gateway_response', $payment);;
 
-            if (isset($result['response_code_message'])) {
+            if ( $result->get( 'response_code_message' ) !== null ) {
                 $this->messageManager->addNoticeMessage(
-                    __('The payment has been accepted: %1', $result['response_code_message'])
+                    __('The payment has been accepted: %1', $result->get( 'response_code_message' ))
                 );
             } else {
                 $this->messageManager->addNoticeMessage(__('The payment has been accepted.'));
@@ -125,21 +128,5 @@ class Success extends AbstractGatewayResponse
         return $resultRedirect->setPath('checkout/onepage/success');
     }
 
-    /**
-     * Resolve digest data from url
-     *
-     * @return array
-     */
-    protected function getDigestData()
-    {
-        $digest = $this->getRequest()->getParam('digest');
-        $url = $this->_url->getCurrentUrl();
-
-        $data = str_replace('&digest=' . $digest, '', $url);
-
-        return [
-            'digest' => $digest,
-            'digest_data' => $data,
-        ];
-    }
 }
+

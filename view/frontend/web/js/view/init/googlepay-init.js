@@ -61,7 +61,7 @@ define([
                     if (event.data.type === 'PAYMENT_RESULT') {
                         const {transaction} = event.data;
                         if (transaction.status === 'approved') {
-                            console.log('success')
+                            window.location.href = urlBuilder.build('monripayments/googlepay/success');
                         } else {
                             console.log('error')
                         }

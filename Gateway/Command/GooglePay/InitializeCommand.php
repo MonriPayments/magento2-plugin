@@ -18,6 +18,7 @@ use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
 use Monri\Payments\Gateway\Config\GooglePay as Config;
+use Monri\Payments\Helper\Formatter;
 
 class InitializeCommand implements CommandInterface
 {
@@ -32,6 +33,11 @@ class InitializeCommand implements CommandInterface
     private $logger;
 
     /**
+     * @var Formatter
+     */
+    private $formatter;
+
+    /**
      * InitializeCommand constructor.
      *
      * @param Config $config
@@ -39,10 +45,12 @@ class InitializeCommand implements CommandInterface
      */
     public function __construct(
         Config $config,
-        Logger $logger
+        Logger $logger,
+        Formatter $formatter
     ) {
         $this->config = $config;
         $this->logger = $logger;
+        $this->formatter = $formatter;
     }
 
     /**
@@ -64,6 +72,13 @@ class InitializeCommand implements CommandInterface
         $payment->getOrder()->setCanSendNewEmailFlag(false);
 
         try {
+            $payment->setAdditionalInformation(
+                'monri_order_number',
+                $this->formatter->formatText(
+                    $payment->getOrder()->getIncrementId() . uniqid('-'),
+                    40
+                )
+            );
             $payment->setAdditionalInformation(
                 'transaction_type',
                 'purchase'

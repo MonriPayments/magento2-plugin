@@ -724,12 +724,19 @@
         </arguments>
     </virtualType>
 
+    <virtualType name="MonriGooglePayGatewayResponseCommand" type="Monri\Payments\Gateway\Command\GooglePay\GatewayResponseCommand">
+        <arguments>
+            <argument name="orderUpdateHandler" xsi:type="object">Monri\Payments\Gateway\Response\OrderUpdateHandler</argument>
+        </arguments>
+    </virtualType>
+
     <virtualType name="MonriGooglePayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
         <arguments>
             <argument name="commands" xsi:type="array">
                 <item name="create_request" xsi:type="string">MonriGooglePayCreateRequestCommand</item>
                 <item name="initialize" xsi:type="string">Monri\Payments\Gateway\Command\GooglePay\InitializeCommand</item>
-                <item name="gateway_response" xsi:type="string">MonriPaymentsGatewayResponseCommand</item>
+                <item name="gateway_response" xsi:type="string">MonriGooglePayGatewayResponseCommand</item>
+                <item name="check_status" xsi:type="string">MonriGooglePayCheckStatusCommand</item>
             </argument>
         </arguments>
     </virtualType>
@@ -753,8 +760,21 @@
         </arguments>
     </type>
 
+    <type name="Monri\Payments\Controller\GooglePay\Success">
+        <arguments>
+            <argument name="commandManager" xsi:type="object">MonriGooglePayCommandManager</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+
     <!-- GooglePay Digest using GooglePay config -->
     <virtualType name="MonriGooglePayDigest" type="Monri\Payments\Model\Crypto\Components\Digest">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\GooglePay</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayOrderStatusDigest" type="Monri\Payments\Model\Crypto\Components\OrderStatusDigest">
         <arguments>
             <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\GooglePay</argument>
         </arguments>
@@ -765,6 +785,13 @@
         <arguments>
             <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\GooglePay</argument>
             <argument name="digest" xsi:type="object">MonriGooglePayDigest</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayOrderStatusTransferFactory" type="Monri\Payments\Gateway\Http\OrderStatusTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\GooglePay</argument>
+            <argument name="digest" xsi:type="object">MonriGooglePayOrderStatusDigest</argument>
         </arguments>
     </virtualType>
 
@@ -783,6 +810,22 @@
             <argument name="googlePayCommand" xsi:type="object">MonriGooglePayCreateRequestCommand</argument>
         </arguments>
     </type>
+
+    <virtualType name="MonriGooglePayStatusRequestBuilder" type="Monri\Payments\Gateway\Request\StatusRequestBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\GooglePay</argument>
+            <argument name="digest" xsi:type="object">MonriGooglePayOrderStatusDigest</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayCheckStatusCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MonriGooglePayStatusRequestBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MonriGooglePayOrderStatusTransferFactory</argument>
+            <argument name="client" xsi:type="object">Monri\Payments\Gateway\Http\StatusClient</argument>
+            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\GooglePay\StatusHandler</argument>
+        </arguments>
+    </virtualType>
 
     <!-- WSPay gateway configuration -->
     <virtualType name="WSPayFacade" type="Magento\Payment\Model\Method\Adapter">

@@ -53,15 +53,14 @@ class OrderDetailsBuilder implements BuilderInterface
     public function build(array $buildSubject)
     {
         $paymentDataObject = SubjectReader::readPayment($buildSubject);
+        $payment = $paymentDataObject->getPayment();
 
         /** @var \Magento\Payment\Gateway\Data\Quote\QuoteAdapter $order */
         $order = $paymentDataObject->getOrder();
 
-        $orderNumber = $this->formatter->formatText($order->getOrderIncrementId() . uniqid('-'), 40);
+        $orderNumber = $payment->getAdditionalInformation('monri_order_number');
 
         $orderIpAddress = $paymentDataObject->getPayment()->getOrder()->getRemoteIp();
-
-        $paymentDataObject->getPayment()->setAdditionalInformation(self::ORDER_NUMBER_FIELD, $orderNumber);
 
         $orderInfo = __('Order: %1', $order->getOrderIncrementId())->render();
 
@@ -90,7 +89,6 @@ class OrderDetailsBuilder implements BuilderInterface
                 $order->getGrandTotalAmount()
             );
         } catch (\TypeError $e) {
-            $payment = $paymentDataObject->getPayment();
             $orderObject = $payment->getOrder();
             $orderAmount = $this->formatter->formatPrice(
                 $orderObject->getBaseGrandTotal()
