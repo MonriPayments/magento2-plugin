@@ -96,7 +96,9 @@ class Success extends AbstractGatewayResponse
             //Google pay has no digest in success url. Instead, we get order status using API and save it in payment additonal info
             $this->commandManager->executeByCode('check_status', $payment);
 
-            $result = $this->commandManager->executeByCode('gateway_response', $payment)->get();
+            $result = $this->commandManager->executeByCode('gateway_response', $payment, [
+                'response' => $this->buildGatewayResponse($payment),
+            ])->get();
             $responseCodeMessage = $result['response_code_message'] ?? null;
 
             if ($responseCodeMessage !== null) {
@@ -127,5 +129,27 @@ class Success extends AbstractGatewayResponse
         }
 
         return $resultRedirect->setPath('checkout/onepage/success');
+    }
+
+    /**
+     * Build response payload consumed by GooglePay gateway_response command.
+     *
+     * @param InfoInterface $payment
+     * @return array
+     */
+    private function buildGatewayResponse(InfoInterface $payment): array
+    {
+        $responseCode = $payment->getAdditionalInformation('gateway_response_code');
+        $orderNumber = $responseCode
+            ? $payment->getAdditionalInformation('monri_order_number')
+            : $payment->getOrder()->getIncrementId();
+
+        return [
+            'status' => $payment->getAdditionalInformation('gateway_status'),
+            'response_code' => $responseCode,
+            'transaction_type' => $payment->getAdditionalInformation('gateway_transaction_type'),
+            'approval_code' => $payment->getAdditionalInformation('gateway_approval_code'),
+            'order_number' => $orderNumber,
+        ];
     }
 }

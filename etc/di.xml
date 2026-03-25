@@ -724,10 +724,9 @@
         </arguments>
     </virtualType>
 
-    <virtualType name="MonriGooglePayGatewayResponseCommand" type="Monri\Payments\Gateway\Command\GooglePay\GatewayResponseCommand">
+    <virtualType name="MonriGooglePayGatewayResponseCommand" type="Monri\Payments\Gateway\Command\GatewayResponseCommand">
         <arguments>
             <argument name="orderUpdateHandler" xsi:type="object">Monri\Payments\Gateway\Response\OrderUpdateHandler</argument>
-            <argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsWithRawMapper</argument>
         </arguments>
     </virtualType>
 

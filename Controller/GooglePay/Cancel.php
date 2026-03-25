@@ -83,13 +83,11 @@ class Cancel extends AbstractGatewayResponse
                 $this->checkoutSession->getData('last_order_id')
             );
 
-            $gatewayResponse = $this->getRequest()->getParams();
-            $log['payload'] = $gatewayResponse;
-
             /** @var InfoInterface $payment */
             $payment = $order->getPayment();
 
-            $gatewayResponse['status'] = 'declined';
+            $gatewayResponse = $this->buildCancelGatewayResponse($payment);
+            $log['payload'] = $gatewayResponse;
 
             $result = $this->processGatewayResponse($gatewayResponse, $payment, ['disabled' => true]);
 
@@ -114,5 +112,22 @@ class Cancel extends AbstractGatewayResponse
         }
 
         return $resultRedirect->setPath('checkout/cart');
+    }
+
+    /**
+     * Build minimal cancel response for Google Pay gateway_response command.
+     *
+     * @param InfoInterface $payment
+     * @return array
+     */
+    private function buildCancelGatewayResponse(InfoInterface $payment): array
+    {
+        $orderNumber = $payment->getAdditionalInformation('monri_order_number')
+            ?: $payment->getOrder()->getIncrementId();
+
+        return [
+            'status' => 'declined',
+            'order_number' => $orderNumber,
+        ];
     }
 }
