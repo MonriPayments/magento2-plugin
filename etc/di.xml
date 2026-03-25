@@ -748,12 +748,6 @@
         </arguments>
     </virtualType>
 
-    <type name="Monri\Payments\Controller\GooglePay\Form\Data">
-        <arguments>
-            <argument name="commandManager" xsi:type="object">MonriGooglePayCommandManager</argument>
-        </arguments>
-    </type>
-
     <type name="Monri\Payments\Controller\GooglePay\Cancel">
         <arguments>
             <argument name="commandManager" xsi:type="object">MonriGooglePayCommandManager</argument>
