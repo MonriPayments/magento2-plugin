@@ -90,7 +90,8 @@ class Success extends AbstractGatewayResponse
             /** @var InfoInterface $payment */
             $payment = $order->getPayment();
 
-            //Google pay has no digest in success url. Instead, we get order status using API and save it in payment additonal info
+            //Google pay has no digest in success url.
+            // Instead, we get order status using API and save it in payment additonal info
             $this->commandManager->executeByCode('check_status', $payment);
 
             $gatewayResponse = $this->buildGatewayResponse($payment);
