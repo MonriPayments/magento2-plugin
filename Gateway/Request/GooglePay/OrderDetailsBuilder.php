@@ -36,13 +36,13 @@ class OrderDetailsBuilder implements BuilderInterface
      * @param Formatter $formatter
      * @param ManagerInterface $eventManager
      * @param DataObjectFactory $dataObjectFactory
-     * @param UrlInterface $urlBuilder
      */
     public function __construct(
         private Formatter $formatter,
         private ManagerInterface $eventManager,
         private DataObjectFactory $dataObjectFactory,
-    ) {}
+    ) {
+    }
 
     /**
      * Builds the order details object
@@ -63,6 +63,9 @@ class OrderDetailsBuilder implements BuilderInterface
         $orderIpAddress = $paymentDataObject->getPayment()->getOrder()->getRemoteIp();
 
         $orderInfo = __('Order: %1', $order->getOrderIncrementId())->render();
+
+        //Google Pay only supports purchase transactions
+        $transactionType = 'purchase';
 
         $transportObject = $this->dataObjectFactory->create([
             'data' => [
@@ -103,7 +106,7 @@ class OrderDetailsBuilder implements BuilderInterface
             self::AMOUNT_FIELD => $orderAmount,
             self::CURRENCY_FIELD => $currencyCode,
             self::IP_ADDRESS_FIELD => $orderIpAddress,
-            self::TRANSACTION_TYPE_FIELD => 'purchase',
+            self::TRANSACTION_TYPE_FIELD => $transactionType,
         ];
     }
 }

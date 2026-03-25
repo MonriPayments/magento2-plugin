@@ -1,6 +1,7 @@
 <?php
 
 namespace Monri\Payments\Gateway\Http;
+
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Payment\Gateway\Http\ClientException;
 use Magento\Payment\Gateway\Http\ClientInterface;
@@ -26,7 +27,8 @@ class StatusClient implements ClientInterface
         private Logger $logger,
         private $timeout = 10,
         private $requestType = 'application/json'
-    ) {}
+    ) {
+    }
     /**
      * @inheritDoc
      */
@@ -117,7 +119,7 @@ class StatusClient implements ClientInterface
             //the response is xml, so we need to convert it to json and then to array
             $xml = simplexml_load_string($response);
             $json = json_encode($xml);
-            $data = json_decode($json,TRUE);
+            $data = json_decode($json, true);
             if ($data === null) {
                 return [];
             }
@@ -153,4 +155,3 @@ class StatusClient implements ClientInterface
         }
     }
 }
-

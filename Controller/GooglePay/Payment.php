@@ -6,14 +6,19 @@ use Magento\Framework\View\Result\PageFactory;
 
 class Payment implements HttpGetActionInterface
 {
-    private $resultPageFactory;
-
+    /**
+     * Payment constructor.
+     *
+     * @param PageFactory $resultPageFactory
+     */
     public function __construct(
-        PageFactory $resultPageFactory
+        private PageFactory $resultPageFactory
     ) {
-        $this->resultPageFactory = $resultPageFactory;
     }
 
+    /**
+     * @inheritDoc
+     */
     public function execute()
     {
         return $this->resultPageFactory->create();

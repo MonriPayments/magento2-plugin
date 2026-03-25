@@ -1,6 +1,6 @@
 <?php
 /* @var $block \Monri\Payments\Block\GooglePay\Payment */
-$config = $block->getData( 'view_model' )->getConfig();
+$config = $block->getData('view_model')->getConfig();
 ?>
 
 <div id="google-pay-element"></div>
@@ -10,7 +10,7 @@ $config = $block->getData( 'view_model' )->getConfig();
 <script type="text/x-magento-init">
     {
         "*": {
-            "Monri_Payments/js/view/init/googlepay-init": <?= json_encode( $config ) ?>
+            "Monri_Payments/js/view/init/googlepay-init": <?= /* @noEscape */ json_encode($config) ?>
     }
 }
 </script>

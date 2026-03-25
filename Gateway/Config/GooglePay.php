@@ -43,8 +43,4 @@ class GooglePay extends Config
     {
         return $this->getValue(self::PAYMENT_ACTION, $storeId);
     }
-
-    public function getIsTestMode($storeId = null) {
-        return $this->getIsSandboxMode( $storeId ) === true ? 'test' : 'prod';
-    }
 }

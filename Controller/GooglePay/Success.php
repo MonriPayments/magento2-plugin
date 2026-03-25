@@ -128,6 +128,4 @@ class Success extends AbstractGatewayResponse
 
         return $resultRedirect->setPath('checkout/onepage/success');
     }
-
 }
-

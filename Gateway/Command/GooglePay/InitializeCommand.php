@@ -42,6 +42,7 @@ class InitializeCommand implements CommandInterface
      *
      * @param Config $config
      * @param Logger $logger
+     * @param Formatter $formatter
      */
     public function __construct(
         Config $config,

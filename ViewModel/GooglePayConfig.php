@@ -16,6 +16,14 @@ use Magento\Payment\Model\Method\Logger;
 
 class GooglePayConfig implements ArgumentInterface
 {
+    /**
+     * @param Session $checkoutSession
+     * @param OrderRepository $orderRepository
+     * @param GatewayCommand $googlePayCommand
+     * @param Config $config
+     * @param PaymentDataObjectFactory $paymentDataObjectFactory *
+     * @param Logger $logger
+     */
     public function __construct(
         private Session $checkoutSession,
         private OrderRepository $orderRepository,
@@ -23,8 +31,14 @@ class GooglePayConfig implements ArgumentInterface
         private Config $config,
         private PaymentDataObjectFactory $paymentDataObjectFactory,
         private Logger $logger
-    ) {}
+    ) {
+    }
 
+    /**
+     * Get Google Pay configuration for frontend component.
+     *
+     * @return array
+     */
     public function getConfig()
     {
         try {
@@ -61,6 +75,5 @@ class GooglePayConfig implements ArgumentInterface
                 'message' => __('Google Pay is currently unavailable.')
             ];
         }
-
     }
 }

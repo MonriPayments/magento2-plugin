@@ -1,6 +1,7 @@
 <?php
 
 namespace Monri\Payments\Block\Customer\GooglePay;
+
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\View\Element\Template;
 

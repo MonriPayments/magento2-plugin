@@ -86,7 +86,6 @@ class Cancel extends AbstractGatewayResponse
             $gatewayResponse = $this->getRequest()->getParams();
             $log['payload'] = $gatewayResponse;
 
-
             /** @var InfoInterface $payment */
             $payment = $order->getPayment();
 

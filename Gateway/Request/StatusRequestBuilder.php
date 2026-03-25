@@ -10,11 +10,26 @@ use Monri\Payments\Model\Crypto\Components\OrderStatusDigest as Digest;
 
 class StatusRequestBuilder implements BuilderInterface
 {
+    /**
+     * StatusRequestBuilder constructor.
+     *
+     * @param Digest $digest
+     * @param Formatter $formatter
+     * @param Config $config
+     * */
     public function __construct(
         private Digest $digest,
         private Formatter $formatter,
         private Config $config,
-    ){}
+    ) {
+    }
+
+    /**
+     * Build request
+     *
+     * @param array $buildSubject
+     * @return array
+     * */
     public function build(array $buildSubject)
     {
         $paymentDataObject = SubjectReader::readPayment($buildSubject);
@@ -24,7 +39,6 @@ class StatusRequestBuilder implements BuilderInterface
         $payment = $paymentDataObject->getPayment();
         $orderNumber = $payment->getAdditionalInformation('monri_order_number');
         $currencyCode = $order->getCurrencyCode();
-
 
         /*
             Added in 2.4.8, because \PayPal\Braintree\Gateway\Data\Order\OrderAdapter puts themselves as preference for

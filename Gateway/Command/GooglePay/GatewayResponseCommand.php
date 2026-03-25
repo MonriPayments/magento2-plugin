@@ -96,7 +96,6 @@ class GatewayResponseCommand implements CommandInterface
 
         $successfulPayment = $this->isPaymentApproved($response);
 
-
         $responseCode = $paymentDO->getPayment()->getAdditionalInformation('gateway_response_code');
 
         $responseCodeMessage = null;
