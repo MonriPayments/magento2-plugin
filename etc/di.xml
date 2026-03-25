@@ -564,10 +564,16 @@
     <virtualType name="MonriComponentsCreatePaymentCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\Components\OrderDetailsBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">Monri\Payments\Gateway\Http\Components\PaymentCreateTransferFactory</argument>
+            <argument name="transferFactory" xsi:type="object">MonriComponentsPaymentCreateTransferFactory</argument>
             <argument name="client" xsi:type="object">MonriComponentsJsonClient</argument>
             <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\Components\PaymentCreateHandler</argument>
             <argument name="logger" xsi:type="object">MonriPaymentsVirtualLogger</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriComponentsPaymentCreateTransferFactory" type="Monri\Payments\Gateway\Http\Components\PaymentCreateTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
         </arguments>
     </virtualType>
 
