@@ -90,14 +90,14 @@ class Success extends AbstractGatewayResponse
             /** @var InfoInterface $payment */
             $payment = $order->getPayment();
 
-            $gatewayResponse = $this->getRequest()->getParams();
-            $log['payload'] = $gatewayResponse;
-
             //Google pay has no digest in success url. Instead, we get order status using API and save it in payment additonal info
             $this->commandManager->executeByCode('check_status', $payment);
 
+            $gatewayResponse = $this->buildGatewayResponse($payment);
+            $log['payload'] = $gatewayResponse;
+
             $result = $this->commandManager->executeByCode('gateway_response', $payment, [
-                'response' => $this->buildGatewayResponse($payment),
+                'response' => $gatewayResponse,
             ])->get();
             $responseCodeMessage = $result['response_code_message'] ?? null;
 
