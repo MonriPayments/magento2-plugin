@@ -92,16 +92,17 @@ class Success extends AbstractGatewayResponse
 
             $gatewayResponse = $this->getRequest()->getParams();
             $log['payload'] = $gatewayResponse;
-            $gatewayResponse['status'] = 'approved';
 
-            //Google pay has no digest in success url. Instead, we get order status using API and save it in payment
+            //Google pay has no digest in success url. Instead, we get order status using API and save it in payment additonal info
             $this->commandManager->executeByCode('check_status', $payment);
 
-            $result = $this->commandManager->executeByCode('gateway_response', $payment);;
+            $result = $this->commandManager->executeByCode('gateway_response', $payment)->get();
+            $responseCodeMessage = $result['response_code_message'] ?? null;
 
-            if ( $result->get( 'response_code_message' ) !== null ) {
+            if ($responseCodeMessage !== null) {
+                $responseCodeMessage = (string)$responseCodeMessage;
                 $this->messageManager->addNoticeMessage(
-                    __('The payment has been accepted: %1', $result->get( 'response_code_message' ))
+                    __('The payment has been accepted: %1', $responseCodeMessage)
                 );
             } else {
                 $this->messageManager->addNoticeMessage(__('The payment has been accepted.'));

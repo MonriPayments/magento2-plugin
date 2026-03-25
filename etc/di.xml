@@ -727,6 +727,7 @@
     <virtualType name="MonriGooglePayGatewayResponseCommand" type="Monri\Payments\Gateway\Command\GooglePay\GatewayResponseCommand">
         <arguments>
             <argument name="orderUpdateHandler" xsi:type="object">Monri\Payments\Gateway\Response\OrderUpdateHandler</argument>
+            <argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsWithRawMapper</argument>
         </arguments>
     </virtualType>
 
@@ -824,6 +825,7 @@
             <argument name="transferFactory" xsi:type="object">MonriGooglePayOrderStatusTransferFactory</argument>
             <argument name="client" xsi:type="object">Monri\Payments\Gateway\Http\StatusClient</argument>
             <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\GooglePay\StatusHandler</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsVirtualLogger</argument>
         </arguments>
     </virtualType>
 
