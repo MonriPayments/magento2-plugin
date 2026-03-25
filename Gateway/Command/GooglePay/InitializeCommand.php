@@ -80,10 +80,6 @@ class InitializeCommand implements CommandInterface
                     40
                 )
             );
-            $payment->setAdditionalInformation(
-                'transaction_type',
-                'purchase'
-            );
         } catch (LocalizedException $e) {
             $this->logger->debug(['Failed to set transaction type for payment: ' . $e->getMessage()]);
         }

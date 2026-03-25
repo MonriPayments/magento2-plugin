@@ -802,6 +802,7 @@
     <type name="Monri\Payments\ViewModel\GooglePayConfig">
         <arguments>
             <argument name="googlePayCommand" xsi:type="object">MonriGooglePayCreateRequestCommand</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
         </arguments>
     </type>
 

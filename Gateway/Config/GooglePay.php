@@ -32,15 +32,4 @@ class GooglePay extends Config
     {
         return $this->getGatewayResourceURL('dist/components.js', $storeId);
     }
-
-    /**
-     * Get configured payment action
-     *
-     * @param int|null $storeId
-     * @return string
-     */
-    public function getPaymentAction($storeId = null)
-    {
-        return $this->getValue(self::PAYMENT_ACTION, $storeId);
-    }
 }
