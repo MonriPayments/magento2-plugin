@@ -140,17 +140,12 @@ class Success extends AbstractGatewayResponse
      */
     private function buildGatewayResponse(InfoInterface $payment): array
     {
-        $responseCode = $payment->getAdditionalInformation('gateway_response_code');
-        $orderNumber = $responseCode
-            ? $payment->getAdditionalInformation('monri_order_number')
-            : $payment->getOrder()->getIncrementId();
-
         return [
             'status' => $payment->getAdditionalInformation('gateway_status'),
-            'response_code' => $responseCode,
+            'response_code' => $payment->getAdditionalInformation('gateway_response_code'),
             'transaction_type' => $payment->getAdditionalInformation('gateway_transaction_type'),
             'approval_code' => $payment->getAdditionalInformation('gateway_approval_code'),
-            'order_number' => $orderNumber,
+            'order_number' => $payment->getAdditionalInformation('monri_order_number'),
         ];
     }
 }

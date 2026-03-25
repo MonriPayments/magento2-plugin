@@ -122,12 +122,9 @@ class Cancel extends AbstractGatewayResponse
      */
     private function buildCancelGatewayResponse(InfoInterface $payment): array
     {
-        $orderNumber = $payment->getAdditionalInformation('monri_order_number')
-            ?: $payment->getOrder()->getIncrementId();
-
         return [
             'status' => 'declined',
-            'order_number' => $orderNumber,
+            'order_number' => $payment->getAdditionalInformation('monri_order_number'),
         ];
     }
 }
