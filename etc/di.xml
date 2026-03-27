@@ -732,7 +732,16 @@
 
     <virtualType name="MonriGooglePayGatewayResponseCommand" type="Monri\Payments\Gateway\Command\GatewayResponseCommand">
         <arguments>
-            <argument name="orderUpdateHandler" xsi:type="object">Monri\Payments\Gateway\Response\OrderUpdateHandler</argument>
+            <argument name="orderUpdateHandler" xsi:type="object">MonriGooglePayOrderUpdateHandler</argument>
+            <argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsMapper</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayOrderUpdateHandler" type="Monri\Payments\Gateway\Response\OrderUpdateHandler">
+        <arguments>
+            <argument name="transactionHandlers" xsi:type="array">
+                <item name="purchase" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\PurchaseHandler</item>
+            </argument>
         </arguments>
     </virtualType>
 

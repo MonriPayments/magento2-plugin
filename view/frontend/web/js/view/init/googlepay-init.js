@@ -58,12 +58,13 @@ define([
                         window.location.href = urlBuilder.build('monripayments/googlepay/cancel');
                     }
 
-                    if (event.data.type === 'PAYMENT_RESULT') {
+                    if (event.data?.type === 'PAYMENT_RESULT') {
                         const {transaction} = event.data;
                         if (transaction.status === 'approved') {
                             window.location.href = urlBuilder.build('monripayments/googlepay/success');
                         } else {
-                            console.log('error')
+                            customerData.invalidate(['cart', 'checkout-data']);
+                            window.location.href = urlBuilder.build('monripayments/googlepay/cancel');
                         }
                     }
                 });

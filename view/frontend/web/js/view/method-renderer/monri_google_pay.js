@@ -41,7 +41,6 @@ define(
                     'method': this.getCode(),
                     'additional_data': {}
                 };
-                console.log('data: ', data)
                 return data;
             },
 
