@@ -19,6 +19,7 @@ use Magento\Sales\Model\Order;
 use Magento\Sales\Model\Order\Payment;
 use Monri\Payments\Gateway\Config\GooglePay as Config;
 use Monri\Payments\Helper\Formatter;
+use Monri\Payments\Gateway\Helper\TestModeHelper;
 
 class InitializeCommand implements CommandInterface
 {
@@ -73,10 +74,14 @@ class InitializeCommand implements CommandInterface
         $payment->getOrder()->setCanSendNewEmailFlag(false);
 
         try {
+            $orderId = $payment->getOrder()->getIncrementId();
+            if ($this->config->getValue('sandbox')) {
+                $orderId = TestModeHelper::generateTestOrderId($orderId);
+            }
             $payment->setAdditionalInformation(
                 'monri_order_number',
                 $this->formatter->formatText(
-                    $payment->getOrder()->getIncrementId() . uniqid('-'),
+                    $orderId,
                     40
                 )
             );
