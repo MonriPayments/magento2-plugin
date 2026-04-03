@@ -53,12 +53,6 @@
                     <label>Number of Installments</label>
                     <source_model>Monri\Payments\Block\Adminhtml\Config\Source\Installments</source_model>
                 </field>
-                <field id="supported_payment_methods" translate="label" type="multiselect" sortOrder="65"
-                       showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>Additional Payment Methods</label>
-                    <source_model>Monri\Payments\Block\Adminhtml\Config\Source\Redirect\SupportedPaymentMethodsAction</source_model>
-                    <can_be_empty>1</can_be_empty>
-                </field>
                 <field id="sandbox" translate="label" type="select" sortOrder="70"
                        showInDefault="1" showInWebsite="1" showInStore="0">
                     <label>Sandbox Mode</label>

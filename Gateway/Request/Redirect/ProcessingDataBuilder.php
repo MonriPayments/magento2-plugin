@@ -37,8 +37,6 @@ class ProcessingDataBuilder implements BuilderInterface
 
     public const CALLBACK_URL_FIELD = 'callback_url_override';
 
-    public const SUPPORTED_PAYMENT_METHODS = 'supported_payment_methods';
-
     public const TOKENIZE_PAN = 'tokenize_pan';
 
     /**
@@ -126,8 +124,6 @@ class ProcessingDataBuilder implements BuilderInterface
 
         $installments = $this->config->getInstallments($order->getStoreId());
 
-        $supportedPaymentMethods = $this->config->getSupportedPaymentMethods($order->getStoreId()) ?? 'card';
-
         $isMoto = false;
 
         $payload =  [
@@ -148,7 +144,6 @@ class ProcessingDataBuilder implements BuilderInterface
                 'monripayments/gateway/callback',
                 ['_secure' => true]
             ),
-            self::SUPPORTED_PAYMENT_METHODS => $supportedPaymentMethods
         ];
 
         if ($installments !== Config::INSTALLMENTS_DISABLED) {
