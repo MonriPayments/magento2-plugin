@@ -37,4 +37,3 @@ class StatusHandler implements HandlerInterface
         $payment->setAdditionalInformation('gateway_approval_code', $response['approval-code'] ?? null);
     }
 }
-
