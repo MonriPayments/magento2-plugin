@@ -776,6 +776,13 @@
         </arguments>
     </type>
 
+    <type name="Monri\Payments\Controller\GooglePay\OrderStatus">
+        <arguments>
+            <argument name="commandManager" xsi:type="object">MonriGooglePayCommandManager</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+
     <!-- GooglePay Digest using GooglePay config -->
     <virtualType name="MonriGooglePayDigest" type="Monri\Payments\Model\Crypto\Components\Digest">
         <arguments>
