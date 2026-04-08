@@ -840,7 +840,7 @@
             <argument name="requestBuilder" xsi:type="object">MonriGooglePayStatusRequestBuilder</argument>
             <argument name="transferFactory" xsi:type="object">MonriGooglePayOrderStatusTransferFactory</argument>
             <argument name="client" xsi:type="object">Monri\Payments\Gateway\Http\StatusClient</argument>
-            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\GooglePay\StatusHandler</argument>
+            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\StatusHandler</argument>
             <argument name="logger" xsi:type="object">MonriPaymentsVirtualLogger</argument>
         </arguments>
     </virtualType>
