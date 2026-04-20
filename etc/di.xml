@@ -564,10 +564,16 @@
     <virtualType name="MonriComponentsCreatePaymentCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
         <arguments>
             <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\Components\OrderDetailsBuilder</argument>
-            <argument name="transferFactory" xsi:type="object">Monri\Payments\Gateway\Http\Components\PaymentCreateTransferFactory</argument>
+            <argument name="transferFactory" xsi:type="object">MonriComponentsPaymentCreateTransferFactory</argument>
             <argument name="client" xsi:type="object">MonriComponentsJsonClient</argument>
             <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\Components\PaymentCreateHandler</argument>
             <argument name="logger" xsi:type="object">MonriPaymentsVirtualLogger</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriComponentsPaymentCreateTransferFactory" type="Monri\Payments\Gateway\Http\Components\PaymentCreateTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\Components</argument>
         </arguments>
     </virtualType>
 
@@ -678,6 +684,166 @@
     </virtualType>
     <!-- refund components command end -->
 
+    <virtualType name="MonriGooglePayFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">Monri\Payments\Gateway\Config\GooglePay::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\Info</argument>
+            <argument name="valueHandlerPool" xsi:type="object">MonriGooglePayValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">MonriGooglePayValidatorPool</argument>
+            <argument name="commandPool" xsi:type="object">MonriGooglePayCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">MonriGooglePayConfigHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayConfigHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">Monri\Payments\Gateway\Config\GooglePay</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Monri\Payments\Gateway\Config\GooglePay">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">Monri\Payments\Gateway\Config\GooglePay::CODE</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="MonriGooglePayValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">MonriGooglePayCountryValidator</item>
+                <item name="currency" xsi:type="string">Monri\Payments\Gateway\Validator\CurrencyValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\GooglePay</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayGatewayResponseCommand" type="Monri\Payments\Gateway\Command\GatewayResponseCommand">
+        <arguments>
+            <argument name="orderUpdateHandler" xsi:type="object">MonriGooglePayOrderUpdateHandler</argument>
+            <argument name="errorMessageMapper" xsi:type="object">MonriPaymentsErrorsMapper</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayOrderUpdateHandler" type="Monri\Payments\Gateway\Response\OrderUpdateHandler">
+        <arguments>
+            <argument name="transactionHandlers" xsi:type="array">
+                <item name="purchase" xsi:type="string">Monri\Payments\Gateway\Response\Transactions\PurchaseHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayCommandPool" type="Magento\Payment\Gateway\Command\CommandPool">
+        <arguments>
+            <argument name="commands" xsi:type="array">
+                <item name="create_request" xsi:type="string">MonriGooglePayCreateRequestCommand</item>
+                <item name="initialize" xsi:type="string">Monri\Payments\Gateway\Command\GooglePay\InitializeCommand</item>
+                <item name="gateway_response" xsi:type="string">MonriGooglePayGatewayResponseCommand</item>
+                <item name="check_status" xsi:type="string">MonriGooglePayCheckStatusCommand</item>
+            </argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayCommandManager" type="Magento\Payment\Gateway\Command\CommandManager">
+        <arguments>
+            <argument name="commandPool" xsi:type="object">MonriGooglePayCommandPool</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Monri\Payments\Controller\GooglePay\Cancel">
+        <arguments>
+            <argument name="commandManager" xsi:type="object">MonriGooglePayCommandManager</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Monri\Payments\Controller\GooglePay\Success">
+        <arguments>
+            <argument name="commandManager" xsi:type="object">MonriGooglePayCommandManager</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+
+    <type name="Monri\Payments\Controller\GooglePay\OrderStatus">
+        <arguments>
+            <argument name="commandManager" xsi:type="object">MonriGooglePayCommandManager</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+
+    <!-- GooglePay Digest using GooglePay config -->
+    <virtualType name="MonriGooglePayDigest" type="Monri\Payments\Model\Crypto\Components\Digest">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\GooglePay</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayOrderStatusDigest" type="Monri\Payments\Model\Crypto\Components\OrderStatusDigest">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\GooglePay</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- GooglePay Transfer Factory using GooglePay config + digest -->
+    <virtualType name="MonriGooglePayPaymentCreateTransferFactory" type="Monri\Payments\Gateway\Http\Components\PaymentCreateTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\GooglePay</argument>
+            <argument name="digest" xsi:type="object">MonriGooglePayDigest</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayOrderStatusTransferFactory" type="Monri\Payments\Gateway\Http\OrderStatusTransferFactory">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\GooglePay</argument>
+            <argument name="digest" xsi:type="object">MonriGooglePayOrderStatusDigest</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayCreateRequestCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">Monri\Payments\Gateway\Request\GooglePay\OrderDetailsBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MonriGooglePayPaymentCreateTransferFactory</argument>
+            <argument name="client" xsi:type="object">MonriComponentsJsonClient</argument>
+            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\GooglePay\PaymentCreateHandler</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsVirtualLogger</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Monri\Payments\ViewModel\GooglePayConfig">
+        <arguments>
+            <argument name="googlePayCommand" xsi:type="object">MonriGooglePayCreateRequestCommand</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsLogger</argument>
+        </arguments>
+    </type>
+
+    <virtualType name="MonriGooglePayStatusRequestBuilder" type="Monri\Payments\Gateway\Request\StatusRequestBuilder">
+        <arguments>
+            <argument name="config" xsi:type="object">Monri\Payments\Gateway\Config\GooglePay</argument>
+            <argument name="digest" xsi:type="object">MonriGooglePayOrderStatusDigest</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="MonriGooglePayCheckStatusCommand" type="Magento\Payment\Gateway\Command\GatewayCommand">
+        <arguments>
+            <argument name="requestBuilder" xsi:type="object">MonriGooglePayStatusRequestBuilder</argument>
+            <argument name="transferFactory" xsi:type="object">MonriGooglePayOrderStatusTransferFactory</argument>
+            <argument name="client" xsi:type="object">Monri\Payments\Gateway\Http\StatusClient</argument>
+            <argument name="handler" xsi:type="object">Monri\Payments\Gateway\Response\StatusHandler</argument>
+            <argument name="logger" xsi:type="object">MonriPaymentsVirtualLogger</argument>
+        </arguments>
+    </virtualType>
 
     <!-- WSPay gateway configuration -->
     <virtualType name="WSPayFacade" type="Magento\Payment\Model\Method\Adapter">

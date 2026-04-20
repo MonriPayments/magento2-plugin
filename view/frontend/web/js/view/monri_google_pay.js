@@ -19,11 +19,10 @@ define(
         'use strict';
         rendererList.push(
             {
-                type: 'monri_components',
-                component: 'Monri_Payments/js/view/method-renderer/monri_components'
+                type: 'monri_google_pay',
+                component: 'Monri_Payments/js/view/method-renderer/monri_google_pay'
             }
         );
-
         return Component.extend({});
     }
 );

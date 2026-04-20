@@ -1,49 +1,16 @@
 <?php
-/**
- * This file is part of the Monri Payments module
- *
- * (c) Monri Payments d.o.o.
- *
- * @author Favicode <contact@favicode.net>
- */
 
 namespace Monri\Payments\Gateway\Http;
 
-use Exception;
-use Magento\Framework\HTTP\ClientInterface;
-use Magento\Framework\HTTP\ClientInterfaceFactory;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Payment\Gateway\Http\ClientException;
+use Magento\Payment\Gateway\Http\ClientInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
-use Magento\Payment\Gateway\Http\ClientInterface as PaymentClientInterface;
+use Magento\Framework\HTTP\ClientInterfaceFactory;
 use Magento\Payment\Model\Method\Logger;
 
-class Client implements PaymentClientInterface
+class StatusClient implements ClientInterface
 {
-    /**
-     * @var ClientInterfaceFactory
-     */
-    private $httpClientFactory;
-
-    /**
-     * @var SerializerInterface
-     */
-    private $serializer;
-
-    /**
-     * @var string
-     */
-    private $requestType;
-
-    /**
-     * @var Logger
-     */
-    private $logger;
-
-    /**
-     * @var int
-     */
-    private $timeout;
 
     /**
      * Client constructor.
@@ -55,19 +22,13 @@ class Client implements PaymentClientInterface
      * @param string $requestType
      */
     public function __construct(
-        ClientInterfaceFactory $httpClientFactory,
-        SerializerInterface $serializer,
-        Logger $logger,
-        $timeout = 10,
-        $requestType = 'application/xml'
+        private ClientInterfaceFactory $httpClientFactory,
+        private SerializerInterface $serializer,
+        private Logger $logger,
+        private $timeout = 10,
+        private $requestType = 'application/json'
     ) {
-        $this->httpClientFactory = $httpClientFactory;
-        $this->serializer = $serializer;
-        $this->requestType = $requestType;
-        $this->logger = $logger;
-        $this->timeout = $timeout;
     }
-
     /**
      * @inheritDoc
      */
@@ -87,7 +48,7 @@ class Client implements PaymentClientInterface
 
         $log['request_data'] = $requestPayload;
 
-        /** @var ClientInterface $client */
+        /** @var \Magento\Framework\HTTP\ClientInterface $client */
         $client = $this->httpClientFactory->create();
 
         $client->setTimeout($this->timeout);
@@ -118,7 +79,7 @@ class Client implements PaymentClientInterface
             $log['success'] = false;
             $this->logger->debug($log);
             throw new \Magento\Framework\Exception\LocalizedException(
-                __('Payment initialization failed. Please try again.')
+                __('Order status fetch failed.')
             );
         }
 
@@ -155,7 +116,10 @@ class Client implements PaymentClientInterface
     protected function parseResponseBody($response)
     {
         try {
-            $data = $this->serializer->unserialize($response);
+            //the response is xml, so we need to convert it to json and then to array
+            $xml = simplexml_load_string($response);
+            $json = json_encode($xml);
+            $data = json_decode($json, true);
             if ($data === null) {
                 return [];
             }

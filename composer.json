@@ -9,7 +9,7 @@
         }
     ],
     "description": "The official Monri Payments Magento 2 module",
-    "version": "1.7.0",
+    "version": "1.8.0",
     "license": [
         "OSL-3.0"
     ],
@@ -22,7 +22,8 @@
         "magento/module-checkout": "^100.2",
         "magento/module-store": "^100.2||^101.0",
         "magento/module-quote": "^101.0",
-        "php": "^8.1"
+        "php": "^8.1",
+        "ext-simplexml": "*"
     },
     "type": "magento2-module",
     "autoload": {

@@ -1,0 +1,16 @@
+<?php
+/* @var $block \Magento\Framework\View\Element\Template */
+$config = $block->getData('view_model')->getConfig();
+?>
+
+<div id="google-pay-element"></div>
+<p id="monri-error" style="color:red;" role="alert"></p>
+<input type="hidden" id="monri-transaction" name="monri-transaction" autocomplete="off"/>
+
+<script type="text/x-magento-init">
+    {
+        "*": {
+            "Monri_Payments/js/view/init/googlepay-init": <?= /* @noEscape */ json_encode($config) ?>
+    }
+}
+</script>

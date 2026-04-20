@@ -1,3 +1,6 @@
+### 1.8.0
+- Monri Components GooglePay integration
+
 ### 1.7.0
 - Improved Monri WebPay tokenization by using API for transaction creation.
 - Added "Instant Purchase" on the product page for customers with saved Monri WebPay tokens.

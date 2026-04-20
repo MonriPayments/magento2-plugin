@@ -14,7 +14,7 @@ use Magento\Payment\Gateway\Http\TransferBuilder;
 use Magento\Payment\Gateway\Http\TransferFactoryInterface;
 use Magento\Payment\Gateway\Http\TransferInterface;
 use Monri\Payments\Model\Crypto\Components\Digest;
-use Monri\Payments\Gateway\Config\Components as Config;
+use Monri\Payments\Gateway\Config;
 
 class PaymentCreateTransferFactory implements TransferFactoryInterface
 {
