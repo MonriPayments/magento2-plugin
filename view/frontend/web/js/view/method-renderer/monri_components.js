@@ -220,6 +220,38 @@ define(
                     }.bind(this));
             },
 
+            collectBrowserInfo: function () {
+                var screen_width = window && window.screen ? window.screen.width : '';
+                var screen_height = window && window.screen ? window.screen.height : '';
+                var color_depth = window && window.screen ? window.screen.colorDepth : '';
+                var user_agent = window && window.navigator ? window.navigator.userAgent : '';
+                var java_enabled = window && window.navigator ? navigator.javaEnabled() : false;
+                var ip_address = monriConfig.customerIp || '';
+
+                var language = '';
+                if (window && window.navigator) {
+                    language = window.navigator.language
+                        ? window.navigator.language
+                        : window.navigator.browserLanguage || '';
+                }
+
+                var time_zone_offset = (new Date()).getTimezoneOffset();
+
+                return {
+                    screen_width: screen_width,
+                    screen_height: screen_height,
+                    color_depth: color_depth,
+                    user_agent: user_agent,
+                    time_zone_offset: time_zone_offset,
+                    language: language,
+                    java_enabled: java_enabled,
+                    http_accept: '*/*',
+                    http_user_agent: user_agent,
+                    http_accept_language: language || '*',
+                    ip: ip_address
+                };
+            },
+
             getTransactionData: function () {
                 var email = customer.isLoggedIn() ? customer.customerData.email : quote.guestEmail;
                 var address = quote.billingAddress();
@@ -241,7 +273,8 @@ define(
                     phone: address.telephone,
                     country: address.countryId,
                     email: email,
-                    orderInfo: $t('Magento Order')
+                    orderInfo: $t('Magento Order'),
+                    browser_info: this.collectBrowserInfo()
                 };
             },
 

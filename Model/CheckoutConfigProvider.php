@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Monri\Payments\Model;
 
 use Magento\Checkout\Model\ConfigProviderInterface;
+use Magento\Framework\HTTP\PhpEnvironment\RemoteAddress;
 use Monri\Payments\Gateway\Config\Components as Config;
 use Magento\Checkout\Model\Session;
 
@@ -21,17 +22,25 @@ class CheckoutConfigProvider implements ConfigProviderInterface
     private $checkoutSession;
 
     /**
+     * @var RemoteAddress
+     */
+    private $remoteAddress;
+
+    /**
      * CheckoutConfigProvider constructor.
      *
      * @param Config $config
      * @param Session $session
+     * @param RemoteAddress $remoteAddress
      */
     public function __construct(
         Config $config,
-        Session $session
+        Session $session,
+        RemoteAddress $remoteAddress
     ) {
         $this->config = $config;
         $this->checkoutSession = $session;
+        $this->remoteAddress = $remoteAddress;
     }
 
     /**
@@ -50,6 +59,7 @@ class CheckoutConfigProvider implements ConfigProviderInterface
                         'authenticityToken' => $this->config->getClientAuthenticityToken($quote->getStoreId()),
                         'locale' => $this->config->getGatewayLanguage($quote->getStoreId()),
                         'allowInstallments' => $this->config->getAllowInstallments($quote->getStoreId()),
+                        'customerIp' => $this->remoteAddress->getRemoteAddress(),
                     ]
                 ]
             ];

@@ -126,7 +126,7 @@ class ProcessingDataBuilder implements BuilderInterface
 
         $installments = $this->config->getInstallments($order->getStoreId());
 
-        $supportedPaymentMethods = $this->config->getSupportedPaymentMethods($order->getStoreId()) ?? 'card';
+        $supportedPaymentMethods = 'card';
 
         $isMoto = false;
 

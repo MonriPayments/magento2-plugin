@@ -1,3 +1,6 @@
+### 1.7.1
+- Added additional 3DS parameters for Monri Redirect and Monri Components
+
 ### 1.7.0
 - Improved Monri WebPay tokenization by using API for transaction creation.
 - Added "Instant Purchase" on the product page for customers with saved Monri WebPay tokens.

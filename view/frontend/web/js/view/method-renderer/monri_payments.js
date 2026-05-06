@@ -75,10 +75,44 @@ define(
                     });
             },
 
+            collectBrowserInfo: function () {
+                var screen_width = window && window.screen ? window.screen.width : '';
+                var screen_height = window && window.screen ? window.screen.height : '';
+                var color_depth = window && window.screen ? window.screen.colorDepth : '';
+                var user_agent = window && window.navigator ? window.navigator.userAgent : '';
+                var java_enabled = window && window.navigator ? navigator.javaEnabled() : false;
+                var ip_address = window.checkoutConfig.payment[this.getCode()].customerIp || '';
+
+                var language = '';
+                if (window && window.navigator) {
+                    language = window.navigator.language
+                        ? window.navigator.language
+                        : window.navigator.browserLanguage || '';
+                }
+
+                var time_zone_offset = (new Date()).getTimezoneOffset();
+
+                return {
+                    screen_width: screen_width,
+                    screen_height: screen_height,
+                    color_depth: color_depth,
+                    user_agent: user_agent,
+                    time_zone_offset: time_zone_offset,
+                    language: language,
+                    java_enabled: java_enabled,
+                    http_accept: '*/*',
+                    http_user_agent: user_agent,
+                    http_accept_language: language || '*',
+                    ip: ip_address
+                };
+            },
+
             redirect: function (url, payload) {
                 var form = document.createElement('form');
                 form.method = 'POST';
                 form.action = url;
+
+                payload['browser_info'] = JSON.stringify(this.collectBrowserInfo());
 
                 for (var field in payload) {
                     if (payload.hasOwnProperty(field)) {
