@@ -1,3 +1,6 @@
+### 1.7.2
+- Verified compatibility with Magento 2.4.9
+
 ### 1.7.1
 - Added additional 3DS parameters for Monri Redirect and Monri Components
 
