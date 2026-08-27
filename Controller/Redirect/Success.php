@@ -135,8 +135,8 @@ class Success extends AbstractGatewayResponse
         $digest = $this->getRequest()->getParam('digest');
         $url = $this->_url->getCurrentUrl();
 
-        $data = str_replace('&digest=' . $digest, '', $url);
-
+        $data = str_replace('?digest=' . $digest . '&', '?', $url);
+        $data = str_replace('&digest=' . $digest, '', $data);
         return [
             'digest' => $digest,
             'digest_data' => $data,
