@@ -90,7 +90,12 @@ class Success extends AbstractGatewayResponse
 
             $gatewayResponse = $this->getRequest()->getParams();
             $log['payload'] = $gatewayResponse;
-            $gatewayResponse['status'] = 'approved';
+
+            // The redirect response carries no status field, so derive it from the
+            // gateway response code (0000 means the transaction was approved).
+            $gatewayResponse['status'] = ($gatewayResponse['response_code'] ?? null) === '0000'
+                ? 'approved'
+                : 'declined';
 
             $digestData = $this->getDigestData();
 
@@ -137,6 +142,7 @@ class Success extends AbstractGatewayResponse
 
         $data = str_replace('?digest=' . $digest . '&', '?', $url);
         $data = str_replace('&digest=' . $digest, '', $data);
+
         return [
             'digest' => $digest,
             'digest_data' => $data,
