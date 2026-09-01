@@ -1,3 +1,6 @@
+### 1.7.3
+- Security improvements for the latest Magento version
+
 ### 1.7.2
 - Verified compatibility with Magento 2.4.9
 

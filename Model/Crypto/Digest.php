@@ -84,6 +84,6 @@ class Digest
 
         $expectedDigest = hash($digestAlgo, $expectedPayload);
 
-        return $expectedDigest === $digest;
+        return hash_equals($expectedDigest, $digest);
     }
 }

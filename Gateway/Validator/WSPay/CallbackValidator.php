@@ -65,7 +65,7 @@ class CallbackValidator extends AbstractValidator
 
         $signature = hash('sha512', $signature);
 
-        if ($signature !== $response['Signature']) {
+        if (!hash_equals($signature, $response['Signature'])) {
             return $this->createResult(false, [__('Gateway response is not valid.')]);
         }
 
