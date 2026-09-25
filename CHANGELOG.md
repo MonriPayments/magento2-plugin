@@ -1,3 +1,6 @@
+### 1.7.4
+- Fixed issue with credentials not correctly saving in admin
+
 ### 1.7.3
 - Security improvements for the latest Magento version
 

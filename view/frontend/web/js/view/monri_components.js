@@ -4,7 +4,7 @@
  * (c) Monri Payments d.o.o.
  *
  * @author Favicode <contact@favicode.net>
- * @version 1.7.3
+ * @version 1.7.4
  */
 
 define(
